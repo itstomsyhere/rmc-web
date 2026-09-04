@@ -4,7 +4,7 @@ Consumer web prototype for the **Resique Golden Privilege** campaign (Apique Gro
 ("Resique Turun Harga"), RMC member profile (points · tier · prizes), Golden Sale with QRIS checkout + proof
 upload, spending Klasemen, and the admin config surface that the Apique UM app embeds.
 
-- Live: https://rmc-web.vercel.app (auto-deploys from `main`)
+- Live: https://rmc-web-beta.vercel.app (auto-deploys from `main`)
 - Admin: `/#/admin` (demo passcode in `src/data/seed-config.ts`) · embed mode `/#/admin?embed=1` (used by crm-apique UM → Module Config → Golden Privilege)
 - PRD: `Apique\prd\PRD-CRM-Resique-Golden-Privilege-v1.0.md` (Google Doc canonical)
 - Design notes: `DESIGN-RMC.md`
@@ -26,7 +26,7 @@ npm run preview        # http://localhost:4173 (gates run against this)
 npx playwright install chromium   # once
 npm run preview &                  # keep running
 npm test                           # test/run-all.cjs → model · landing · register · auth-profile · shop · admin
-BASE=https://rmc-web.vercel.app node test/landing-verify.cjs   # against live
+BASE=https://rmc-web-beta.vercel.app node test/landing-verify.cjs   # against live
 ```
 Each gate prints `PASS:`/`FAIL:` lines and exits non-zero on any failure or page error.
 

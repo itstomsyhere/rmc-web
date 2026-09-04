@@ -40,7 +40,8 @@ export interface GoldenSaleItem {
   active: boolean
 }
 
-export interface Prize { id: string; name: string; image: string; pointCost: number; stock: number; active: boolean; desc?: string }
+/** type = admin-defined label from Config.prizeTypes (🟣). */
+export interface Prize { id: string; name: string; type: string; image: string; pointCost: number; stock: number; active: boolean; desc?: string }
 
 export interface Config {
   copy: {
@@ -68,6 +69,8 @@ export interface Config {
   campaign: { start: string; end: string; label: string }
   items: GoldenSaleItem[]
   prizes: Prize[]
+  /** admin-defined prize categories, e.g. Voucher · Produk Resique · Elektronik · Layanan */
+  prizeTypes: string[]
   payment: {
     qrisMerchant: string
     qrisNmid: string

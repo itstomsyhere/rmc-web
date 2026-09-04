@@ -303,7 +303,8 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
                     <img src={p.image} alt={p.name} className="aspect-[4/3] w-full object-cover" loading="lazy" />
                     {p.stock <= 0 ? <Badge variant="muted" className="absolute left-2 top-2">Habis</Badge> : p.stock <= 5 ? <Badge variant="warn" className="absolute left-2 top-2">Sisa {p.stock}</Badge> : null}
                   </div>
-                  <h3 className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{p.name}</h3>
+                  <p className="mt-3 text-micro uppercase text-ink-4">{p.type}</p>
+                  <h3 className="mt-1 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{p.name}</h3>
                   <p className="t-num mt-1 text-[15px] font-extrabold text-gold-700">{poin(p.pointCost)} <span className="text-[11px] font-bold text-ink-3">poin</span></p>
                   <p className="t-num text-[11px] text-ink-4">Stok {p.stock}</p>
                   <div className="mt-auto pt-3">

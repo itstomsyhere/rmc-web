@@ -27,14 +27,16 @@ export const SEED_HERO: HeroPrize[] = [
   { id: 'h6', image: '/img/prize-dinner.svg',   label: 'Gala Dinner' },
 ]
 
-/* 🟠 Point costs are placeholders (scribble shows Livin'-style scale). Editable in admin. */
+export const SEED_PRIZE_TYPES = ['Voucher', 'Produk Resique', 'Elektronik', 'Layanan', 'Lainnya']
+
+/* Demo catalog only — production starts empty; name/type/point cost/stock are all admin-defined (🟣). */
 export const SEED_PRIZES: Prize[] = [
-  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', image: '/img/prize-voucher.svg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan langsung untuk transaksi berikutnya.' },
-  { id: 'p2', name: 'Parfum Laundry Premium 5L',         image: '/img/prize-parfum.svg',  pointCost: 9_000,   stock: 40,  active: true, desc: 'Whiff Fresh Elegant / Greendome Downy Black.' },
-  { id: 'p3', name: 'Paket Chemical 1 Bulan',            image: '/img/prize-chemical.svg', pointCost: 25_000, stock: 20,  active: true, desc: 'Deterjen matic 5L ×4 + parfum 5L ×2.' },
-  { id: 'p4', name: 'Tablet 10"',                        image: '/img/prize-tablet.svg',  pointCost: 60_000,  stock: 5,   active: true, desc: 'Untuk kasir & pencatatan outlet.' },
-  { id: 'p5', name: 'Smartphone Flagship',               image: '/img/prize-phone.svg',   pointCost: 150_000, stock: 3,   active: true, desc: 'Samsung Galaxy S-series / setara.' },
-  { id: 'p6', name: 'Laptop Bisnis',                     image: '/img/prize-laptop.svg',  pointCost: 250_000, stock: 2,   active: true, desc: 'Apple MacBook Air M-series / setara.' },
+  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', type: 'Voucher', image: '/img/prize-voucher.svg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan langsung untuk transaksi berikutnya.' },
+  { id: 'p2', name: 'Parfum Laundry Premium 5L',         type: 'Produk Resique', image: '/img/prize-parfum.svg',  pointCost: 9_000,   stock: 40,  active: true, desc: 'Whiff Fresh Elegant / Greendome Downy Black.' },
+  { id: 'p3', name: 'Paket Chemical 1 Bulan',            type: 'Produk Resique', image: '/img/prize-chemical.svg', pointCost: 25_000, stock: 20,  active: true, desc: 'Deterjen matic 5L ×4 + parfum 5L ×2.' },
+  { id: 'p4', name: 'Tablet 10"',                        type: 'Elektronik', image: '/img/prize-tablet.svg',  pointCost: 60_000,  stock: 5,   active: true, desc: 'Untuk kasir & pencatatan outlet.' },
+  { id: 'p5', name: 'Smartphone Flagship',               type: 'Elektronik', image: '/img/prize-phone.svg',   pointCost: 150_000, stock: 3,   active: true, desc: 'Samsung Galaxy S-series / setara.' },
+  { id: 'p6', name: 'Laptop Bisnis',                     type: 'Elektronik', image: '/img/prize-laptop.svg',  pointCost: 250_000, stock: 2,   active: true, desc: 'Apple MacBook Air M-series / setara.' },
 ]
 
 export const DEFAULT_CONFIG: Config = {
@@ -63,6 +65,7 @@ export const DEFAULT_CONFIG: Config = {
   campaign: { start: '2026-09-01', end: '2026-10-31', label: 'Golden Privilege Sep–Okt 2026' },
   items: SEED_ITEMS,
   prizes: SEED_PRIZES,
+  prizeTypes: SEED_PRIZE_TYPES,
   payment: {
     qrisMerchant: 'Resique Supermarket Laundry',
     qrisNmid: 'ID1024RSQ0001',

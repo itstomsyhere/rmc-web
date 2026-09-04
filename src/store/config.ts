@@ -20,6 +20,8 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
     out[k] = { ...DEFAULT_CONFIG[k], ...(stored[k] || {}) }
   })
   if (!Array.isArray(out.tiers) || !out.tiers.length) out.tiers = DEFAULT_CONFIG.tiers
+  if (!Array.isArray(out.prizeTypes) || !out.prizeTypes.length) out.prizeTypes = DEFAULT_CONFIG.prizeTypes
+  out.prizes = (out.prizes || []).map(p => ({ ...p, type: p.type || out.prizeTypes[out.prizeTypes.length - 1] }))
   return out
 }
 
