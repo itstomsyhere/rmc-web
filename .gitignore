@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vercel
+test/*.png
+test/_shots
+.playwright-mcp

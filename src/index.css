@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Resique Golden Privilege — design tokens
+   Ported from crm-apique styles.css :root (teal + gold ramps, ink, radius, motion).
+   shadcn HSL vars below point at those brand values so every ui/* component is on-brand.
+   --------------------------------------------------------------------------- */
+:root {
+  --teal: #2E8577; --teal-700: #0E5249; --teal-600: #256B61; --teal-500: #14695E;
+  --teal-200: #7EC5BB; --teal-100: #D6EDE8; --teal-050: #EAF6F3;
+  --gold: #D4A04E; --gold-100: #F6E8CC; --gold-600: #C8941B; --gold-deep: #B08800; --gold-ink: #3A2A0A;
+  --ink: #1E2A2A; --ink-2: #445050; --ink-3: #6F7878; --ink-4: #9AA0A0;
+  --line: #E2E5E8; --line-2: #EEF0F2; --bg: #F8F9FA; --surface: #FFFFFF; --surface-2: #F4F6F8;
+  --radius-sm: 4px; --radius: 6px; --radius-lg: 10px;
+  --ease-out: cubic-bezier(.23, 1, .32, 1); --dur-fast: 140ms; --dur-base: 180ms; --dur-slow: 220ms;
+
+  /* shadcn semantic (HSL triplets) */
+  --background: 210 17% 98%;          /* #F8F9FA */
+  --foreground: 180 17% 14%;          /* #1E2A2A */
+  --card: 0 0% 100%;
+  --card-foreground: 180 17% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 180 17% 14%;
+  --primary: 168 68% 24%;             /* #14695E */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 162 35% 94%;           /* #EAF6F3 */
+  --secondary-foreground: 172 71% 19%;
+  --muted: 210 17% 96%;               /* #F4F6F8 */
+  --muted-foreground: 180 4% 45%;     /* #6F7878 */
+  --accent: 40 62% 88%;               /* #F6E8CC */
+  --accent-foreground: 34 71% 13%;    /* #3A2A0A */
+  --destructive: 0 56% 39%;           /* #9B2C2C */
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 12% 90%;              /* #E2E5E8 */
+  --input: 210 12% 90%;
+  --ring: 172 49% 35%;                /* #2E8577 */
+  --radius: 0.5rem;
+}
+
+* { border-color: hsl(var(--border)); }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  @apply bg-background text-foreground font-sans antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+  margin: 0;
+  min-height: 100dvh;
+}
+#root { min-height: 100dvh; display: flex; flex-direction: column; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* Typography helpers — one hero per view, typography carries hierarchy. */
+.t-eyebrow { @apply text-micro uppercase tracking-[0.12em] font-bold text-teal-600; }
+.t-display { @apply font-extrabold tracking-[-0.03em] leading-[1.02]; font-size: clamp(38px, 8vw, 72px); }
+.t-h1 { @apply font-extrabold tracking-[-0.02em] leading-[1.08]; font-size: clamp(28px, 4.2vw, 44px); }
+.t-h2 { @apply font-bold tracking-[-0.01em] leading-tight; font-size: clamp(20px, 2.4vw, 26px); }
+.t-num { font-variant-numeric: tabular-nums; }
+
+/* Sections: full-viewport storytelling on desktop (pitch-deck mode), natural flow on mobile. */
+.section { @apply py-14 sm:py-20 lg:py-24; }
+.section-deck { @apply lg:min-h-[92vh] lg:flex lg:flex-col lg:justify-center; }
+
+/* Marquee (prize strip) */
+.marquee { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+.marquee-track { @apply flex w-max animate-marquee gap-4 will-change-transform; }
+
+/* Gold accents — used only for prize/promo emphasis. */
+.gold-gradient { background: linear-gradient(135deg, #F6E8CC 0%, #D4A04E 55%, #B08800 100%); }
+.gold-text { background: linear-gradient(120deg, #B08800, #D4A04E 50%, #8A6A00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.teal-gradient { background: radial-gradient(120% 120% at 0% 0%, #2E8577 0%, #0E5249 55%, #072F2A 100%); }
+.strike { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgb(155 44 44 / .75); }
+
+/* Focus ring — visible, on-brand */
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+
+/* Utility: hide scrollbar for chip rails */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Recharts base */
+.recharts-cartesian-axis-tick-value { fill: var(--ink-3); font-size: 11px; }
+.recharts-tooltip-wrapper { outline: none; }

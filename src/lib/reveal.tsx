@@ -1,0 +1,57 @@
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+
+/** IntersectionObserver-driven entry reveal (fade-up + slight blur). No scroll listeners. */
+export function useInView<T extends HTMLElement>(opts: { once?: boolean; margin?: string } = {}) {
+  const ref = React.useRef<T>(null)
+  const [inView, setInView] = React.useState(false)
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setInView(true); return }
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); if (opts.once !== false) io.disconnect() }
+      else if (opts.once === false) setInView(false)
+    }, { rootMargin: opts.margin || '0px 0px -10% 0px', threshold: 0.08 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [opts.once, opts.margin])
+  return { ref, inView }
+}
+
+export function Reveal({ children, className, delay = 0, as: Tag = 'div' }: { children: React.ReactNode; className?: string; delay?: number; as?: keyof JSX.IntrinsicElements }) {
+  const { ref, inView } = useInView<HTMLDivElement>()
+  const Comp = Tag as unknown as React.ElementType
+  return (
+    <Comp
+      ref={ref}
+      data-reveal={inView ? 'in' : 'out'}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={cn('transition-[opacity,transform,filter] duration-700 ease-out will-change-[opacity,transform]', inView ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-6 blur-[3px]', className)}
+    >
+      {children}
+    </Comp>
+  )
+}
+
+/** Hover/pointer capability — gate hover-only affordances. */
+export function useFinePointer() {
+  const [fine, setFine] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const h = () => setFine(mq.matches)
+    h(); mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+  return fine
+}
+
+export function useIsMobile(bp = 768) {
+  const [m, setM] = React.useState(() => typeof window !== 'undefined' && window.innerWidth < bp)
+  React.useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${bp - 1}px)`)
+    const h = () => setM(mq.matches)
+    h(); mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [bp])
+  return m
+}

@@ -1,0 +1,31 @@
+import * as React from 'react'
+import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
+import { cn } from '@/lib/utils'
+
+const RadioGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.Root>, React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>>(({ className, ...props }, ref) => (
+  <RadioGroupPrimitive.Root className={cn('grid gap-2', className)} {...props} ref={ref} />
+))
+RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
+
+const RadioGroupItem = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.Item>, React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>>(({ className, ...props }, ref) => (
+  <RadioGroupPrimitive.Item ref={ref} className={cn('aspect-square h-5 w-5 rounded-full border-2 border-ink-4 text-teal transition-colors data-[state=checked]:border-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-teal/30 disabled:cursor-not-allowed disabled:opacity-50', className)} {...props}>
+    <RadioGroupPrimitive.Indicator className="flex items-center justify-center"><span className="h-2.5 w-2.5 rounded-full bg-teal" /></RadioGroupPrimitive.Indicator>
+  </RadioGroupPrimitive.Item>
+))
+RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
+
+/** Big tappable option card — 44px+ target, whole row clickable. */
+export function RadioCard({ value, title, desc, disabled, badge, id }: { value: string; title: string; desc?: string; disabled?: boolean; badge?: React.ReactNode; id?: string }) {
+  const rid = id || `rc-${value}`
+  return (
+    <label htmlFor={rid} className={cn('flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 transition-colors has-[[data-state=checked]]:border-teal has-[[data-state=checked]]:bg-teal-50/60 hover:border-ink-4', disabled && 'cursor-not-allowed opacity-55')}>
+      <RadioGroupItem value={value} id={rid} disabled={disabled} className="mt-0.5" />
+      <span className="flex-1 min-w-0">
+        <span className="flex items-center gap-2 text-[15px] font-semibold text-ink">{title}{badge}</span>
+        {desc && <span className="mt-0.5 block text-[13px] text-ink-3">{desc}</span>}
+      </span>
+    </label>
+  )
+}
+
+export { RadioGroup, RadioGroupItem }

@@ -1,0 +1,43 @@
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-[transform,background-color,box-shadow,color] duration-base ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[.985] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none',
+  {
+    variants: {
+      variant: {
+        default: 'bg-teal-500 text-white shadow-1 hover:bg-teal-600 hover:shadow-2',
+        gold: 'gold-gradient text-gold-ink shadow-gold hover:brightness-[1.03]',
+        secondary: 'bg-teal-50 text-teal-700 hover:bg-teal-100',
+        outline: 'border border-line bg-white text-ink hover:bg-surface-2',
+        ghost: 'text-ink-2 hover:bg-surface-2 hover:text-ink',
+        link: 'text-teal-600 underline-offset-4 hover:underline',
+        destructive: 'bg-danger text-white hover:bg-danger/90',
+        inverse: 'bg-white text-teal-700 shadow-2 hover:bg-teal-50',
+      },
+      size: {
+        default: 'h-11 px-5',
+        sm: 'h-9 rounded-md px-3.5 text-[13px]',
+        lg: 'h-12 px-7 text-[15px]',
+        xl: 'h-14 px-8 text-base rounded-xl',
+        icon: 'h-11 w-11',
+        'icon-sm': 'h-9 w-9 rounded-md',
+      },
+    },
+    defaultVariants: { variant: 'default', size: 'default' },
+  },
+)
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, type, ...props }, ref) => {
+  const Comp = asChild ? Slot : 'button'
+  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} type={asChild ? undefined : type || 'button'} {...props} />
+})
+Button.displayName = 'Button'
+
+export { Button, buttonVariants }

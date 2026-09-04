@@ -1,0 +1,289 @@
+import * as React from 'react'
+import { Link } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { ArrowLeft, QrCode, Store, Truck, ShieldCheck } from 'lucide-react'
+import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { rupiah } from '@/lib/format'
+import { Reveal } from '@/lib/reveal'
+import { normalizePhone, displayPhone } from '@/model/phone'
+import type { Kota, Order } from '@/model/types'
+import { useConfig } from '@/store/config'
+import { useOrders } from '@/store/orders'
+import { useCart, cartLines, cartTotal, cartCount, cartSavings, soldQty } from '@/store/cart'
+import { useCurrentAccount } from '@/store/session'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input, Textarea } from '@/components/ui/input'
+import { Field } from '@/components/ui/label'
+import { RadioGroup, RadioCard } from '@/components/ui/radio-group'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Separator, EmptyState } from '@/components/ui/misc'
+import { QtyStepper } from '@/components/shop/QtyStepper'
+import { QrisSheet } from '@/components/shop/QrisSheet'
+
+const schema = z
+  .object({
+    name: z.string().trim().min(2, 'Nama wajib diisi'),
+    laundry: z.string().trim().min(2, 'Nama laundry wajib diisi'),
+    phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid — contoh 0812-3456-7890'),
+    mode: z.enum(['ambil', 'kirim']),
+    outlet: z.string().optional(),
+    address: z.string().optional(),
+    note: z.string().optional(),
+    method: z.enum(['QRIS', 'VA', 'EWALLET']),
+    ewallet: z.string().optional(),
+  })
+  .superRefine((v, ctx) => {
+    if (v.mode === 'ambil' && !v.outlet) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['outlet'], message: 'Pilih outlet pengambilan' })
+    if (v.mode === 'kirim' && !(v.address || '').trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['address'], message: 'Alamat pengiriman wajib diisi' })
+    if (v.method === 'EWALLET' && !v.ewallet) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['ewallet'], message: 'Pilih e-wallet' })
+  })
+type FormValues = z.infer<typeof schema>
+
+export function CheckoutPage() {
+  const cfg = useConfig(s => s.config)
+  const orders = useOrders(s => s.orders)
+  const qty = useCart(s => s.qty)
+  const inc = useCart(s => s.inc)
+  const dec = useCart(s => s.dec)
+  const acc = useCurrentAccount()
+
+  const lines = cartLines(qty, cfg.items)
+  const total = cartTotal(lines), count = cartCount(lines), savings = cartSavings(lines)
+
+  const [placed, setPlaced] = React.useState<Order | null>(null)
+  const [sheetOpen, setSheetOpen] = React.useState(false)
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: {
+      name: acc?.pic || '',
+      laundry: acc?.laundry || '',
+      phone: acc?.phone || '',
+      mode: 'ambil',
+      outlet: cfg.outlets.length === 1 ? cfg.outlets[0] : undefined,
+      address: '',
+      note: '',
+      method: 'QRIS',
+      ewallet: undefined,
+    },
+  })
+  const { register, handleSubmit, control, watch, formState: { errors, isDirty, isSubmitting }, reset, getValues } = form
+
+  // Prefill from the signed-in account once it hydrates (only while the form is still untouched).
+  React.useEffect(() => {
+    if (acc && !isDirty) reset({ ...getValues(), name: acc.pic, laundry: acc.laundry, phone: acc.phone }, { keepDefaultValues: false })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [acc?.id])
+
+  const mode = watch('mode')
+  const method = watch('method')
+  const phoneRaw = watch('phone')
+  const phoneNorm = normalizePhone(phoneRaw)
+
+  const onSubmit = (v: FormValues) => {
+    if (lines.length === 0) return toast.error('Keranjang kosong')
+    if (v.method !== 'QRIS') return toast.warning('Metode ini belum tersedia — gunakan QRIS')
+    const order = useOrders.getState().create({
+      name: v.name, laundry: v.laundry, phone: v.phone,
+      mode: v.mode, outlet: v.mode === 'ambil' ? (v.outlet as Kota) : undefined, address: v.mode === 'kirim' ? v.address : undefined,
+      lines, method: v.method, note: v.note?.trim() || undefined,
+    })
+    useCart.getState().clear()
+    setPlaced(order)
+    setSheetOpen(true)
+    toast.success(`Pesanan ${order.id} dibuat — selesaikan pembayaran QRIS`)
+  }
+
+  /* Post-submit: cart is empty by design, so show the order handoff instead of the empty state. */
+  if (placed) {
+    return (
+      <div className="container max-w-xl pb-16 pt-24 sm:pt-32">
+        <Reveal>
+          <p className="t-eyebrow">Pesanan dibuat</p>
+          <h1 className="t-h1 mt-3 text-ink">Selesaikan pembayaran</h1>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-3">Pesanan <span className="font-mono text-ink-2">{placed.id}</span> menunggu pembayaran QRIS sebesar <strong className="t-num text-ink">{rupiah(placed.total)}</strong>. QR berlaku {Math.round(cfg.payment.qrTimeoutSec / 60)} menit sejak pesanan dibuat.</p>
+        </Reveal>
+        <Reveal delay={80}>
+          <Card className="mt-8">
+            <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-teal-50 text-teal-700"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
+                <div className="min-w-0">
+                  <p className="text-[15px] font-bold text-ink">QRIS · {cfg.payment.qrisMerchant}</p>
+                  <p className="text-[13px] text-ink-3">Scan, bayar, lalu unggah bukti pembayaran.</p>
+                </div>
+              </div>
+              <Button size="lg" variant="gold" className="rounded-full" onClick={() => setSheetOpen(true)}>Buka QR</Button>
+            </CardContent>
+          </Card>
+        </Reveal>
+        <Reveal delay={140} className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Button asChild variant="outline" size="lg" className="rounded-full"><Link to={'/order/' + placed.id}>Lihat status pesanan</Link></Button>
+          <Button asChild variant="ghost" size="lg" className="rounded-full"><Link to="/">Kembali ke beranda</Link></Button>
+        </Reveal>
+        <QrisSheet order={placed} open={sheetOpen} onOpenChange={setSheetOpen} />
+      </div>
+    )
+  }
+
+  if (lines.length === 0) {
+    return (
+      <div className="container max-w-xl pb-16 pt-24 sm:pt-32">
+        <Reveal>
+          <p className="t-eyebrow">Checkout</p>
+          <h1 className="t-h1 mt-3 text-ink">Keranjang masih kosong</h1>
+        </Reveal>
+        <Reveal delay={80}>
+          <EmptyState className="mt-8" title="Belum ada item di keranjang" desc="Pilih item Golden Sale dulu, lalu kembali ke sini untuk membayar."
+            action={<Button asChild size="lg" variant="gold" className="rounded-full"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
+        </Reveal>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container pb-32 pt-24 sm:pt-32 lg:pb-16">
+      <Reveal>
+        <Link to="/#golden-sale" className="inline-flex h-11 items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-ink"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Kembali ke Golden Sale</Link>
+        <p className="t-eyebrow mt-2">Checkout</p>
+        <h1 className="t-h1 mt-3 text-ink">Selesaikan pesanan</h1>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-3">Isi data pemesan, pilih cara pengambilan, lalu bayar lewat QRIS. Belanja yang lunas langsung masuk klasemen Golden Privilege.</p>
+      </Reveal>
+
+      <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:gap-10">
+        {/* Form — left column */}
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="lg:col-span-7">
+          <div className="max-w-xl space-y-10">
+            <Reveal delay={60} as="section">
+              <h2 className="t-h2 text-ink">Data pemesan</h2>
+              <div className="mt-5 space-y-5">
+                <Field label="Nama" required htmlFor="co-name" error={errors.name?.message}>
+                  <Input id="co-name" autoComplete="name" placeholder="Nama lengkap" aria-invalid={!!errors.name} {...register('name')} />
+                </Field>
+                <Field label="Nama laundry" required htmlFor="co-laundry" error={errors.laundry?.message}>
+                  <Input id="co-laundry" autoComplete="organization" placeholder="Contoh: Laundry Bersih Jaya" aria-invalid={!!errors.laundry} {...register('laundry')} />
+                </Field>
+                <Field label="No. HP (WhatsApp)" required htmlFor="co-phone" error={errors.phone?.message}
+                  hint={phoneNorm ? `Tersimpan sebagai ${phoneNorm} · ${displayPhone(phoneNorm)}` : 'Contoh: 0812-3456-7890 — sales Resique menghubungi lewat nomor ini.'}>
+                  <Input id="co-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="08xx-xxxx-xxxx" aria-invalid={!!errors.phone} {...register('phone')} />
+                </Field>
+              </div>
+            </Reveal>
+
+            <Reveal delay={100} as="section">
+              <h2 className="t-h2 text-ink">Pengambilan</h2>
+              <Controller control={control} name="mode" render={({ field }) => (
+                <RadioGroup value={field.value} onValueChange={field.onChange} className="mt-5" aria-label="Cara pengambilan">
+                  <RadioCard value="ambil" title="Ambil di outlet Resique" desc="Gratis. Ambil di outlet pilihanmu setelah pembayaran terverifikasi." badge={<Store className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
+                  <RadioCard value="kirim" title="Kirim ke alamat" desc="Dikirim ke alamat laundry-mu. Ongkir dikonfirmasi terpisah." badge={<Truck className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
+                </RadioGroup>
+              )} />
+              {mode === 'ambil' && (
+                <Field className="mt-4" label="Outlet pengambilan" required htmlFor="co-outlet" error={errors.outlet?.message}>
+                  <Controller control={control} name="outlet" render={({ field }) => (
+                    <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                      <SelectTrigger id="co-outlet" aria-invalid={!!errors.outlet}><SelectValue placeholder="Pilih outlet" /></SelectTrigger>
+                      <SelectContent>{cfg.outlets.map(o => <SelectItem key={o} value={o}>Resique {o}</SelectItem>)}</SelectContent>
+                    </Select>
+                  )} />
+                </Field>
+              )}
+              {mode === 'kirim' && (
+                <Field className="mt-4" label="Alamat pengiriman" required htmlFor="co-address" error={errors.address?.message}
+                  hint="Ongkir dikonfirmasi sales via WhatsApp setelah pesanan dibuat — tidak termasuk dalam QR.">
+                  <Textarea id="co-address" autoComplete="street-address" placeholder="Nama jalan, nomor, kelurahan, kota, kode pos" aria-invalid={!!errors.address} {...register('address')} />
+                </Field>
+              )}
+              <Field className="mt-4" label="Catatan" htmlFor="co-note" hint="Opsional — misal jam pengambilan atau patokan alamat.">
+                <Textarea id="co-note" className="min-h-[64px]" placeholder="Tulis catatan untuk sales Resique" {...register('note')} />
+              </Field>
+            </Reveal>
+
+            <Reveal delay={140} as="section">
+              <h2 className="t-h2 text-ink">Pilih pembayaran</h2>
+              <Controller control={control} name="method" render={({ field }) => (
+                <RadioGroup value={field.value} onValueChange={field.onChange} className="mt-5" aria-label="Metode pembayaran">
+                  <RadioCard value="QRIS" title="QRIS" desc="Scan dengan aplikasi bank / e-wallet apa pun" badge={<Badge variant="gold">Aktif</Badge>} />
+                  <RadioCard value="VA" title="Virtual Account" disabled={!cfg.payment.vaEnabled}
+                    desc={cfg.payment.vaBanks.length ? `Transfer ke VA ${cfg.payment.vaBanks.join(', ')}` : 'Transfer ke Virtual Account bank'}
+                    badge={!cfg.payment.vaEnabled ? <Badge variant="muted">Segera</Badge> : undefined} />
+                  <RadioCard value="EWALLET" title="E-wallet" disabled={!cfg.payment.ewalletEnabled}
+                    desc={cfg.payment.ewallets.length ? cfg.payment.ewallets.join(', ') : 'Bayar lewat dompet digital'}
+                    badge={!cfg.payment.ewalletEnabled ? <Badge variant="muted">Segera</Badge> : undefined} />
+                </RadioGroup>
+              )} />
+              {method === 'EWALLET' && cfg.payment.ewalletEnabled && (
+                <Field className="mt-4" label="E-wallet" required htmlFor="co-ewallet" error={errors.ewallet?.message}>
+                  <Controller control={control} name="ewallet" render={({ field }) => (
+                    <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                      <SelectTrigger id="co-ewallet" aria-invalid={!!errors.ewallet}><SelectValue placeholder="Pilih e-wallet" /></SelectTrigger>
+                      <SelectContent>{cfg.payment.ewallets.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}</SelectContent>
+                    </Select>
+                  )} />
+                </Field>
+              )}
+              <p className="mt-4 inline-flex items-center gap-1.5 text-[12px] text-ink-3"><ShieldCheck className="h-3.5 w-3.5 text-teal-600" strokeWidth={1.6} /> Pembayaran diverifikasi admin Resique setelah bukti diunggah.</p>
+            </Reveal>
+          </div>
+
+          {/* Submit — sticky bottom bar on mobile (safe-area aware), inline on desktop */}
+          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:static lg:mt-10 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+            <div className="mx-auto flex max-w-xl items-center gap-3">
+              <div className="min-w-0 flex-1 lg:hidden">
+                <p className="text-[11px] font-semibold text-ink-3"><span className="t-num">{count}</span> item · hemat <span className="t-num gold-text font-bold">{rupiah(savings)}</span></p>
+                <p className="t-num truncate text-[17px] font-extrabold leading-tight text-ink">{rupiah(total)}</p>
+              </div>
+              <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="shrink-0 rounded-full lg:w-full">Bayar {rupiah(total)}</Button>
+            </div>
+          </div>
+        </form>
+
+        {/* Order summary — right column, sticky on desktop */}
+        <aside className="lg:col-span-5">
+          <Reveal delay={120} className="lg:sticky lg:top-28">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle>Ringkasan pesanan</CardTitle>
+                <CardDescription><span className="t-num">{count}</span> item · {cfg.campaign.label}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="divide-y divide-line-2">
+                  {lines.map(l => {
+                    const it = cfg.items.find(i => i.id === l.itemId)
+                    const left = it && it.quota > 0 ? Math.max(0, it.quota - soldQty(orders, it.id)) : Infinity
+                    const max = Math.min(it && it.maxPerCustomer > 0 ? it.maxPerCustomer : Infinity, left)
+                    return (
+                      <li key={l.itemId} className="flex items-center gap-3 py-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[14px] font-semibold text-ink">{l.name}</p>
+                          <p className="t-num text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}</p>
+                        </div>
+                        <QtyStepper qty={l.qty} label={l.name} max={Number.isFinite(max) ? max : undefined}
+                          onInc={() => { if (Number.isFinite(max) && l.qty >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(l.itemId, Number.isFinite(max) ? max : undefined) }}
+                          onDec={() => dec(l.itemId)} />
+                        <p className="t-num w-24 shrink-0 text-right text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+                <Separator className="my-4" />
+                <div className="space-y-2 text-[14px]">
+                  <div className="flex items-center justify-between text-ink-3"><span>Harga normal</span><span className="t-num strike">{rupiah(total + savings)}</span></div>
+                  <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-num gold-text">{rupiah(savings)}</span></div>
+                  <div className={cn('flex items-baseline justify-between pt-2 text-ink')}><span className="text-[15px] font-bold">Total</span><span className="t-num text-[24px] font-extrabold tracking-tight">{rupiah(total)}</span></div>
+                </div>
+                <p className="mt-4 text-[12px] leading-relaxed text-ink-4">Total belum termasuk ongkir untuk pengiriman ke alamat. Harga promo berlaku selama periode {cfg.campaign.label}.</p>
+              </CardContent>
+            </Card>
+          </Reveal>
+        </aside>
+      </div>
+    </div>
+  )
+}
