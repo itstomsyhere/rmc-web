@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useConfig } from '@/store/config'
 import { useCurrentAccount, useSession } from '@/store/session'
@@ -13,7 +12,7 @@ const NAV = [
   { to: '/#klasemen', label: 'Klasemen' },
 ]
 
-/** Floating "island" nav — detached glass pill, morphing hamburger, staggered overlay on mobile. */
+/* Plain sticky header: flat bar, hairline border, 44px targets. Mobile menu = solid white panel, single fade. */
 export function SiteHeader() {
   const cfg = useConfig(s => s.config)
   const acc = useCurrentAccount()
@@ -21,15 +20,8 @@ export function SiteHeader() {
   const nav = useNavigate()
   const loc = useLocation()
   const [open, setOpen] = React.useState(false)
-  const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => { setOpen(false) }, [loc.pathname, loc.hash])
-  React.useEffect(() => {
-    const io = new IntersectionObserver(([e]) => setScrolled(!e.isIntersecting), { threshold: 0 })
-    const sentinel = document.getElementById('top-sentinel')
-    if (sentinel) io.observe(sentinel)
-    return () => io.disconnect()
-  }, [])
   React.useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; return () => { document.body.style.overflow = '' } }, [open])
 
   const go = (to: string) => (e: React.MouseEvent) => {
@@ -44,63 +36,55 @@ export function SiteHeader() {
 
   return (
     <>
-      <div id="top-sentinel" aria-hidden className="absolute top-0 h-px w-px" />
-      <header data-site-header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-3 sm:pt-5">
-        <div className={cn('pointer-events-auto flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/40 bg-white/75 py-2 pl-3 pr-2 shadow-2 backdrop-blur-xl transition-[box-shadow,background-color] duration-slow ease-out', scrolled && 'bg-white/90 shadow-3')}>
-          <Link to="/" className="flex items-center gap-2.5 rounded-full pr-2" aria-label="Resique Golden Privilege — beranda">
-            <img src={cfg.assets.logo} alt="" className="h-8 w-8 rounded-[9px]" />
-            <span className="hidden text-[14px] font-extrabold tracking-tight text-teal-700 sm:inline">Resique <span className="gold-text">Golden Privilege</span></span>
+      <header data-site-header className="sticky top-0 z-40 h-14 border-b border-line bg-bg">
+        <div className="container flex h-full items-center justify-between gap-3">
+          <Link to="/" className="flex min-h-11 items-center gap-2.5" aria-label="Resique Golden Privilege — beranda">
+            <img src={cfg.assets.logo} alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
+            <span className="text-[15px] font-extrabold tracking-tight text-teal-700"><span className="sm:hidden">Golden Privilege</span><span className="hidden sm:inline">Resique Golden Privilege</span></span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Navigasi utama">
             {NAV.map(n => (
-              <a key={n.to} href={n.to} onClick={go(n.to)} className="rounded-full px-3.5 py-2 text-[13px] font-semibold text-ink-2 transition-colors hover:bg-teal-50 hover:text-teal-700">{n.label}</a>
+              <a key={n.to} href={n.to} onClick={go(n.to)} className="rounded-md px-3 py-2 text-[15px] font-medium text-ink-2 transition-colors hover:text-teal-700">{n.label}</a>
             ))}
           </nav>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {acc ? (
               <>
-                <Button asChild variant="secondary" size="sm" className="rounded-full"><Link to="/profile">Profil RMC</Link></Button>
-                <Button variant="ghost" size="sm" className="hidden rounded-full sm:inline-flex" onClick={() => { signOut(); nav('/') }}>Keluar</Button>
+                <Button asChild variant="secondary"><Link to="/profile">Profil RMC</Link></Button>
+                <Button variant="ghost" className="hidden sm:inline-flex" onClick={() => { signOut(); nav('/') }}>Keluar</Button>
               </>
             ) : (
-              <Button asChild size="sm" className="group rounded-full pr-1.5">
-                <Link to="/login">
-                  Cek poin
-                  <span className="grid h-6 w-6 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5 group-hover:-translate-y-px"><ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.2} /></span>
-                </Link>
-              </Button>
+              <Button asChild><Link to="/login">Cek poin</Link></Button>
             )}
-            <button type="button" aria-label={open ? 'Tutup menu' : 'Buka menu'} aria-expanded={open} onClick={() => setOpen(o => !o)} className="relative grid h-10 w-10 place-items-center rounded-full text-ink md:hidden">
-              <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-slow ease-out', open ? 'rotate-45' : '-translate-y-[4px]')} />
-              <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-slow ease-out', open ? '-rotate-45' : 'translate-y-[4px]')} />
-              <span className="sr-only">{open ? <X /> : <Menu />}</span>
+            <button type="button" aria-label={open ? 'Tutup menu' : 'Buka menu'} aria-expanded={open} onClick={() => setOpen(o => !o)} className="relative grid h-11 w-11 place-items-center rounded-md text-ink md:hidden">
+              <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-base ease-out', open ? 'rotate-45' : '-translate-y-[4px]')} />
+              <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-base ease-out', open ? '-rotate-45' : 'translate-y-[4px]')} />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile overlay */}
-      <div aria-hidden={!open} className={cn('fixed inset-0 z-[35] flex flex-col justify-center bg-white/90 px-6 backdrop-blur-2xl transition-opacity duration-slow ease-out md:hidden', open ? 'opacity-100' : 'pointer-events-none opacity-0')}>
-        <nav className="flex flex-col gap-1" aria-label="Navigasi seluler">
-          {NAV.map((n, i) => (
-            <a key={n.to} href={n.to} onClick={go(n.to)} style={{ transitionDelay: open ? `${80 + i * 50}ms` : '0ms' }} className={cn('flex min-h-[48px] items-center justify-between rounded-xl border-b border-line-2 px-2 text-[18px] font-bold tracking-tight text-ink transition-[opacity,transform] duration-500 ease-out', open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0')}>{n.label}<ArrowUpRight className="h-4 w-4 text-ink-4" strokeWidth={1.8} /></a>
+      <div aria-hidden={!open} className={cn('fixed inset-x-0 bottom-0 top-14 z-[35] bg-white px-5 py-6 transition-opacity duration-base ease-out md:hidden', open ? 'opacity-100' : 'pointer-events-none opacity-0')}>
+        <nav className="flex flex-col divide-y divide-line-2 border-y border-line" aria-label="Navigasi seluler">
+          {NAV.map(n => (
+            <a key={n.to} href={n.to} onClick={go(n.to)} className="flex min-h-[52px] items-center text-[17px] font-semibold text-ink">{n.label}</a>
           ))}
-          <div style={{ transitionDelay: open ? '320ms' : '0ms' }} className={cn('mt-6 flex gap-2 transition-[opacity,transform] duration-500 ease-out', open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0')}>
-            {acc ? (
-              <>
-                <Button asChild size="lg" className="flex-1 rounded-full"><Link to="/profile">Profil RMC</Link></Button>
-                <Button variant="outline" size="lg" className="rounded-full" onClick={() => { signOut(); nav('/') }}>Keluar</Button>
-              </>
-            ) : (
-              <>
-                <Button asChild size="lg" className="flex-1 rounded-full"><Link to="/login">Masuk</Link></Button>
-                <Button asChild variant="outline" size="lg" className="flex-1 rounded-full"><Link to="/register">Daftar</Link></Button>
-              </>
-            )}
-          </div>
         </nav>
+        <div className="mt-6 flex gap-3">
+          {acc ? (
+            <>
+              <Button asChild size="lg" className="flex-1"><Link to="/profile">Profil RMC</Link></Button>
+              <Button variant="outline" size="lg" onClick={() => { signOut(); nav('/') }}>Keluar</Button>
+            </>
+          ) : (
+            <>
+              <Button asChild size="lg" className="flex-1"><Link to="/login">Masuk</Link></Button>
+              <Button asChild variant="outline" size="lg" className="flex-1"><Link to="/register">Daftar</Link></Button>
+            </>
+          )}
+        </div>
       </div>
     </>
   )

@@ -41,12 +41,12 @@ const schema = z.object({
   hasCard: z.enum(YA_TIDAK, { required_error: 'Pilih salah satu' }),
   laundry: z.string().trim().min(2, 'Nama laundry minimal 2 karakter'),
   pic: z.string().trim().min(2, 'Nama PIC wajib diisi'),
-  phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid — contoh 0812 3456 7890'),
+  phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid. Contoh: 0812 3456 7890'),
   email: z.string().trim().email('Format email tidak valid'),
   kota: z.enum(KOTA_TUPLE).optional(),
   rsl: z.string().optional(),
   referral: z.string().optional(),
-  consent: z.boolean().refine(v => v, 'Persetujuan wajib dicentang'),
+  consent: z.boolean().refine(v => v, 'Centang persetujuan dulu'),
 })
 type FormValues = z.infer<typeof schema>
 
@@ -77,7 +77,7 @@ export function RegisterPage() {
     const phone = normalizePhone(v.phone)
     if (!phone) return
     if (useAccounts.getState().byPhone(phone)) {
-      setSubmitError('Nomor HP sudah terdaftar — silakan masuk')
+      setSubmitError('Nomor HP ini sudah terdaftar')
       toast.error('Nomor HP sudah terdaftar')
       return
     }
@@ -144,12 +144,12 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
         </div>
         <p className="t-eyebrow mt-4">Resique Member Card</p>
         <h1 className="t-h1 mt-2 text-ink">Daftar RMC</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Satu menit saja. Kami cocokkan datamu dengan pelanggan Resique supaya poin RMC-mu langsung terhubung.</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Isi data laundry-mu. Kalau nomor HP sudah ada di data Resique, poin RMC langsung tersambung.</p>
       </Reveal>
 
       <Reveal delay={80}>
         <form onSubmit={handleSubmit(onValid)} noValidate className="mt-8 space-y-6">
-          <Field label="Apakah kamu Mitra Apique Management?" required error={errors.isMitra?.message}>
+          <Field label="Status Mitra Apique Management" required error={errors.isMitra?.message}>
             <Controller name="isMitra" control={control} render={({ field }) => (
               <RadioGroup value={field.value} onValueChange={field.onChange} className="grid-cols-2" aria-invalid={!!errors.isMitra}>
                 <RadioCard id="rc-mitra-ya" value="ya" title="Ya" />
@@ -158,7 +158,7 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
             )} />
           </Field>
 
-          <Field label="Apakah kamu pemegang Resique Member Card?" required error={errors.hasCard?.message}>
+          <Field label="Sudah punya Resique Member Card" required error={errors.hasCard?.message}>
             <Controller name="hasCard" control={control} render={({ field }) => (
               <RadioGroup value={field.value} onValueChange={field.onChange} className="grid-cols-2" aria-invalid={!!errors.hasCard}>
                 <RadioCard id="rc-card-ya" value="ya" title="Ya" />
@@ -173,19 +173,19 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
             <Input id="laundry" placeholder="Fresh Laundry Kemang" autoComplete="organization" aria-invalid={!!errors.laundry} {...register('laundry')} />
           </Field>
 
-          <Field label="Nama PIC" required htmlFor="pic" error={errors.pic?.message} hint="Nama pemilik / penanggung jawab seperti di data Resique">
+          <Field label="Nama PIC" required htmlFor="pic" error={errors.pic?.message} hint="Nama pemilik atau PIC yang tercatat di Resique">
             <Input id="pic" placeholder="Maya Anggraini" autoComplete="name" aria-invalid={!!errors.pic} {...register('pic')} />
           </Field>
 
-          <Field label="No. HP (WhatsApp)" required htmlFor="phone" error={errors.phone?.message} hint={phonePreview ? `Disimpan sebagai ${phonePreview} · ${displayPhone(phonePreview)}` : 'Nomor ini jadi username-mu saat masuk'}>
-            <Input id="phone" type="tel" inputMode="tel" placeholder="0812 3456 7890" autoComplete="tel" aria-invalid={!!errors.phone} {...register('phone')} />
+          <Field label="No. HP (WhatsApp)" required htmlFor="phone" error={errors.phone?.message} hint={phonePreview ? `Disimpan sebagai ${phonePreview} · ${displayPhone(phonePreview)}` : 'Nomor ini dipakai untuk masuk'}>
+            <Input id="phone" type="tel" spellCheck={false} inputMode="tel" placeholder="0812 3456 7890" autoComplete="tel" aria-invalid={!!errors.phone} {...register('phone')} />
           </Field>
 
-          <Field label="Email" required htmlFor="email" error={errors.email?.message} hint="Kata sandi sementara dikirim ke sini bila datamu cocok">
-            <Input id="email" type="email" inputMode="email" placeholder="nama@laundry.id" autoComplete="email" aria-invalid={!!errors.email} {...register('email')} />
+          <Field label="Email" required htmlFor="email" error={errors.email?.message} hint="Kata sandi sementara dikirim ke sini kalau data cocok">
+            <Input id="email" type="email" spellCheck={false} inputMode="email" placeholder="nama@laundry.id" autoComplete="email" aria-invalid={!!errors.email} {...register('email')} />
           </Field>
 
-          <Field label="Kota / outlet Resique terdekat" hint="Opsional — membantu sales outlet terdekat menghubungi kamu" htmlFor="kota" error={errors.kota?.message}>
+          <Field label="Kota / outlet Resique terdekat" hint="Opsional. Supaya sales outlet terdekat yang menghubungi" htmlFor="kota" error={errors.kota?.message}>
             <Controller name="kota" control={control} render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger id="kota" aria-invalid={!!errors.kota} className={cn(errors.kota && 'border-danger')}><SelectValue placeholder="Pilih kota" /></SelectTrigger>
@@ -195,13 +195,13 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
           </Field>
 
           {hasCard === 'ya' && (
-            <Field label="Nomor Member Card" htmlFor="rsl" error={errors.rsl?.message} hint="Opsional — tertera di kartu, contoh RSL40001. Membantu pencocokan bila nomor HP-mu belum ada di Resique.">
+            <Field label="Nomor Member Card" htmlFor="rsl" error={errors.rsl?.message} hint="Opsional. Ada di kartu, contoh RSL40001. Dipakai kalau nomor HP-mu belum ada di data Resique.">
               <Input id="rsl" placeholder="RSL40001" className="font-mono uppercase tracking-wider" autoCapitalize="characters" {...register('rsl')} />
             </Field>
           )}
 
           <Field label="Kode referral / nama sales" htmlFor="referral" hint="Opsional">
-            <Input id="referral" placeholder="Nama sales Resique yang melayani kamu" {...register('referral')} />
+            <Input id="referral" placeholder="Nama sales Resique kamu" {...register('referral')} />
           </Field>
 
           <div className="space-y-1.5">
@@ -220,11 +220,11 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
             </div>
           )}
 
-          <Button type="submit" size="xl" className="group w-full rounded-full" disabled={isSubmitting}>
+          <Button type="submit" size="xl" className="w-full" disabled={isSubmitting}>
             Daftar sekarang
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+            <ArrowRight className="h-4 w-4" strokeWidth={2} />
           </Button>
-          <p className="text-center text-[12px] text-ink-4">Kata sandi ditentukan setelah kami mencocokkan datamu dengan pelanggan Resique.</p>
+          <p className="text-center text-[12px] text-ink-4">Kata sandi menyusul setelah data dicocokkan: via email, atau dibuat di langkah 2.</p>
         </form>
       </Reveal>
     </div>
@@ -256,13 +256,13 @@ function PasswordStep({ match, minLength, onBack, onSubmit, error }: { match: Ma
         <h1 className="t-h1 mt-2 text-ink">Buat kata sandi</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
           {match.link === 'PENDING'
-            ? 'Kami menemukan data yang mirip di Resique dan akan diverifikasi sales. Sementara itu, akunmu tetap aktif untuk Golden Sale.'
-            : 'Data laundry-mu belum ada di Resique. Akunmu tetap aktif untuk Golden Sale, dan tim sales akan menghubungi via WhatsApp.'}
+            ? 'Ada data mirip di Resique. Sales cek dulu, biasanya 1×24 jam. Akun sudah bisa dipakai belanja Golden Sale.'
+            : 'Data laundry-mu belum ada di Resique. Sales akan menghubungi via WhatsApp. Akun sudah bisa dipakai belanja Golden Sale.'}
         </p>
       </Reveal>
       <Reveal delay={80}>
         <form onSubmit={submit} noValidate className="mt-8 space-y-6">
-          <Field label="Kata sandi" required htmlFor="pw" error={touched && !check.ok ? 'Kata sandi belum memenuhi semua syarat' : undefined}>
+          <Field label="Kata sandi" required htmlFor="pw" error={touched && !check.ok ? 'Lengkapi syarat kata sandi di bawah' : undefined}>
             <PasswordInput id="pw" value={pw} onChange={e => setPw(e.target.value)} autoComplete="new-password" aria-invalid={touched && !check.ok} placeholder="Minimal 8 karakter" />
           </Field>
           <PasswordChecklist password={pw} minLength={minLength} />
@@ -270,9 +270,9 @@ function PasswordStep({ match, minLength, onBack, onSubmit, error }: { match: Ma
             <PasswordInput id="pw2" value={confirm} onChange={e => setConfirm(e.target.value)} autoComplete="new-password" aria-invalid={mismatch} placeholder="Ketik ulang" />
           </Field>
           {error && <div role="alert" className="rounded-xl border border-danger-100 bg-danger-50 px-4 py-3 text-[13px] text-danger">{error}</div>}
-          <Button type="submit" size="xl" className="group w-full rounded-full" disabled={!canSubmit}>
+          <Button type="submit" size="xl" className="w-full" disabled={!canSubmit}>
             Selesaikan pendaftaran
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+            <ArrowRight className="h-4 w-4" strokeWidth={2} />
           </Button>
         </form>
       </Reveal>
@@ -293,7 +293,7 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
       {linked ? (
         <>
           <Reveal>
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-teal-50 text-teal-700"><CheckCircle2 className="h-7 w-7" strokeWidth={1.6} /></span>
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-teal-50 text-teal-700"><CheckCircle2 className="h-7 w-7" strokeWidth={1.6} /></span>
             <p className="t-eyebrow mt-5">Pendaftaran berhasil</p>
             <h1 className="t-h1 mt-2 text-ink">Akun terhubung ke {match.customer?.outlet}</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
@@ -308,18 +308,18 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
           </Reveal>
           <Reveal delay={80}><MockInboxCard email={account.email} className="mt-8" /></Reveal>
           <Reveal delay={140} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button size="xl" className="group flex-1 rounded-full" onClick={() => nav(loginTo)}>
+            <Button size="xl" className="flex-1" onClick={() => nav(loginTo)}>
               Masuk sekarang
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+              <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Button>
           </Reveal>
         </>
       ) : account.link === 'PENDING' && match.customer ? (
         <>
           <Reveal>
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gold-50 text-gold-700"><Clock className="h-7 w-7" strokeWidth={1.6} /></span>
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-gold-50 text-gold-700"><Clock className="h-7 w-7" strokeWidth={1.6} /></span>
             <p className="t-eyebrow mt-5">Menunggu verifikasi</p>
-            <h1 className="t-h1 mt-2 text-ink">Akunmu aktif — data RMC sedang diverifikasi</h1>
+            <h1 className="t-h1 mt-2 text-ink">Akun aktif. Data RMC dicek sales dulu</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
               Kami menemukan data mirip: <strong className="text-ink">{match.customer.outlet}</strong> — {match.customer.pic}. Sales Resique akan memverifikasi (biasanya 1×24 jam).
             </p>
@@ -327,8 +327,8 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
           <Reveal delay={80}>
             <Card className="mt-8">
               <CardContent className="space-y-3 pt-5 sm:pt-6">
-                <Row ok label="Belanja Golden Sale" desc="Akun sudah bisa dipakai untuk checkout dan memantau pesanan." />
-                <Row label="Poin & tier RMC" desc="Tampil di profil setelah sales mengonfirmasi bahwa akun ini milikmu." badge={<Badge variant="warn">Terkunci</Badge>} />
+                <Row ok label="Belanja Golden Sale" desc="Sudah bisa checkout dan cek status pesanan." />
+                <Row label="Poin & tier RMC" desc="Tampil setelah sales konfirmasi akun ini milikmu." badge={<Badge variant="warn">Terkunci</Badge>} />
                 <p className="text-[12px] text-ink-4">Masuk dengan nomor HP {displayPhone(account.phone)} dan kata sandi yang barusan kamu buat.</p>
               </CardContent>
             </Card>
@@ -338,18 +338,18 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
       ) : (
         <>
           <Reveal>
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-teal-50 text-teal-700"><MessageCircle className="h-7 w-7" strokeWidth={1.6} /></span>
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-teal-50 text-teal-700"><MessageCircle className="h-7 w-7" strokeWidth={1.6} /></span>
             <p className="t-eyebrow mt-5">Pendaftaran diterima</p>
-            <h1 className="t-h1 mt-2 text-ink">Selamat datang, {account.pic.split(' ')[0]}!</h1>
+            <h1 className="t-h1 mt-2 text-ink">Akun sudah aktif, {account.pic.split(' ')[0]}</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
-              Data laundry-mu belum ada di Resique — tim sales akan menghubungi via WhatsApp. Kamu tetap bisa belanja Golden Sale.
+              Data laundry-mu belum ada di Resique. Sales akan menghubungi via WhatsApp. Belanja Golden Sale sudah bisa.
             </p>
           </Reveal>
           <Reveal delay={80}>
             <Card className="mt-8">
               <CardContent className="space-y-3 pt-5 sm:pt-6">
-                <Row ok label="Belanja Golden Sale" desc="Akun sudah bisa dipakai untuk checkout dan memantau pesanan." />
-                <Row label="Poin & tier RMC" desc="Mulai terhitung setelah sales mendaftarkan laundry-mu sebagai pelanggan Resique." badge={<Badge variant="muted">Belum aktif</Badge>} />
+                <Row ok label="Belanja Golden Sale" desc="Sudah bisa checkout dan cek status pesanan." />
+                <Row label="Poin & tier RMC" desc="Mulai dihitung setelah sales mendaftarkan laundry-mu di Resique." badge={<Badge variant="muted">Belum aktif</Badge>} />
                 <p className="text-[12px] text-ink-4">Masuk dengan nomor HP {displayPhone(account.phone)} dan kata sandi yang barusan kamu buat.</p>
               </CardContent>
             </Card>
@@ -378,8 +378,8 @@ function Row({ ok, label, desc, badge }: { ok?: boolean; label: string; desc: st
 function ResultButtons({ loginTo }: { loginTo: string }) {
   return (
     <Reveal delay={140} className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <Button asChild size="xl" className="flex-1 rounded-full"><Link to={loginTo}>Masuk</Link></Button>
-      <Button asChild size="xl" variant="gold" className="flex-1 rounded-full"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>
+      <Button asChild size="xl" className="flex-1"><Link to={loginTo}>Masuk</Link></Button>
+      <Button asChild size="xl" variant="gold" className="flex-1"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>
     </Reveal>
   )
 }

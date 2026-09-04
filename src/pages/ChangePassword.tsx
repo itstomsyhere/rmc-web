@@ -40,22 +40,22 @@ export function ChangePasswordPage() {
   return (
     <Narrow>
       <Reveal>
-        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-teal-50 text-teal-700"><ShieldCheck className="h-7 w-7" strokeWidth={1.6} /></span>
+        <span className="grid h-14 w-14 place-items-center rounded-xl bg-teal-50 text-teal-700"><ShieldCheck className="h-7 w-7" strokeWidth={1.6} /></span>
         <h1 className="t-h1 mt-5 text-ink">Buat kata sandi baru</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Kata sandi sementara hanya untuk sekali masuk. Buat kata sandi yang mudah kamu ingat untuk akun <span className="t-num font-semibold text-ink">{displayPhone(account.phone)}</span>.</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Kata sandi sementara cuma berlaku sekali. Buat kata sandi baru untuk akun <span className="t-num font-semibold text-ink">{displayPhone(account.phone)}</span>.</p>
       </Reveal>
       <Reveal delay={80}>
         <form onSubmit={submit} noValidate className="mt-8 space-y-6">
-          <Field label="Kata sandi baru" required htmlFor="pw" error={touched && !check.ok ? 'Kata sandi belum memenuhi semua syarat' : undefined}>
+          <Field label="Kata sandi baru" required htmlFor="pw" error={touched && !check.ok ? 'Lengkapi syarat kata sandi di bawah' : undefined}>
             <PasswordInput id="pw" value={pw} onChange={e => setPw(e.target.value)} autoComplete="new-password" aria-invalid={touched && !check.ok} placeholder={`Minimal ${minLength} karakter`} autoFocus />
           </Field>
           <PasswordChecklist password={pw} minLength={minLength} />
           <Field label="Ulangi kata sandi baru" required htmlFor="pw2" error={mismatch ? 'Kata sandi tidak sama' : undefined}>
             <PasswordInput id="pw2" value={confirm} onChange={e => setConfirm(e.target.value)} autoComplete="new-password" aria-invalid={mismatch} placeholder="Ketik ulang" />
           </Field>
-          <Button type="submit" size="xl" className="group w-full rounded-full" disabled={!canSubmit}>
-            Simpan & lanjut ke profil
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+          <Button type="submit" size="xl" className="w-full" disabled={!canSubmit}>
+            Simpan kata sandi
+            <ArrowRight className="h-4 w-4" strokeWidth={2} />
           </Button>
         </form>
       </Reveal>

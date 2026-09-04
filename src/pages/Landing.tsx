@@ -1,29 +1,31 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight, ShoppingBag, Sparkles, Trophy, UserPlus, Coins, Gift, Crown, type LucideIcon } from 'lucide-react'
+import { ArrowRight, ShoppingBag } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { rupiah, poin } from '@/lib/format'
-import { Reveal } from '@/lib/reveal'
+import { rupiah, fmtDate } from '@/lib/format'
 import { useConfig } from '@/store/config'
 import { useOrders, klasemen } from '@/store/orders'
 import { useCart, cartLines, cartTotal, cartCount, cartSavings, soldQty } from '@/store/cart'
 import { useCurrentAccount } from '@/store/session'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { SectionHead, EmptyState } from '@/components/ui/misc'
+import { EmptyState } from '@/components/ui/misc'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Price } from '@/components/shop/Price'
 import { QtyStepper } from '@/components/shop/QtyStepper'
 import type { GoldenSaleItem, Tier } from '@/model/types'
 
-const ICONS: Record<string, LucideIcon> = { UserPlus, Coins, Gift, Crown, Sparkles, Trophy }
+/* Landing — 7 sections, one colour block (hero), one emphasis (prize strip).
+   Rhythm: hook (paper) → hero (teal) → benefits (paper, definition list) → tier ladder (white)
+   → CTA band (white, quiet) → Golden Sale (paper) → Klasemen (white). No eyebrows, no gradient
+   text, no orbs, no glass, cards ≤ 10px radius, border OR shadow. Motion: hook fade-up on load,
+   marquee, basket bar slide — nothing else. (ui-designer + impeccable review, 4 Sep 2026) */
 
 export function LandingPage() {
-  const cfg = useConfig(s => s.config)
   const hasCart = useCart(s => Object.keys(s.qty).length > 0)
   return (
-    <div className={cn(cfg.copy.snapDesktop && 'lg:snap-y lg:snap-mandatory', hasCart && 'pb-24')}>
+    <div className={cn(hasCart && 'pb-24')}>
       <HookSection />
       <HeroSection />
       <BenefitSection />
@@ -36,194 +38,133 @@ export function LandingPage() {
   )
 }
 
-/* 1 — Hook: the campaign title. One line, huge. */
+function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: string; tone?: 'ink' | 'white' }) {
+  return (
+    <div className="max-w-2xl">
+      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}>{title}</h2>
+      {sub && <p className={cn('mt-3 text-[15px] leading-relaxed text-pretty sm:text-[17px]', tone === 'white' ? 'text-white/80' : 'text-ink-2')}>{sub}</p>}
+    </div>
+  )
+}
+
+/* 1 — Hook: the only h1, one primary button, one text link. Animates once on load. */
 function HookSection() {
   const { copy, campaign } = useConfig(s => s.config)
   return (
-    <section id="hook" className="section section-deck relative overflow-hidden pt-36 sm:pt-40">
-      <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold-100/70 blur-3xl sm:h-[28rem] sm:w-[28rem]" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-teal-50 blur-3xl" />
-      <div className="container relative">
-        <Reveal>
-          <span className="inline-flex items-center gap-2 rounded-full border border-gold-200 bg-white/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-700 backdrop-blur">
-            <Sparkles className="h-3 w-3" strokeWidth={2} /> {campaign.label}
-          </span>
-        </Reveal>
-        <Reveal delay={60}>
-          <h1 className="t-display mt-5 max-w-4xl text-ink">
-            {copy.hook.split(' ').map((w, i, a) => <span key={i} className={cn(i === a.length - 1 && 'gold-text')}>{w}{i < a.length - 1 ? ' ' : ''}</span>)}
-          </h1>
-        </Reveal>
-        <Reveal delay={120}>
-          <p className="mt-5 max-w-xl text-[16px] leading-relaxed text-ink-2 sm:text-lg">{copy.hookSub}</p>
-        </Reveal>
-        <Reveal delay={180} className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="xl" variant="gold" className="group rounded-full pr-2">
+    <section id="hook" className="scroll-mt-20 pb-10 pt-24 lg:pb-16 lg:pt-28">
+      <div className="container animate-fade-up">
+        <h1 className="t-display max-w-4xl text-balance text-ink">{copy.hook}</h1>
+        <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
+        <p className="t-num mt-3 text-[15px] text-ink-2">Berlaku {fmtDate(campaign.start)} – {fmtDate(campaign.end)}.</p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button asChild size="lg">
             <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
-              Lihat Golden Sale
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-black/10 transition-transform duration-base ease-out group-hover:translate-x-0.5 group-hover:-translate-y-px"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+              Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </a>
           </Button>
-          <Button asChild size="xl" variant="outline" className="rounded-full"><Link to="/login">{copy.ctaPoints}</Link></Button>
-        </Reveal>
+          <Link to="/login" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-800">{copy.ctaPoints}</Link>
+        </div>
       </div>
     </section>
   )
 }
 
-/* 2 — Hero: tagline + running prize strip */
+/* 2 — Hero: the single colour block; tagline + running prize strip. */
 function HeroSection() {
   const { copy, assets } = useConfig(s => s.config)
   const strip = [...assets.heroPrizes, ...assets.heroPrizes]
   return (
-    <section id="hero" className="section section-deck teal-gradient relative overflow-hidden text-white">
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
-      <div className="container relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
-        <div className="min-w-0 lg:col-span-5">
-          <Reveal><p className="t-eyebrow text-gold-100">Resique Member Card</p></Reveal>
-          <Reveal delay={60}><h2 className="t-h1 mt-3 text-white">{copy.tagline}</h2></Reveal>
-          <Reveal delay={120}><p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/75 sm:text-base">{copy.taglineSub}</p></Reveal>
-          <Reveal delay={180} className="mt-7">
-            <Button asChild size="lg" variant="inverse" className="group rounded-full pr-1.5">
-              <Link to="/register">Daftar RMC sekarang<span className="grid h-7 w-7 place-items-center rounded-full bg-teal-50 transition-transform duration-base ease-out group-hover:translate-x-0.5 group-hover:-translate-y-px"><ArrowUpRight className="h-4 w-4" strokeWidth={2} /></span></Link>
-            </Button>
-          </Reveal>
+    <section id="hero" className="scroll-mt-20 bg-teal-700 py-14 text-white lg:py-20">
+      <div className="container grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+        <div className="min-w-0 lg:col-span-4">
+          <p className="text-[22px] font-extrabold leading-tight tracking-[-0.01em] text-balance text-white sm:text-[26px]">{copy.tagline}</p>
+          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-pretty text-white/80">{copy.taglineSub}</p>
         </div>
-        <div className="min-w-0 lg:col-span-7">
-          <Reveal delay={100}>
-            <div className="marquee -mx-5 max-w-[100vw] overflow-hidden py-2 lg:mx-0 lg:max-w-none" aria-label="Hadiah yang bisa ditukar" role="region">
+        <div className="min-w-0 lg:col-span-8">
+          {assets.heroPrizes.length > 0 && (
+            <div className="marquee -mx-5 max-w-[100vw] overflow-hidden lg:mx-0 lg:max-w-none" role="region" aria-label="Hadiah yang bisa ditukar">
               <ul className="marquee-track px-5 lg:px-0" style={{ animationDuration: `${Math.max(24, assets.heroPrizes.length * 6)}s` }}>
                 {strip.map((p, i) => (
-                  <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="w-[210px] shrink-0 sm:w-[250px]">
-                    <div className="rounded-[22px] bg-white/10 p-1.5 ring-1 ring-white/15 backdrop-blur-sm">
-                      <div className="overflow-hidden rounded-[16px] bg-white shadow-[inset_0_1px_1px_rgba(255,255,255,.6)]">
-                        <img src={p.image} alt={p.label} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-                      </div>
-                      <p className="px-3 pb-1.5 pt-2 text-[13px] font-bold text-white/90">{p.label}</p>
-                    </div>
+                  <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="w-[200px] shrink-0 sm:w-[240px]">
+                    <img src={p.image} alt={p.label} width={320} height={240} className="aspect-[4/3] w-full rounded-lg bg-white object-cover" loading="lazy" />
+                    <p className="mt-2 text-[13px] font-semibold text-white">{p.label}</p>
                   </li>
                 ))}
               </ul>
             </div>
-          </Reveal>
+          )}
         </div>
       </div>
     </section>
   )
 }
 
-/* 3 — Benefit RMC */
+/* 3 — Benefit RMC: definition list, no cards, no icons. */
 function BenefitSection() {
   const { copy, benefits } = useConfig(s => s.config)
   return (
-    <section id="benefit" className="section section-deck">
+    <section id="benefit" className="scroll-mt-20 py-14 lg:py-24">
       <div className="container">
-        <Reveal><SectionHead eyebrow="Benefit RMC" title={copy.benefitTitle} sub={copy.benefitSub} /></Reveal>
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-6">
-          {benefits.map((b, i) => {
-            const Icon = ICONS[b.icon] || Sparkles
-            return (
-              <Reveal key={b.id} delay={i * 60} as="li">
-                <div className="group h-full rounded-2xl border border-line bg-white p-6 shadow-1 transition-[transform,box-shadow] duration-slow ease-out hover:-translate-y-0.5 hover:shadow-2">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-teal-50 text-teal-700 transition-colors duration-base group-hover:bg-gold-100 group-hover:text-gold-ink"><Icon className="h-6 w-6" strokeWidth={1.6} /></span>
-                  <h3 className="mt-5 text-[17px] font-bold text-ink">{b.title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-ink-3">{b.desc}</p>
-                </div>
-              </Reveal>
-            )
-          })}
-        </ul>
+        <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} />
+        <dl className="mt-8 divide-y divide-line-2 border-y border-line">
+          {benefits.map(b => (
+            <div key={b.id} className="grid gap-1 py-5 sm:grid-cols-[220px_1fr] sm:gap-8">
+              <dt className="text-[17px] font-bold text-ink">{b.title}</dt>
+              <dd className="text-[15px] leading-relaxed text-pretty text-ink-2">{b.desc}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )
 }
 
-/* 4 — Benefit per tier */
+/* 4 — Tier ladder: one markup for every width. */
 function TierSection() {
   const cfg = useConfig(s => s.config)
   return (
-    <section id="tier" className="section section-deck bg-white">
+    <section id="tier" className="scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
       <div className="container">
-        <Reveal><SectionHead eyebrow="Benefit Tier RMC" title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} /></Reveal>
-        {/* mobile/tablet: one clear vertical ladder (no hidden cards); desktop: 6-up card row */}
-        <ol className="mt-8 space-y-3 lg:hidden" aria-label="Daftar tier RMC">
+        <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} />
+        <ol className="mt-8 divide-y divide-line-2 border-y border-line" aria-label="Daftar tier RMC">
           {cfg.tiers.map((t, i) => <TierRow key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
         </ol>
-        <div className="mt-14 hidden gap-4 lg:grid lg:grid-cols-6">
-          {cfg.tiers.map((t, i) => <TierCard key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
-        </div>
-        <Reveal delay={120}>
-          <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-gold-200 bg-gold-50 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-[15px] font-bold text-gold-ink">Mitra Apique Management</p>
-              <p className="mt-0.5 text-[13px] text-ink-2">Diskon dasar <strong className="t-num">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Naik mengikuti tier bila diskon tier lebih besar.</p>
-            </div>
-            <Badge variant="gold" className="w-max">Floor {cfg.mitraFloorDiscount}%</Badge>
-          </div>
-        </Reveal>
+        <p className="mt-6 max-w-2xl border-l-2 border-teal pl-4 text-[15px] leading-relaxed text-ink-2">
+          Mitra Apique Management: diskon minimal <strong className="t-num text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Kalau diskon tier lebih besar, itu yang dipakai.
+        </p>
       </div>
     </section>
   )
 }
 function TierRow({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
   return (
-    <Reveal as="li" delay={idx * 40}>
-      <div className={cn('flex items-center gap-4 rounded-2xl border p-4 shadow-1', top ? 'border-gold-600/40 bg-gradient-to-r from-gold-100 via-gold-50 to-white' : 'border-line bg-white')}>
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-[13px] font-extrabold text-white ring-4 ring-white" style={{ background: tier.sw }} aria-hidden>{idx + 1}</span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-baseline justify-between gap-3">
-            <h3 className={cn('truncate text-[17px] font-extrabold tracking-tight', top ? 'text-gold-ink' : 'text-ink')}>{tier.name}</h3>
-            <p className={cn('t-num shrink-0 text-[22px] font-extrabold leading-none tracking-tight', top ? 'text-gold-700' : 'text-teal-700')}>{tier.discount}%</p>
-          </div>
-          <p className="t-num mt-0.5 text-[12px] font-semibold text-ink-3">{tier.perMonth} / bulan</p>
-          <p className={cn('mt-1.5 text-[13px] leading-snug', top ? 'text-gold-ink/90' : 'text-ink-2')}>{tier.benefitCopy}</p>
-        </div>
-      </div>
-    </Reveal>
-  )
-}
-function TierCard({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
-  return (
-    <Reveal delay={idx * 50}>
-      <div className={cn('flex h-full flex-col rounded-2xl border p-5 shadow-1 transition-[transform,box-shadow] duration-slow ease-out hover:-translate-y-0.5 hover:shadow-2', top ? 'gold-gradient border-transparent text-gold-ink' : 'border-line bg-white')}>
-        <div className="flex items-center justify-between">
-          <span className="h-3 w-3 rounded-full ring-2 ring-white" style={{ background: tier.sw }} aria-hidden />
-          <span className={cn('text-micro uppercase', top ? 'text-gold-ink/70' : 'text-ink-4')}>Tier {idx + 1}</span>
-        </div>
-        <h3 className="mt-4 text-[20px] font-extrabold tracking-tight">{tier.name}</h3>
-        <p className={cn('t-num mt-1 text-[12px] font-semibold', top ? 'text-gold-ink/80' : 'text-ink-3')}>{tier.perMonth} / bulan</p>
-        <p className={cn('t-num mt-4 text-[34px] font-extrabold leading-none tracking-tight', top ? 'text-gold-ink' : 'text-teal-700')}>{tier.discount}%<span className="ml-1 text-[12px] font-bold">diskon</span></p>
-        <p className={cn('mt-4 text-[13px] leading-relaxed', top ? 'text-gold-ink/85' : 'text-ink-2')}>{tier.benefitCopy}</p>
-      </div>
-    </Reveal>
+    <li className={cn('grid grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-4 sm:grid-cols-[2.5rem_10rem_8rem_1fr_auto]', top && 'bg-gold-50 -mx-3 px-3 sm:-mx-4 sm:px-4')}>
+      <span className="t-num text-[15px] font-bold text-ink-3">{idx + 1}</span>
+      <h3 className="text-[17px] font-bold text-ink">{tier.name}</h3>
+      <p className="t-num col-start-3 row-start-1 text-right text-[22px] font-extrabold leading-none tracking-tight sm:col-start-5" style={{ color: top ? '#8A6A00' : undefined }}>
+        <span className={cn(!top && 'text-teal-700')}>{tier.discount}%</span>
+      </p>
+      <p className="t-num col-span-2 col-start-2 text-[13px] text-ink-2 sm:col-span-1 sm:col-start-3 sm:row-start-1 sm:text-[15px]">{tier.perMonth} / bulan</p>
+      <p className="col-span-2 col-start-2 mt-1 text-[15px] leading-relaxed text-ink-2 sm:col-span-1 sm:col-start-4 sm:row-start-1 sm:mt-0">{tier.benefitCopy}</p>
+    </li>
   )
 }
 
-/* 5 — CTA: check your points */
+/* 5 — CTA band: the quietest section on purpose. */
 function CtaSection() {
   const { copy } = useConfig(s => s.config)
   const acc = useCurrentAccount()
   return (
-    <section id="cek-poin" className="section">
-      <div className="container">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[28px] teal-gradient p-8 text-white sm:p-12 lg:p-16">
-            <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gold/25 blur-3xl" />
-            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <div className="max-w-xl">
-                <p className="t-eyebrow text-gold-200">Poin RMC</p>
-                <h2 className="t-h1 mt-3 text-white">{copy.ctaPoints} <span aria-hidden>&raquo;</span></h2>
-                <p className="mt-3 text-[15px] leading-relaxed text-white/75 sm:text-base">{copy.ctaPointsSub}</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Button asChild size="xl" variant="gold" className="group rounded-full pr-2">
-                  <Link to={acc ? '/profile' : '/login'}>{acc ? 'Buka profil RMC' : 'Masuk & cek poin'}<span className="grid h-8 w-8 place-items-center rounded-full bg-black/10 transition-transform duration-base ease-out group-hover:translate-x-0.5 group-hover:-translate-y-px"><ArrowUpRight className="h-4 w-4" strokeWidth={2.2} /></span></Link>
-                </Button>
-                {!acc && <Button asChild size="xl" variant="inverse" className="rounded-full"><Link to="/register">Daftar akun</Link></Button>}
-              </div>
-            </div>
-          </div>
-        </Reveal>
+    <section id="cek-poin" className="scroll-mt-20 border-y border-line bg-white py-10 lg:py-14">
+      <div className="container flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-xl">
+          <h2 className="t-h2 text-ink">{copy.ctaPoints}</h2>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{copy.ctaPointsSub}</p>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button asChild size="lg"><Link to={acc ? '/profile' : '/login'}>{acc ? 'Buka profil RMC' : 'Masuk & cek poin'}</Link></Button>
+          {!acc && <Link to="/register" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4">Belum punya akun? Daftar</Link>}
+        </div>
       </div>
     </section>
   )
@@ -238,29 +179,25 @@ function GoldenSaleSection() {
   const dec = useCart(s => s.dec)
   const items = cfg.items.filter(i => i.active)
   return (
-    <section id="golden-sale" className="section section-deck bg-white">
+    <section id="golden-sale" className="scroll-mt-20 py-14 lg:py-24">
       <div className="container">
-        <Reveal>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHead eyebrow="Harga spesial" title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
-            <Badge variant="gold" className="w-max"><ShoppingBag className="h-3 w-3" strokeWidth={2} /> {cfg.campaign.label}</Badge>
-          </div>
-        </Reveal>
+        <SectionTitle title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
+        <p className="t-num mt-3 text-[15px] text-ink-2">{items.length} produk · sampai {fmtDate(cfg.campaign.end)} · selama stok ada</p>
         {items.length === 0 ? (
-          <EmptyState className="mt-10" title="Belum ada item Golden Sale" desc="Admin belum mengaktifkan item untuk periode ini." />
+          <EmptyState className="mt-8" title="Belum ada item Golden Sale" desc="Item promo belum dibuka. Cek lagi nanti." />
         ) : (
-          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:mt-14 lg:grid-cols-4">
-            {items.map((it, i) => {
+          <ul className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
+            {items.map(it => {
               const sold = soldQty(orders, it.id)
               const left = it.quota > 0 ? Math.max(0, it.quota - sold) : Infinity
               const q = qty[it.id] || 0
               const max = Math.min(it.maxPerCustomer > 0 ? it.maxPerCustomer : Infinity, left)
               return (
-                <Reveal key={it.id} delay={(i % 4) * 50} as="li">
+                <li key={it.id}>
                   <ProductCard item={it} qty={q} left={left} max={Number.isFinite(max) ? max : undefined}
                     onInc={() => { if (left <= 0) return toast.error('Stok habis'); if (Number.isFinite(max) && q >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(it.id) }}
                     onDec={() => dec(it.id)} />
-                </Reveal>
+                </li>
               )
             })}
           </ul>
@@ -272,23 +209,23 @@ function GoldenSaleSection() {
 function ProductCard({ item, qty, left, max, onInc, onDec }: { item: GoldenSaleItem; qty: number; left: number; max?: number; onInc: () => void; onDec: () => void }) {
   const soldOut = left <= 0
   return (
-    <article className={cn('flex h-full flex-col rounded-2xl border border-line bg-white p-3 shadow-1 transition-[transform,box-shadow] duration-slow ease-out sm:p-4', qty > 0 ? 'border-teal-200 ring-1 ring-teal-200' : 'hover:-translate-y-0.5 hover:shadow-2', soldOut && 'opacity-70')}>
-      <div className="relative overflow-hidden rounded-xl bg-surface-2">
-        <img src={item.image} alt={item.name} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+    <article className={cn('flex h-full flex-col rounded-lg border bg-white p-3 sm:p-4', qty > 0 ? 'border-teal-200 ring-1 ring-teal-200' : 'border-line', soldOut && 'opacity-70')}>
+      <div className="relative overflow-hidden rounded-md bg-surface-2">
+        <img src={item.image} alt={item.name} width={320} height={240} className="aspect-[4/3] w-full object-cover" loading="lazy" />
         {soldOut ? <Badge variant="muted" className="absolute left-2 top-2">Habis</Badge>
           : Number.isFinite(left) && left <= 10 ? <Badge variant="warn" className="absolute left-2 top-2">Sisa {left}</Badge> : null}
       </div>
       <h3 className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{item.name}</h3>
-      <p className="mt-0.5 text-[11px] text-ink-4">{item.cat} · per {item.unit}</p>
+      <p className="mt-0.5 text-[13px] text-ink-3">{item.cat} · per {item.unit}</p>
       <Price real={item.realPrice} promo={item.promoPrice} size="sm" className="mt-2" />
-      <div className="mt-3 flex items-center justify-between gap-2">
+      <div className="mt-3">
         <QtyStepper qty={qty} onInc={onInc} onDec={onDec} max={max} disabled={soldOut} label={item.name} className="w-full justify-center sm:w-auto" />
       </div>
     </article>
   )
 }
 
-/* Sticky basket bar + basket sheet */
+/* Basket bar + sheet (floating → shadow, no border) */
 function BasketBar() {
   const cfg = useConfig(s => s.config)
   const qty = useCart(s => s.qty)
@@ -300,38 +237,36 @@ function BasketBar() {
   return (
     <>
       <div data-basket-bar aria-hidden={!show} className={cn('fixed inset-x-0 bottom-0 z-30 px-3 pb-[max(12px,env(safe-area-inset-bottom))] transition-[transform,opacity] duration-slow ease-out', show ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-6 opacity-0')}>
-        <div className="mx-auto flex max-w-2xl items-center gap-3 rounded-full bg-ink p-2 pl-5 text-white shadow-3">
+        <div className="mx-auto flex max-w-2xl items-center gap-3 rounded-xl bg-ink p-2 pl-4 text-white shadow-3">
           <button type="button" onClick={() => setOpen(true)} className="flex min-h-11 min-w-0 flex-1 flex-col justify-center text-left" aria-label="Lihat keranjang">
-            <span className="text-[11px] font-semibold text-white/60"><span className="t-num">{count}</span> item · hemat <span className="t-num">{rupiah(savings)}</span></span>
+            <span className="t-num text-[13px] text-white/80">{count} item · hemat {rupiah(savings)}</span>
             <span className="t-num truncate text-[17px] font-extrabold leading-tight">{rupiah(total)}</span>
           </button>
-          <Button asChild variant="gold" size="lg" className="group rounded-full pr-1.5">
-            <Link to="/checkout">Checkout<span className="grid h-8 w-8 place-items-center rounded-full bg-black/10 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span></Link>
-          </Button>
+          <Button asChild variant="gold" size="lg" className="rounded-lg"><Link to="/checkout">Checkout <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link></Button>
         </div>
       </div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="bottom" className="sm:mx-auto sm:max-w-lg sm:rounded-2xl sm:bottom-4">
+        <SheetContent side="bottom" className="sm:bottom-4 sm:mx-auto sm:max-w-lg sm:rounded-xl">
           <SheetHeader><SheetTitle>Keranjang</SheetTitle><SheetDescription>{count} item · total {rupiah(total)}</SheetDescription></SheetHeader>
           <ul className="mt-4 divide-y divide-line-2">
             {lines.map(l => (
-              <li key={l.itemId} className="flex items-center gap-3 py-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[14px] font-semibold text-ink">{l.name}</p>
-                  <p className="t-num text-[12px] text-ink-3">{rupiah(l.promoPrice)} × {l.qty}</p>
+              <li key={l.itemId} className="py-3">
+                <p className="text-[15px] font-semibold text-ink">{l.name}</p>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <QtyStepper qty={l.qty} onInc={() => setQty(l.itemId, l.qty + 1)} onDec={() => setQty(l.itemId, l.qty - 1)} label={l.name} />
+                  <p className="t-num text-[15px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
                 </div>
-                <QtyStepper qty={l.qty} onInc={() => setQty(l.itemId, l.qty + 1)} onDec={() => setQty(l.itemId, l.qty - 1)} label={l.name} />
               </li>
             ))}
           </ul>
-          <Button asChild size="xl" variant="gold" className="mt-4 w-full rounded-full"><Link to="/checkout">Lanjut ke pembayaran · {rupiah(total)}</Link></Button>
+          <Button asChild size="xl" variant="gold" className="mt-4 w-full rounded-lg"><Link to="/checkout">Bayar {rupiah(total)}</Link></Button>
         </SheetContent>
       </Sheet>
     </>
   )
 }
 
-/* 7 — Klasemen */
+/* 7 — Klasemen: plain list, ends the page on paper. */
 function KlasemenSection() {
   const cfg = useConfig(s => s.config)
   const orders = useOrders(s => s.orders)
@@ -339,40 +274,36 @@ function KlasemenSection() {
   const rows = React.useMemo(() => klasemen(orders, cfg.campaign.start, cfg.campaign.end), [orders, cfg.campaign.start, cfg.campaign.end])
   const top = rows.slice(0, cfg.klasemen.topN)
   const mine = acc ? rows.find(r => r.accountId === acc.id || (acc.crmCustomerId && r.crmCustomerId === acc.crmCustomerId) || r.phone === acc.phone) : undefined
-  const medal = ['🥇', '🥈', '🥉']
   return (
-    <section id="klasemen" className="section section-deck">
+    <section id="klasemen" className="scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
       <div className="container">
-        <Reveal><SectionHead eyebrow="Klasemen" title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} /></Reveal>
-        <Reveal delay={80}>
-          <div className="mt-10 overflow-hidden rounded-2xl border border-line bg-white shadow-1 lg:mt-14">
-            {top.length === 0 ? <EmptyState className="m-4" title="Belum ada transaksi terverifikasi" desc="Jadilah yang pertama di klasemen Golden Privilege." /> : (
-              <ol className="divide-y divide-line-2" aria-label="Peringkat belanja Golden Sale">
-                {top.map(r => {
-                  const me = !!mine && r.key === mine.key
-                  return (
-                    <li key={r.key} data-rank={r.rank} className={cn('flex items-center gap-3 px-4 py-3.5 sm:px-6', me && 'bg-teal-50/70', r.rank <= 3 && 'bg-gradient-to-r from-gold-50/80 to-transparent')}>
-                      <span className={cn('t-num grid h-9 w-9 shrink-0 place-items-center rounded-full text-[13px] font-extrabold', r.rank <= 3 ? 'gold-gradient text-gold-ink' : 'bg-surface-2 text-ink-2')}>{r.rank <= 3 ? medal[r.rank - 1] : r.rank}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
-                        {cfg.klasemen.showPic && <p className="truncate text-[12px] text-ink-3">{r.pic} · {r.orders} transaksi</p>}
-                      </div>
-                      <p className="t-num shrink-0 text-[15px] font-extrabold text-teal-700 sm:text-[17px]">{rupiah(r.spend)}</p>
-                    </li>
-                  )
-                })}
-              </ol>
-            )}
+        <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
+        {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
+          <ol className="mt-8 divide-y divide-line-2 border-y border-line" aria-label="Peringkat belanja Golden Sale">
+            {top.map(r => {
+              const me = !!mine && r.key === mine.key
+              return (
+                <li key={r.key} data-rank={r.rank} className={cn('flex items-center gap-4 py-3.5', me && '-mx-3 bg-teal-50 px-3 sm:-mx-4 sm:px-4')}>
+                  <span className={cn('t-num w-8 shrink-0 text-[18px] font-extrabold', r.rank <= 3 ? 'text-gold-700' : 'text-ink-3')}>{r.rank}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
+                    {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
+                  </div>
+                  <p className="t-num shrink-0 text-[15px] font-extrabold text-teal-700 sm:text-[17px]">{rupiah(r.spend)}</p>
+                </li>
+              )
+            })}
             {mine && mine.rank > cfg.klasemen.topN && (
-              <div className="flex items-center gap-3 border-t border-teal-100 bg-teal-50/70 px-4 py-3.5 sm:px-6">
-                <span className="t-num grid h-9 w-9 place-items-center rounded-full bg-teal-500 text-[13px] font-extrabold text-white">{mine.rank}</span>
-                <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[12px] text-ink-3">Peringkatmu saat ini</p></div>
+              <li className="-mx-3 flex items-center gap-4 bg-teal-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
+                <span className="t-num w-8 shrink-0 text-[18px] font-extrabold text-teal-700">{mine.rank}</span>
+                <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-ink-2">Peringkatmu saat ini</p></div>
                 <p className="t-num text-[15px] font-extrabold text-teal-700">{rupiah(mine.spend)}</p>
-              </div>
+              </li>
             )}
-          </div>
-        </Reveal>
-        <Reveal delay={140}><p className="mt-4 text-[12px] text-ink-4">Hanya pesanan berstatus Lunas (bukti pembayaran terverifikasi) dalam periode {cfg.campaign.label} yang dihitung. Poin RMC: {poin(cfg.rules.earnPerRp)} rupiah = 1 poin.</p></Reveal>
+          </ol>
+        )}
+        <p className="t-num mt-4 max-w-2xl text-[13px] leading-relaxed text-ink-2">Yang dihitung: pesanan Lunas (bukti bayar sudah diverifikasi) dalam periode {cfg.campaign.label}. Rp{cfg.rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin.</p>
+        <span className="hidden"><ShoppingBag /></span>
       </div>
     </section>
   )

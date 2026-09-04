@@ -56,11 +56,12 @@ body {
 
 /* Component-layer classes so page-level utilities (e.g. pt-36 on the hook section) still win. */
 @layer components {
-  /* Typography helpers — one hero per view, typography carries hierarchy. */
-  .t-eyebrow { @apply text-micro uppercase tracking-[0.12em] font-bold text-teal-600; }
-  .t-display { @apply font-extrabold tracking-[-0.03em] leading-[1.02]; font-size: clamp(38px, 8vw, 72px); }
-  .t-h1 { @apply font-extrabold tracking-[-0.02em] leading-[1.08]; font-size: clamp(28px, 4.2vw, 44px); }
-  .t-h2 { @apply font-bold tracking-[-0.01em] leading-tight; font-size: clamp(20px, 2.4vw, 26px); }
+  /* Typography helpers — one hero per view, typography carries hierarchy.
+     .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
+  .t-eyebrow { @apply text-[13px] font-semibold text-teal-700; }
+  .t-display { @apply font-extrabold tracking-[-0.03em] leading-[1.04]; font-size: clamp(36px, 7vw, 64px); }
+  .t-h1 { @apply font-extrabold tracking-[-0.02em] leading-[1.1]; font-size: clamp(26px, 4vw, 40px); }
+  .t-h2 { @apply font-extrabold tracking-[-0.02em] leading-tight; font-size: clamp(24px, 3vw, 32px); }
   .t-num { font-variant-numeric: tabular-nums; }
 
   /* Sections: full-viewport storytelling on desktop (pitch-deck mode), natural flow on mobile. */
@@ -74,10 +75,10 @@ body {
 .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
 .marquee-track { @apply flex w-max animate-marquee gap-4 will-change-transform; }
 
-/* Gold accents — used only for prize/promo emphasis. */
-.gold-gradient { background: linear-gradient(135deg, #F6E8CC 0%, #D4A04E 55%, #B08800 100%); }
-.gold-text { background: linear-gradient(120deg, #B08800, #D4A04E 50%, #8A6A00); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.teal-gradient { background: radial-gradient(120% 120% at 0% 0%, #2E8577 0%, #0E5249 55%, #072F2A 100%); }
+/* Gold = reward only. Solid colours; gradient text / radial "orb" gradients were AI tells. */
+.gold-gradient { background: #D4A04E; }
+.gold-text { color: #8A6A00; }
+.teal-gradient { background: #0E5249; }
 .strike { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgb(155 44 44 / .75); }
 
 /* Focus ring — visible, on-brand */

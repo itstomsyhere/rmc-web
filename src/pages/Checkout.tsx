@@ -29,7 +29,7 @@ const schema = z
   .object({
     name: z.string().trim().min(2, 'Nama wajib diisi'),
     laundry: z.string().trim().min(2, 'Nama laundry wajib diisi'),
-    phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid — contoh 0812-3456-7890'),
+    phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid. Contoh: 0812 3456 7890'),
     mode: z.enum(['ambil', 'kirim']),
     outlet: z.string().optional(),
     address: z.string().optional(),
@@ -88,7 +88,7 @@ export function CheckoutPage() {
 
   const onSubmit = (v: FormValues) => {
     if (lines.length === 0) return toast.error('Keranjang kosong')
-    if (v.method !== 'QRIS') return toast.warning('Metode ini belum tersedia — gunakan QRIS')
+    if (v.method !== 'QRIS') return toast.warning('Metode ini belum tersedia. Pakai QRIS')
     const order = useOrders.getState().create({
       name: v.name, laundry: v.laundry, phone: v.phone,
       mode: v.mode, outlet: v.mode === 'ambil' ? (v.outlet as Kota) : undefined, address: v.mode === 'kirim' ? v.address : undefined,
@@ -113,19 +113,19 @@ export function CheckoutPage() {
           <Card className="mt-8">
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-teal-50 text-teal-700"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-700"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
                 <div className="min-w-0">
                   <p className="text-[15px] font-bold text-ink">QRIS · {cfg.payment.qrisMerchant}</p>
                   <p className="text-[13px] text-ink-3">Scan, bayar, lalu unggah bukti pembayaran.</p>
                 </div>
               </div>
-              <Button size="lg" variant="gold" className="rounded-full" onClick={() => setSheetOpen(true)}>Buka QR</Button>
+              <Button size="lg" variant="gold" className="" onClick={() => setSheetOpen(true)}>Buka QR</Button>
             </CardContent>
           </Card>
         </Reveal>
         <Reveal delay={140} className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button asChild variant="outline" size="lg" className="rounded-full"><Link to={'/order/' + placed.id}>Lihat status pesanan</Link></Button>
-          <Button asChild variant="ghost" size="lg" className="rounded-full"><Link to="/">Kembali ke beranda</Link></Button>
+          <Button asChild variant="outline" size="lg" className=""><Link to={'/order/' + placed.id}>Lihat status pesanan</Link></Button>
+          <Button asChild variant="ghost" size="lg" className=""><Link to="/">Kembali ke beranda</Link></Button>
         </Reveal>
         <QrisSheet order={placed} open={sheetOpen} onOpenChange={setSheetOpen} />
       </div>
@@ -140,8 +140,8 @@ export function CheckoutPage() {
           <h1 className="t-h1 mt-3 text-ink">Keranjang masih kosong</h1>
         </Reveal>
         <Reveal delay={80}>
-          <EmptyState className="mt-8" title="Belum ada item di keranjang" desc="Pilih item Golden Sale dulu, lalu kembali ke sini untuk membayar."
-            action={<Button asChild size="lg" variant="gold" className="rounded-full"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
+          <EmptyState className="mt-8" title="Belum ada item di keranjang" desc="Pilih item Golden Sale dulu, lalu bayar di sini."
+            action={<Button asChild size="lg" variant="gold" className=""><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
         </Reveal>
       </div>
     )
@@ -153,7 +153,7 @@ export function CheckoutPage() {
         <Link to="/#golden-sale" className="inline-flex h-11 items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-ink"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Kembali ke Golden Sale</Link>
         <p className="t-eyebrow mt-2">Checkout</p>
         <h1 className="t-h1 mt-3 text-ink">Selesaikan pesanan</h1>
-        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-3">Isi data pemesan, pilih cara pengambilan, lalu bayar lewat QRIS. Belanja yang lunas langsung masuk klasemen Golden Privilege.</p>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-3">Isi data pemesan, pilih ambil atau kirim, lalu bayar lewat QRIS. Setelah Lunas, belanja masuk klasemen.</p>
       </Reveal>
 
       <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
@@ -170,8 +170,8 @@ export function CheckoutPage() {
                   <Input id="co-laundry" autoComplete="organization" placeholder="Contoh: Laundry Bersih Jaya" aria-invalid={!!errors.laundry} {...register('laundry')} />
                 </Field>
                 <Field label="No. HP (WhatsApp)" required htmlFor="co-phone" error={errors.phone?.message}
-                  hint={phoneNorm ? `Tersimpan sebagai ${phoneNorm} · ${displayPhone(phoneNorm)}` : 'Contoh: 0812-3456-7890 — sales Resique menghubungi lewat nomor ini.'}>
-                  <Input id="co-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="08xx-xxxx-xxxx" aria-invalid={!!errors.phone} {...register('phone')} />
+                  hint={phoneNorm ? `Tersimpan sebagai ${phoneNorm} · ${displayPhone(phoneNorm)}` : 'Sales Resique menghubungi lewat nomor ini.'}>
+                  <Input id="co-phone" type="tel" spellCheck={false} inputMode="tel" autoComplete="tel" placeholder="0812 3456 7890" aria-invalid={!!errors.phone} {...register('phone')} />
                 </Field>
               </div>
             </Reveal>
@@ -180,8 +180,8 @@ export function CheckoutPage() {
               <h2 className="t-h2 text-ink">Pengambilan</h2>
               <Controller control={control} name="mode" render={({ field }) => (
                 <RadioGroup value={field.value} onValueChange={field.onChange} className="mt-5" aria-label="Cara pengambilan">
-                  <RadioCard value="ambil" title="Ambil di outlet Resique" desc="Gratis. Ambil di outlet pilihanmu setelah pembayaran terverifikasi." badge={<Store className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
-                  <RadioCard value="kirim" title="Kirim ke alamat" desc="Dikirim ke alamat laundry-mu. Ongkir dikonfirmasi terpisah." badge={<Truck className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
+                  <RadioCard value="ambil" title="Ambil di outlet Resique" desc="Gratis. Ambil setelah pembayaran diverifikasi." badge={<Store className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
+                  <RadioCard value="kirim" title="Kirim ke alamat" desc="Ongkir dihitung sales via WhatsApp, di luar QR." badge={<Truck className="h-4 w-4 text-ink-4" strokeWidth={1.6} />} />
                 </RadioGroup>
               )} />
               {mode === 'ambil' && (
@@ -196,12 +196,12 @@ export function CheckoutPage() {
               )}
               {mode === 'kirim' && (
                 <Field className="mt-4" label="Alamat pengiriman" required htmlFor="co-address" error={errors.address?.message}
-                  hint="Ongkir dikonfirmasi sales via WhatsApp setelah pesanan dibuat — tidak termasuk dalam QR.">
+                  hint="Ongkir dihitung sales via WhatsApp setelah pesanan dibuat. Tidak termasuk dalam QR.">
                   <Textarea id="co-address" autoComplete="street-address" placeholder="Nama jalan, nomor, kelurahan, kota, kode pos" aria-invalid={!!errors.address} {...register('address')} />
                 </Field>
               )}
-              <Field className="mt-4" label="Catatan" htmlFor="co-note" hint="Opsional — misal jam pengambilan atau patokan alamat.">
-                <Textarea id="co-note" className="min-h-[64px]" placeholder="Tulis catatan untuk sales Resique" {...register('note')} />
+              <Field className="mt-4" label="Catatan" htmlFor="co-note" hint="Opsional. Misal jam ambil atau patokan alamat.">
+                <Textarea id="co-note" className="min-h-[64px]" placeholder="Catatan untuk sales Resique" {...register('note')} />
               </Field>
             </Reveal>
 
@@ -239,7 +239,7 @@ export function CheckoutPage() {
                 <p className="text-[11px] font-semibold text-ink-3"><span className="t-num">{count}</span> item · hemat <span className="t-num gold-text font-bold">{rupiah(savings)}</span></p>
                 <p className="t-num truncate text-[17px] font-extrabold leading-tight text-ink">{rupiah(total)}</p>
               </div>
-              <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="shrink-0 rounded-full lg:w-full">Bayar {rupiah(total)}</Button>
+              <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="shrink-0 lg:w-full">Bayar {rupiah(total)}</Button>
             </div>
           </div>
         </form>

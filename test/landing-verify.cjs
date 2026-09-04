@@ -17,7 +17,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok(/Cek poin-mu/.test(t), 'CTA "Cek poin-mu!"')
   ok((await p.locator('.marquee-track li').count()) >= 2, 'hero marquee has duplicated strip')
   ok((await p.locator('#tier h3:visible').count()) === 6, '6 tier cards visible (mobile ladder / desktop cards)')
-  ok(/Mitra Apique Management/.test(t) && /Floor 3%/.test(t), 'Mitra floor 3% row')
+  ok(/Mitra Apique Management/.test(t) && /minimal 3%/.test(t), 'Mitra floor 3% note')
   ok((await p.locator('#klasemen ol li').count()) === 10, 'klasemen shows 10 rows')
 
   // no horizontal scroll at 390
@@ -37,7 +37,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.setViewportSize({ width: 1440, height: 900 })
   await p.waitForTimeout(500)
   const heights = await p.evaluate(ids => ids.map(id => document.getElementById(id).getBoundingClientRect().height), ['hero', 'benefit', 'tier'])
-  ok(heights.every(h => h >= 900 * 0.9), `desktop deck sections ≥ 90vh → ${heights.map(Math.round)}`)
+  ok(new Set(heights.map(h => Math.round(h / 50))).size >= 2 && heights[0] >= 280, `desktop sections vary in height (no uniform deck) → ${heights.map(Math.round)}`)
   const heroCols = await p.evaluate(() => { const g = document.querySelector('#hero .grid'); return g ? getComputedStyle(g).gridTemplateColumns.split(' ').length : 0 })
   ok(heroCols >= 12, `hero two-column grid on desktop (${heroCols} tracks)`)
 

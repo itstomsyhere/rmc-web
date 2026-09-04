@@ -138,7 +138,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
     e.target.value = ''
     if (!file) return
     const okType = file.type.startsWith('image/') || file.type === 'application/pdf'
-    if (!okType) return toast.error('Format tidak didukung — unggah gambar (JPG/PNG) atau PDF')
+    if (!okType) return toast.error('Format tidak didukung. Unggah JPG, PNG, atau PDF')
     if (file.size > MAX_PROOF_BYTES) return toast.error('Ukuran file maksimal 2 MB')
     setBusy(true)
     try {
@@ -163,7 +163,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" className="sm:bottom-4 sm:mx-auto sm:max-w-md sm:rounded-2xl">
+        <SheetContent side="bottom" className="sm:bottom-4 sm:mx-auto sm:max-w-md sm:rounded-xl">
           <SheetHeader>
             <SheetTitle>Bayar dengan QRIS</SheetTitle>
             <SheetDescription>Pesanan <span className="font-mono text-ink-2">{live.id}</span> · scan dengan aplikasi bank / e-wallet apa pun.</SheetDescription>
@@ -171,13 +171,13 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
 
           {/* Double-bezel QR frame — one of two premium objects in DESIGN-RMC §3 */}
           <div className="mx-auto mt-5 w-full max-w-[320px]">
-            <div className={cn('rounded-[26px] bg-black/5 p-1.5 ring-1 ring-black/5 transition-opacity duration-slow', expired && 'opacity-40 grayscale')}>
-              <div className="rounded-[20px] bg-white p-4 shadow-1">
-                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} className="aspect-square w-full rounded-lg object-contain" draggable={false} />
+            <div className={cn('rounded-xl bg-black/5 p-1.5 ring-1 ring-black/5 transition-opacity duration-slow', expired && 'opacity-40 grayscale')}>
+              <div className="rounded-xl bg-white p-4 shadow-1">
+                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} width={272} height={300} className="aspect-square w-full rounded-lg object-contain" draggable={false} />
                 <div className="mt-3 text-center">
                   <p className="text-[13px] font-bold text-ink">{cfg.payment.qrisMerchant}</p>
                   <p className="mt-0.5 font-mono text-[11px] tracking-wide text-ink-3">NMID {cfg.payment.qrisNmid}</p>
-                  <p className="mt-1.5 text-[11px] leading-snug text-ink-3">QRIS statis — masukkan nominal sesuai total pembayaran di aplikasi bank / e-wallet.</p>
+                  <p className="mt-1.5 text-[11px] leading-snug text-ink-3">QR ini tanpa nominal. Ketik sendiri jumlahnya sesuai total di bawah.</p>
                 </div>
               </div>
             </div>
@@ -204,26 +204,26 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
           {expired ? (
             <div className="mt-6 space-y-3">
               <p className="text-center text-[13px] leading-relaxed text-ink-3">Batas waktu pembayaran habis dan pesanan ini ditutup. Buat pesanan baru untuk mendapatkan QR yang baru.</p>
-              <Button size="xl" variant="gold" className="w-full rounded-full" onClick={() => go('/#golden-sale')}>Buat pesanan baru</Button>
+              <Button size="xl" variant="gold" className="w-full" onClick={() => go('/#golden-sale')}>Buat pesanan baru</Button>
             </div>
           ) : uploaded ? (
             <div className="mt-6 space-y-3">
               <p className="text-center text-[13px] leading-relaxed text-ink-3">Admin Resique akan memverifikasi bukti pembayaranmu. Status pesanan bisa dicek kapan saja.</p>
-              <Button size="xl" className="w-full rounded-full" onClick={() => go('/order/' + live.id)}>Lihat status pesanan</Button>
+              <Button size="xl" className="w-full" onClick={() => go('/order/' + live.id)}>Lihat status pesanan</Button>
             </div>
           ) : (
             <div className="mt-6 space-y-3">
-              <Button size="xl" variant="outline" className="w-full rounded-full" onClick={downloadQr}>
+              <Button size="xl" variant="outline" className="w-full" onClick={downloadQr}>
                 <Download className="h-4 w-4" strokeWidth={1.6} /> Unduh QR
               </Button>
               <div>
-                <p className="mb-2 text-center text-[13px] font-semibold text-ink-2">Sudah bayar? Unggah bukti</p>
-                <Button data-upload-btn size="xl" variant="gold" className="w-full rounded-full" disabled={!canUpload} onClick={() => fileRef.current?.click()} aria-describedby="upload-hint">
+                <p className="mb-2 text-center text-[13px] font-semibold text-ink-2">Setelah bayar, unggah bukti</p>
+                <Button data-upload-btn size="xl" variant="gold" className="w-full" disabled={!canUpload} onClick={() => fileRef.current?.click()} aria-describedby="upload-hint">
                   <Upload className="h-4 w-4" strokeWidth={1.6} />
                   {busy ? 'Memproses…' : waitLeft > 0 ? <>Unggah bukti pembayaran <span className="t-num text-[12px] font-bold opacity-70">· Aktif dalam {waitLeft} dtk</span></> : 'Unggah bukti pembayaran'}
                 </Button>
                 <input ref={fileRef} type="file" accept="image/*,.pdf" className="sr-only" tabIndex={-1} onChange={onFile} aria-hidden />
-                <p id="upload-hint" className="mt-2 text-center text-[12px] text-ink-4">Gambar (JPG/PNG) atau PDF, maksimal 2 MB. Pembayaran diverifikasi admin Resique setelah bukti diunggah.</p>
+                <p id="upload-hint" className="mt-2 text-center text-[12px] text-ink-4">JPG, PNG, atau PDF, maks. 2 MB. Admin Resique cek buktinya setelah diunggah.</p>
               </div>
             </div>
           )}
@@ -233,15 +233,15 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
       <Dialog open={!!thanks} onOpenChange={o => { if (!o) setThanks(null) }}>
         <DialogContent data-thanks className="max-w-md">
           <DialogHeader>
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-ok-50 text-ok"><CheckCircle2 className="h-6 w-6" strokeWidth={1.6} /></span>
+            <span className="grid h-12 w-12 place-items-center rounded-xl bg-ok-50 text-ok"><CheckCircle2 className="h-6 w-6" strokeWidth={1.6} /></span>
             <DialogTitle className="pt-2">Terima kasih, {live.buyer.name}!</DialogTitle>
             <DialogDescription>
               Bukti pembayaran <span className="inline-flex items-center gap-1 font-semibold text-ink-2"><FileText className="h-3.5 w-3.5" strokeWidth={1.6} />{thanks?.fileName}</span> diterima. Admin Resique akan memverifikasi; status pesanan <span className="font-mono text-ink-2">{live.id}</span> bisa dicek kapan saja.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-2">
-            <Button variant="outline" size="lg" className="rounded-full" onClick={() => go('/')}>Kembali ke beranda</Button>
-            <Button size="lg" className="rounded-full" onClick={() => go('/order/' + live.id)}>Lihat status pesanan</Button>
+            <Button variant="outline" size="lg" className="" onClick={() => go('/')}>Kembali ke beranda</Button>
+            <Button size="lg" className="" onClick={() => go('/order/' + live.id)}>Lihat status pesanan</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -62,7 +62,7 @@ export function MockInboxCard({ email, limit = 3, className, title = 'Kotak masu
   const target = email?.trim().toLowerCase()
   const list = (target ? mails.filter(m => m.to.toLowerCase() === target) : mails).slice(0, limit)
   return (
-    <section className={cn('overflow-hidden rounded-2xl border border-gold-200 bg-white shadow-1', className)} aria-label={title}>
+    <section className={cn('overflow-hidden rounded-xl border border-gold-200 bg-white shadow-1', className)} aria-label={title}>
       <header className="flex items-center gap-3 border-b border-line-2 bg-gold-50/60 px-4 py-3 sm:px-5">
         <span className="grid h-9 w-9 place-items-center rounded-xl bg-white text-gold-700 shadow-1"><Inbox className="h-[18px] w-[18px]" strokeWidth={1.6} /></span>
         <div className="min-w-0 flex-1">
@@ -72,7 +72,7 @@ export function MockInboxCard({ email, limit = 3, className, title = 'Kotak masu
         <Badge variant="gold" className="shrink-0">Simulasi email</Badge>
       </header>
       <p className="border-b border-line-2 px-4 py-2 text-[11px] text-ink-3 sm:px-5">
-        Simulasi email — di produksi dikirim ke email kamu. Panel ini hanya ada di prototype.
+        Simulasi. Aslinya email ini dikirim ke alamat kamu. Panel ini hanya ada di prototype.
       </p>
       {list.length === 0 ? (
         <p className="px-4 py-6 text-center text-[13px] text-ink-3 sm:px-5">Belum ada email untuk alamat ini.</p>

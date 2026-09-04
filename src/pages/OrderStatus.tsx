@@ -16,7 +16,7 @@ import { QrisSheet } from '@/components/shop/QrisSheet'
 
 const HAPPY: { key: OrderStatus; title: string; desc: string }[] = [
   { key: 'Menunggu Pembayaran', title: 'Menunggu Pembayaran', desc: 'Scan QRIS lalu unggah bukti pembayaran.' },
-  { key: 'Bukti Diunggah', title: 'Bukti Diunggah', desc: 'Admin Resique memverifikasi bukti pembayaranmu.' },
+  { key: 'Bukti Diunggah', title: 'Bukti Diunggah', desc: 'Admin Resique cek bukti pembayaranmu.' },
   { key: 'Lunas', title: 'Lunas', desc: 'Pembayaran terverifikasi. Belanja masuk klasemen.' },
 ]
 
@@ -35,8 +35,8 @@ export function OrderStatusPage() {
           <h1 className="t-h1 mt-3 text-ink">Pesanan tidak ditemukan</h1>
         </Reveal>
         <Reveal delay={80}>
-          <EmptyState className="mt-8" title={`Tidak ada pesanan ${id || ''}`.trim()} desc="Periksa kembali tautan status pesananmu, atau buat pesanan baru di Golden Sale."
-            action={<Button asChild size="lg" variant="gold" className="rounded-full"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
+          <EmptyState className="mt-8" title={`Tidak ada pesanan ${id || ''}`.trim()} desc="Cek lagi tautannya, atau buat pesanan baru di Golden Sale."
+            action={<Button asChild size="lg" variant="gold" className=""><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
         </Reveal>
         <Link to="/" className="mt-6 inline-flex h-11 items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-ink"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Kembali ke beranda</Link>
       </Narrow>
@@ -66,13 +66,13 @@ export function OrderStatusPage() {
           <Card className="mt-8 border-gold-200 bg-gold-50/60">
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-gold-700 shadow-1"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-gold-700 shadow-1"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
                 <div>
                   <p className="text-[15px] font-bold text-ink">Selesaikan pembayaran {rupiah(order.total)}</p>
                   <p className="t-num text-[13px] text-ink-3">QR berlaku ±{remainingMin} menit lagi.</p>
                 </div>
               </div>
-              <Button size="lg" variant="gold" className="rounded-full" onClick={() => setSheetOpen(true)}>Buka QR & unggah bukti</Button>
+              <Button size="lg" variant="gold" className="" onClick={() => setSheetOpen(true)}>Buka QR & unggah bukti</Button>
             </CardContent>
           </Card>
         </Reveal>
@@ -82,13 +82,13 @@ export function OrderStatusPage() {
           <Card className="mt-8 border-ok-100 bg-ok-50/70">
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-ok shadow-1"><Trophy className="h-5 w-5" strokeWidth={1.6} /></span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-ok shadow-1"><Trophy className="h-5 w-5" strokeWidth={1.6} /></span>
                 <div>
-                  <p className="text-[15px] font-bold text-ink">Terima kasih! Belanja ini masuk klasemen.</p>
+                  <p className="text-[15px] font-bold text-ink">Terima kasih. Belanja ini masuk klasemen.</p>
                   <p className="text-[13px] text-ink-3">Terverifikasi {fmtDate(order.verifiedAt, true)}</p>
                 </div>
               </div>
-              <Button asChild size="lg" variant="outline" className="rounded-full"><Link to="/#klasemen">Lihat klasemen</Link></Button>
+              <Button asChild size="lg" variant="outline" className=""><Link to="/#klasemen">Lihat klasemen</Link></Button>
             </CardContent>
           </Card>
         </Reveal>
@@ -201,7 +201,7 @@ function Timeline({ order }: { order: Order }) {
       key: order.status,
       title: order.status,
       desc: order.status === 'Ditolak'
-        ? (order.rejectReason ? `Alasan: ${order.rejectReason}. Hubungi sales Resique untuk bantuan.` : 'Bukti pembayaran tidak dapat diverifikasi. Hubungi sales Resique.')
+        ? (order.rejectReason ? `Alasan: ${order.rejectReason}. Hubungi sales Resique.` : 'Bukti pembayaran tidak dapat diverifikasi. Hubungi sales Resique.')
         : `Batas waktu pembayaran habis pada ${fmtDate(order.expiresAt, true)}. Buat pesanan baru di Golden Sale.`,
       state: 'terminal',
     })

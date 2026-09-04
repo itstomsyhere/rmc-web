@@ -32,7 +32,7 @@ export function LoginPage() {
     if (!res.ok) { setError(res.reason); toast.error(res.reason); return }
     setError(null)
     useSession.getState().signIn(res.account.id)
-    toast.success(`Selamat datang, ${res.account.pic.split(' ')[0]}!`)
+    toast.success(`Masuk sebagai ${res.account.pic.split(' ')[0]}`)
     nav(res.account.mustChangePassword ? '/change-password' : '/profile')
   }
 
@@ -51,20 +51,20 @@ export function LoginPage() {
         <>
           <Reveal delay={40}>
             <h1 className="t-h1 mt-5 text-ink">Masuk</h1>
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Gunakan nomor HP yang terdaftar di Resique untuk melihat poin, tier, dan pesanan Golden Sale-mu.</p>
+            <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan pesanan Golden Sale.</p>
           </Reveal>
           <Reveal delay={80}>
             <form onSubmit={submit} noValidate className="mt-8 space-y-6">
               <Field label="No. HP" required htmlFor="phone" error={error && /HP|terdaftar/i.test(error) ? error : undefined} hint={phoneNorm ? `Masuk sebagai ${phoneNorm}` : undefined}>
-                <Input id="phone" type="tel" inputMode="tel" autoComplete="username" placeholder="0812 3456 7890" value={phone} onChange={e => { setPhone(e.target.value); setError(null) }} aria-invalid={!!error && /HP|terdaftar/i.test(error)} autoFocus={!prefill} />
+                <Input id="phone" type="tel" spellCheck={false} inputMode="tel" autoComplete="username" placeholder="0812 3456 7890" value={phone} onChange={e => { setPhone(e.target.value); setError(null) }} aria-invalid={!!error && /HP|terdaftar/i.test(error)} autoFocus={!prefill} />
               </Field>
               <Field label="Kata sandi" required htmlFor="pw" error={error && /sandi/i.test(error) ? error : undefined}>
-                <PasswordInput id="pw" value={pw} onChange={e => { setPw(e.target.value); setError(null) }} autoComplete="current-password" placeholder="Kata sandi atau kata sandi sementara" aria-invalid={!!error && /sandi/i.test(error)} autoFocus={!!prefill} />
+                <PasswordInput id="pw" value={pw} onChange={e => { setPw(e.target.value); setError(null) }} autoComplete="current-password" placeholder="Kata sandi atau sandi sementara" aria-invalid={!!error && /sandi/i.test(error)} autoFocus={!!prefill} />
               </Field>
               {error && !/HP|terdaftar|sandi/i.test(error) && <p role="alert" className="rounded-xl border border-danger-100 bg-danger-50 px-4 py-3 text-[13px] text-danger">{error}</p>}
-              <Button type="submit" size="xl" className="group w-full rounded-full">
+              <Button type="submit" size="xl" className="w-full">
                 Masuk
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+                <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </Button>
               <div className="text-center">
                 <button type="button" onClick={() => { setMode('reset'); setError(null) }} className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">
@@ -104,22 +104,22 @@ function ResetForm({ initialPhone, onBack, onSent }: { initialPhone: string; onB
       <Reveal delay={40}>
         <button type="button" onClick={onBack} className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full pr-3 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Kembali ke masuk</button>
         <h1 className="t-h1 mt-2 text-ink">Lupa kata sandi</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Masukkan nomor HP terdaftar. Kami kirim kata sandi sementara ke email akunmu — pakai sekali, lalu buat kata sandi baru.</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Masukkan nomor HP terdaftar. Kata sandi sementara dikirim ke email akunmu. Berlaku sekali masuk, lalu buat yang baru.</p>
       </Reveal>
       <Reveal delay={80}>
         <form onSubmit={submit} noValidate className="mt-8 space-y-6">
           <Field label="No. HP" required htmlFor="reset-phone" error={error || undefined} hint={phoneNorm ? phoneNorm : undefined}>
-            <Input id="reset-phone" type="tel" inputMode="tel" autoComplete="username" placeholder="0812 3456 7890" value={phone} onChange={e => { setPhone(e.target.value); setError(null) }} aria-invalid={!!error} autoFocus />
+            <Input id="reset-phone" type="tel" spellCheck={false} inputMode="tel" autoComplete="username" placeholder="0812 3456 7890" value={phone} onChange={e => { setPhone(e.target.value); setError(null) }} aria-invalid={!!error} autoFocus />
           </Field>
-          <Button type="submit" size="xl" className="w-full rounded-full" variant={sentTo ? 'outline' : 'default'}>{sentTo ? 'Kirim ulang' : 'Kirim kata sandi sementara'}</Button>
+          <Button type="submit" size="xl" className="w-full" variant={sentTo ? 'outline' : 'default'}>{sentTo ? 'Kirim ulang' : 'Kirim kata sandi sementara'}</Button>
         </form>
       </Reveal>
       {sentTo && (
         <Reveal delay={40} className="mt-8 space-y-4">
           <MockInboxCard email={sentTo} limit={2} />
-          <Button size="xl" className="group w-full rounded-full" onClick={onBack}>
+          <Button size="xl" className="w-full" onClick={onBack}>
             Masuk dengan kata sandi sementara
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowRight className="h-4 w-4" strokeWidth={2.2} /></span>
+            <ArrowRight className="h-4 w-4" strokeWidth={2} />
           </Button>
         </Reveal>
       )}

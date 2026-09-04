@@ -26,7 +26,7 @@ export function Reveal({ children, className, delay = 0, as: Tag = 'div' }: { ch
       ref={ref}
       data-reveal={inView ? 'in' : 'out'}
       style={{ transitionDelay: `${delay}ms` }}
-      className={cn('transition-[opacity,transform,filter] duration-700 ease-out will-change-[opacity,transform]', inView ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-6 blur-[3px]', className)}
+      className={cn('transition-[opacity,transform] duration-slow ease-out', inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2', className)}
     >
       {children}
     </Comp>

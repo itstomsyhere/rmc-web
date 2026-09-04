@@ -3,19 +3,19 @@ import { SEED_ITEMS } from './seed-products'
 
 /* Tiers ported verbatim from crm-apique src/rmc.jsx DEFAULT_TIERS (Kebijakan RMC v2.0 / RSQ-RMC-001). */
 export const SEED_TIERS: Tier[] = [
-  { key: 'starter',      name: 'Starter',      sw: '#9ca3af', min: 0,           max: 9_000_000,   perMonth: '< Rp1,5 jt', discount: 0, freeDelivMin: null,    consult: 0, benefitCopy: 'Kumpulkan poin dari setiap transaksi. Mulai perjalananmu.' },
-  { key: 'beginner',     name: 'Beginner',     sw: '#5fb4a2', min: 9_000_000,   max: 18_000_000,  perMonth: 'Rp1,5–3 jt', discount: 1, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 1% dan gratis ongkir untuk belanja ≥ Rp500 rb.' },
-  { key: 'intermediate', name: 'Intermediate', sw: '#2e8577', min: 18_000_000,  max: 30_000_000,  perMonth: 'Rp3–5 jt',   discount: 2, freeDelivMin: 300_000, consult: 0, benefitCopy: 'Diskon 2% dan gratis ongkir untuk belanja ≥ Rp300 rb.' },
-  { key: 'winner',       name: 'Winner',       sw: '#2c5282', min: 30_000_000,  max: 60_000_000,  perMonth: 'Rp5–10 jt',  discount: 3, freeDelivMin: 150_000, consult: 1, benefitCopy: 'Diskon 3%, gratis ongkir ≥ Rp150 rb, 1 sesi konsultasi laundry expert.' },
-  { key: 'champion',     name: 'Champion',     sw: '#7c6ae8', min: 60_000_000,  max: 120_000_000, perMonth: 'Rp10–20 jt', discount: 4, freeDelivMin: 75_000,  consult: 2, benefitCopy: 'Diskon 4%, gratis ongkir ≥ Rp75 rb, 2 sesi konsultasi, undangan Gala Dinner.' },
-  { key: 'ultimate',     name: 'Ultimate',     sw: '#d4a04e', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 0,       consult: 3, benefitCopy: 'Diskon 5%, gratis ongkir tanpa minimum, 3 sesi konsultasi, akses prioritas produk baru.' },
+  { key: 'starter',      name: 'Starter',      sw: '#9ca3af', min: 0,           max: 9_000_000,   perMonth: '< Rp1,5 jt', discount: 0, freeDelivMin: null,    consult: 0, benefitCopy: 'Belum ada diskon. Poin tetap dapat: Rp1.000 = 1 poin.' },
+  { key: 'beginner',     name: 'Beginner',     sw: '#5fb4a2', min: 9_000_000,   max: 18_000_000,  perMonth: 'Rp1,5–3 jt', discount: 1, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 1%. Gratis ongkir untuk belanja min. Rp500 rb.' },
+  { key: 'intermediate', name: 'Intermediate', sw: '#2e8577', min: 18_000_000,  max: 30_000_000,  perMonth: 'Rp3–5 jt',   discount: 2, freeDelivMin: 300_000, consult: 0, benefitCopy: 'Diskon 2%. Gratis ongkir untuk belanja min. Rp300 rb.' },
+  { key: 'winner',       name: 'Winner',       sw: '#2c5282', min: 30_000_000,  max: 60_000_000,  perMonth: 'Rp5–10 jt',  discount: 3, freeDelivMin: 150_000, consult: 1, benefitCopy: 'Diskon 3%, gratis ongkir min. Rp150 rb, 1 sesi konsultasi laundry.' },
+  { key: 'champion',     name: 'Champion',     sw: '#7c6ae8', min: 60_000_000,  max: 120_000_000, perMonth: 'Rp10–20 jt', discount: 4, freeDelivMin: 75_000,  consult: 2, benefitCopy: 'Diskon 4%, gratis ongkir min. Rp75 rb, 2 sesi konsultasi, Gala Dinner.' },
+  { key: 'ultimate',     name: 'Ultimate',     sw: '#d4a04e', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 0,       consult: 3, benefitCopy: 'Diskon 5%, gratis ongkir tanpa minimum, 3 sesi konsultasi, produk baru lebih dulu.' },
 ]
 
 export const SEED_BENEFITS: Benefit[] = [
-  { id: 'b1', icon: 'UserPlus',  title: 'Mudah Bergabung',  desc: 'Daftar sekali dengan nomor HP. Poin langsung terhubung ke riwayat belanja laundry-mu.' },
-  { id: 'b2', icon: 'Coins',     title: 'Kumpulkan Poin',   desc: 'Setiap Rp1.000 belanja chemical & perlengkapan = 1 poin. Makin rutin, makin cepat naik tier.' },
-  { id: 'b3', icon: 'Gift',      title: 'Tukar Hadiah',     desc: 'Poin ditukar voucher belanja atau hadiah pilihan — dari parfum sampai gadget.' },
-  { id: 'b4', icon: 'Crown',     title: 'Privilege Eksklusif', desc: 'Diskon tier sampai 5%, gratis ongkir, konsultasi laundry expert, dan undangan Gala Dinner.' },
+  { id: 'b1', icon: 'UserPlus',  title: 'Daftar pakai nomor HP', desc: 'Isi data sekali. Kalau nomor HP sudah ada di data Resique, poin langsung tersambung.' },
+  { id: 'b2', icon: 'Coins',     title: 'Rp1.000 = 1 poin', desc: 'Berlaku untuk semua belanja chemical & perlengkapan yang Lunas. Poin berlaku sampai 20 Des.' },
+  { id: 'b3', icon: 'Gift',      title: 'Tukar poin jadi hadiah', desc: 'Voucher belanja, parfum 5L, tablet, sampai laptop. Minimal tukar 500 poin.' },
+  { id: 'b4', icon: 'Crown',     title: 'Diskon & gratis ongkir', desc: 'Diskon 1–5% sesuai tier, gratis ongkir, konsultasi laundry, undangan Gala Dinner.' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [
@@ -31,7 +31,7 @@ export const SEED_PRIZE_TYPES = ['Voucher', 'Produk Resique', 'Elektronik', 'Lay
 
 /* Demo catalog only — production starts empty; name/type/point cost/stock are all admin-defined (🟣). */
 export const SEED_PRIZES: Prize[] = [
-  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', type: 'Voucher', image: '/img/prize-voucher.svg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan langsung untuk transaksi berikutnya.' },
+  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', type: 'Voucher', image: '/img/prize-voucher.svg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan Rp100.000 di belanja berikutnya.' },
   { id: 'p2', name: 'Parfum Laundry Premium 5L',         type: 'Produk Resique', image: '/img/prize-parfum.svg',  pointCost: 9_000,   stock: 40,  active: true, desc: 'Whiff Fresh Elegant / Greendome Downy Black.' },
   { id: 'p3', name: 'Paket Chemical 1 Bulan',            type: 'Produk Resique', image: '/img/prize-chemical.svg', pointCost: 25_000, stock: 20,  active: true, desc: 'Deterjen matic 5L ×4 + parfum 5L ×2.' },
   { id: 'p4', name: 'Tablet 10"',                        type: 'Elektronik', image: '/img/prize-tablet.svg',  pointCost: 60_000,  stock: 5,   active: true, desc: 'Untuk kasir & pencatatan outlet.' },
@@ -42,19 +42,19 @@ export const SEED_PRIZES: Prize[] = [
 export const DEFAULT_CONFIG: Config = {
   copy: {
     hook: 'Resique Turun Harga',
-    hookSub: 'Golden Privilege untuk pemilik laundry. Harga chemical & perlengkapan turun, poin RMC naik.',
+    hookSub: 'Harga chemical & perlengkapan turun. Setiap Rp1.000 belanja tetap dapat 1 poin RMC.',
     tagline: 'Tingkatkan transaksi, dapatkan hadiahnya!',
-    taglineSub: 'Setiap belanja di Resique mengumpulkan poin Resique Member Card. Tukar dengan hadiah pilihanmu.',
-    benefitTitle: 'Kenapa jadi member RMC?',
-    benefitSub: 'Resique Member Card adalah program relasi untuk mitra laundry — bukan sekadar diskon.',
-    tierTitle: 'Naik tier, naik privilege',
-    tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des). Mitra Apique Management punya diskon dasar 3%.',
+    taglineSub: 'Rp1.000 belanja = 1 poin RMC. Poin bisa ditukar voucher, parfum, sampai laptop.',
+    benefitTitle: 'Yang didapat member RMC',
+    benefitSub: 'Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.',
+    tierTitle: 'Diskon tier 0% sampai 5%',
+    tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des).',
     ctaPoints: 'Cek poin-mu!',
-    ctaPointsSub: 'Masuk dengan nomor HP yang terdaftar di Resique. Belum punya akun? Daftar 1 menit.',
+    ctaPointsSub: 'Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.',
     saleTitle: 'Golden Sale',
-    saleSub: 'Harga spesial selama periode Golden Privilege. Stok terbatas.',
+    saleSub: 'Harga promo selama periode Golden Privilege, selama stok ada.',
     klasemenTitle: 'Klasemen Golden Privilege',
-    klasemenSub: 'Peringkat belanja Golden Sale yang sudah terverifikasi. Belanja terbanyak dapat hadiah utama.',
+    klasemenSub: 'Urutan total belanja dari pesanan Lunas. Belanja terbanyak dapat hadiah utama.',
     snapDesktop: false,
   },
   assets: { heroPrizes: SEED_HERO, logo: '/img/resique-logo.svg', qrisImage: '/img/qris-demo.svg' },

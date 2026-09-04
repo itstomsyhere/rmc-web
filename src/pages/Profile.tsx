@@ -59,7 +59,7 @@ function ProfileBody({ account }: { account: Account }) {
             <p className="t-eyebrow">Profil RMC</p>
             <h1 className="t-h2 mt-1 truncate text-ink">Halo, {firstName}</h1>
           </div>
-          <Button variant="outline" className="rounded-full" onClick={() => { signOut(); toast('Sampai jumpa!'); nav('/') }}>
+          <Button variant="outline" className="" onClick={() => { signOut(); toast('Kamu sudah keluar'); nav('/') }}>
             <LogOut className="h-4 w-4" strokeWidth={1.6} /> Keluar
           </Button>
         </div>
@@ -97,7 +97,7 @@ function ProfileBody({ account }: { account: Account }) {
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gold-50 text-gold-700"><Gift className="h-[18px] w-[18px]" strokeWidth={1.6} /></span>
                   <div>
                     <p className="text-[14px] font-bold text-ink">Grafik poin & pilihan hadiah tampil di sini</p>
-                    <p className="mt-0.5 text-[13px] text-ink-3">{pending ? 'Setelah sales Resique memverifikasi bahwa akun ini milikmu.' : 'Setelah laundry-mu terdaftar sebagai pelanggan Resique.'}</p>
+                    <p className="mt-0.5 text-[13px] text-ink-3">{pending ? 'Setelah sales Resique konfirmasi akun ini milikmu.' : 'Setelah laundry-mu terdaftar di Resique.'}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -114,8 +114,8 @@ function ProfileBody({ account }: { account: Account }) {
 
 function HeroShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-[28px] bg-teal-700/10 p-1.5 ring-1 ring-black/5', className)}>
-      <div className="teal-gradient relative overflow-hidden rounded-[22px] p-6 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,.18)] sm:p-8">
+    <div className={cn('rounded-xl bg-teal-700/10 p-1.5 ring-1 ring-black/5', className)}>
+      <div className="teal-gradient relative overflow-hidden rounded-xl p-6 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,.18)] sm:p-8">
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gold/25 blur-3xl" />
         <div className="relative">{children}</div>
       </div>
@@ -133,7 +133,7 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
         <Badge variant="inverse"><span className="h-2 w-2 rounded-full ring-1 ring-white/60" style={{ background: rmc.tier.sw }} aria-hidden />{rmc.tier.name}</Badge>
       </div>
       <p data-points={rmc.points} className="t-num mt-3 text-[56px] font-extrabold leading-none tracking-[-0.03em] sm:text-[64px]">{poin(rmc.points)}</p>
-      <p className="mt-2 text-[13px] text-white/70">Kedaluwarsa {cfg.rules.expiry} · 1 poin = {rupiah(cfg.rules.poinToRp)}</p>
+      <p className="mt-2 text-[13px] text-white/80">Berlaku sampai {cfg.rules.expiry} · 1 poin = {rupiah(cfg.rules.poinToRp)}</p>
 
       <div className="mt-6 border-t border-white/15 pt-5">
         <p className="truncate text-[17px] font-bold">{customer?.outlet || account.laundry}</p>
@@ -149,12 +149,12 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
         <Progress value={rmc.progress * 100} tone="gold" className="mt-2 bg-white/15" aria-label="Progres ke tier berikutnya" />
       </div>
 
-      <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
+      <div className="mt-5 flex items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/60">Diskon aktif</p>
           <p className="t-num text-[24px] font-extrabold leading-tight">{rmc.discount}%</p>
         </div>
-        {floorApplied ? <Badge variant="gold">Floor Mitra</Badge> : isMitra ? <Badge variant="inverse">Mitra Apique</Badge> : null}
+        {floorApplied ? <Badge variant="gold">Min. Mitra</Badge> : isMitra ? <Badge variant="inverse">Mitra Apique</Badge> : null}
       </div>
     </HeroShell>
   )
@@ -169,20 +169,20 @@ function PendingHero({ account, rmc }: { account: Account; rmc: RmcSummary }) {
         <HeroShell>
           <p className="t-eyebrow text-gold-200">Poin RMC</p>
           <p data-points={rmc.points} className="t-num mt-3 text-[56px] font-extrabold leading-none tracking-[-0.03em] sm:text-[64px]">{poin(rmc.points)}</p>
-          <p className="mt-2 text-[13px] text-white/70">Kedaluwarsa {cfg.rules.expiry}</p>
+          <p className="mt-2 text-[13px] text-white/80">Berlaku sampai {cfg.rules.expiry}</p>
           <div className="mt-6 border-t border-white/15 pt-5"><p className="text-[17px] font-bold">{account.laundry}</p><p className="text-[13px] text-white/75">{account.pic} · {account.kota}</p></div>
           <Progress value={35} tone="gold" className="mt-8 bg-white/15" />
         </HeroShell>
       </div>
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <Card className="w-full max-w-sm rounded-2xl shadow-3">
+        <Card className="w-full max-w-sm rounded-xl shadow-3">
           <CardContent className="pt-5 sm:pt-6">
             <span className="grid h-11 w-11 place-items-center rounded-xl bg-gold-50 text-gold-700"><Clock className="h-5 w-5" strokeWidth={1.6} /></span>
             <p className="mt-4 text-[17px] font-bold text-ink">Menunggu verifikasi sales</p>
             <p className="mt-1.5 text-[13px] leading-relaxed text-ink-3">
               Datamu mirip dengan pelanggan <strong className="text-ink">{claimTarget?.outlet || 'Resique'}</strong>. Sales Resique memastikan akun ini milikmu (biasanya 1×24 jam) sebelum poin & tier tampil.
             </p>
-            <Button asChild variant="secondary" className="mt-4 w-full rounded-full">
+            <Button asChild variant="secondary" className="mt-4 w-full">
               <a href={`${SALES_WA}?text=${encodeURIComponent(`Halo Sales Resique, mohon verifikasi akun RMC saya: ${account.laundry} (${account.pic}).`)}`} target="_blank" rel="noreferrer">
                 <MessageCircle className="h-4 w-4" strokeWidth={1.6} /> Hubungi sales
               </a>
@@ -196,13 +196,13 @@ function PendingHero({ account, rmc }: { account: Account; rmc: RmcSummary }) {
 
 function LeadCard() {
   return (
-    <Card className="rounded-2xl">
+    <Card className="rounded-xl">
       <CardContent className="pt-5 sm:pt-6">
         <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-50 text-teal-700"><MessageCircle className="h-5 w-5" strokeWidth={1.6} /></span>
         <p className="mt-4 text-[17px] font-bold text-ink">Belum terdaftar sebagai pelanggan Resique</p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-ink-3">Tim sales akan menghubungi via WhatsApp untuk mendaftarkan laundry-mu. Setelah itu poin RMC mulai terhitung dari setiap belanja.</p>
-        <Button asChild size="lg" variant="gold" className="group mt-5 w-full rounded-full pr-2">
-          <Link to="/#golden-sale">Belanja Golden Sale<span className="grid h-7 w-7 place-items-center rounded-full bg-black/10 transition-transform duration-base ease-out group-hover:translate-x-0.5"><ArrowUpRight className="h-4 w-4" strokeWidth={2} /></span></Link>
+        <Button asChild size="lg" variant="gold" className="mt-5 w-full">
+          <Link to="/#golden-sale">Belanja Golden Sale<ArrowUpRight className="h-4 w-4" strokeWidth={2} /></Link>
         </Button>
       </CardContent>
     </Card>
@@ -228,7 +228,7 @@ function PointsChart({ rmc, earnPerRp }: { rmc: RmcSummary; earnPerRp: number })
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Grafik poin kamu</CardTitle>
+        <CardTitle>Poin per bulan</CardTitle>
         <CardDescription>12 bulan terakhir · <span className="t-num">{poin(rmc.pointsEarned)}</span> poin terkumpul tahun ini</CardDescription>
       </CardHeader>
       <CardContent>
@@ -277,7 +277,7 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
     if (!fresh || fresh.stock <= 0 || points < fresh.pointCost) { toast.error('Hadiah tidak tersedia'); setSel(null); return }
     useAccounts.getState().redeem(account.id, fresh.id, fresh.name, fresh.pointCost)
     setSection('prizes', useConfig.getState().config.prizes.map(p => p.id === fresh.id ? { ...p, stock: Math.max(0, p.stock - 1) } : p))
-    toast.success(`${fresh.name} berhasil ditukar`, { description: `Sisa poin ${poin(points - fresh.pointCost)}. Sales Resique akan mengonfirmasi pengiriman hadiah.` })
+    toast.success(`${fresh.name} berhasil ditukar`, { description: `Sisa poin ${poin(points - fresh.pointCost)}. Sales Resique akan hubungi kamu soal pengiriman.` })
     setSel(null)
   }
 
@@ -291,16 +291,16 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
         <p className="t-num shrink-0 text-[13px] text-ink-3">Min. tukar <strong className="text-ink">{poin(cfg.rules.minRedeem)}</strong> poin</p>
       </div>
       {prizes.length === 0 ? (
-        <EmptyState className="mt-4" title="Belum ada hadiah aktif" desc="Admin belum mengaktifkan hadiah untuk periode ini." />
+        <EmptyState className="mt-4" title="Belum ada hadiah aktif" desc="Daftar hadiah menyusul. Cek lagi nanti." />
       ) : (
         <ul className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {prizes.map(p => {
             const why = reason(p)
             return (
               <li key={p.id}>
-                <article className={cn('flex h-full flex-col rounded-2xl border border-line bg-white p-3 shadow-1 transition-[transform,box-shadow] duration-slow ease-out sm:p-4', why ? 'opacity-80' : 'hover:-translate-y-0.5 hover:shadow-2')}>
+                <article className={cn('flex h-full flex-col rounded-xl border border-line bg-white p-3 shadow-1 sm:p-4', why ? 'opacity-80' : 'hover:-translate-y-0.5 hover:shadow-2')}>
                   <div className="relative overflow-hidden rounded-xl bg-surface-2">
-                    <img src={p.image} alt={p.name} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+                    <img src={p.image} alt={p.name} width={320} height={240} className="aspect-[4/3] w-full object-cover" loading="lazy" />
                     {p.stock <= 0 ? <Badge variant="muted" className="absolute left-2 top-2">Habis</Badge> : p.stock <= 5 ? <Badge variant="warn" className="absolute left-2 top-2">Sisa {p.stock}</Badge> : null}
                   </div>
                   <p className="mt-3 text-micro uppercase text-ink-4">{p.type}</p>
@@ -308,7 +308,7 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
                   <p className="t-num mt-1 text-[15px] font-extrabold text-gold-700">{poin(p.pointCost)} <span className="text-[11px] font-bold text-ink-3">poin</span></p>
                   <p className="t-num text-[11px] text-ink-4">Stok {p.stock}</p>
                   <div className="mt-auto pt-3">
-                    <Button size="sm" variant={why ? 'outline' : 'gold'} className="h-11 w-full rounded-full sm:h-10" disabled={!!why} onClick={() => setSel(p)} aria-label={why ? `${p.name}: ${why}` : `Tukar ${p.name}`}>
+                    <Button size="sm" variant={why ? 'outline' : 'gold'} className="h-11 w-full sm:h-10" disabled={!!why} onClick={() => setSel(p)} aria-label={why ? `${p.name}: ${why}` : `Tukar ${p.name}`}>
                       {why || 'Tukar'}
                     </Button>
                   </div>
@@ -329,13 +329,13 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
           </DialogHeader>
           {sel && (
             <div className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
-              <img src={sel.image} alt="" className="h-16 w-20 rounded-lg object-cover" />
+              <img src={sel.image} alt="" width={80} height={64} className="h-16 w-20 rounded-lg object-cover" />
               <div className="min-w-0 text-[13px] text-ink-2">{sel.desc || 'Hadiah dikirim / diambil di outlet Resique terdekat.'}</div>
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" className="rounded-full" onClick={() => setSel(null)}>Batal</Button>
-            <Button variant="gold" className="rounded-full" onClick={confirm}><Gift className="h-4 w-4" strokeWidth={1.8} /> Ya, tukar</Button>
+            <Button variant="outline" className="" onClick={() => setSel(null)}>Batal</Button>
+            <Button variant="gold" className="" onClick={confirm}><Gift className="h-4 w-4" strokeWidth={1.8} /> Ya, tukar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -379,7 +379,7 @@ function OrderList({ rows }: { rows: Order[] }) {
       </CardHeader>
       <CardContent>
         {show.length === 0 ? (
-          <EmptyState title="Belum ada pesanan Golden Sale" desc="Harga spesial selama periode Golden Privilege — stok terbatas." action={<Button asChild variant="gold" className="rounded-full"><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
+          <EmptyState title="Belum ada pesanan Golden Sale" desc="Harga spesial selama periode Golden Privilege — stok terbatas." action={<Button asChild variant="gold" className=""><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
         ) : (
           <ul className="divide-y divide-line-2">
             {show.map(o => (
