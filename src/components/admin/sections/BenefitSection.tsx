@@ -1,4 +1,5 @@
-import { AlertTriangle, Coins, Crown, Gift, Plus, Sparkles, Trophy, UserPlus, type LucideIcon } from 'lucide-react'
+import { AlertTriangle, Plus, Sparkles } from 'lucide-react'
+import { BENEFIT_ICONS, BENEFIT_ICON_NAMES as ICON_NAMES } from '@/lib/benefit-icons'
 import type { Benefit, Tier } from '@/model/types'
 import { uid } from '@/lib/id'
 import { rupiah } from '@/lib/format'
@@ -10,13 +11,11 @@ import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/misc'
 import { useDraft } from '../useDraft'
 import { NumInput, PageHead, RowTools, SaveBar, SettingsCard, cell, moveItem } from '../parts'
 
-export const BENEFIT_ICONS: Record<string, LucideIcon> = { UserPlus, Coins, Gift, Crown, Sparkles, Trophy }
-const ICON_NAMES = Object.keys(BENEFIT_ICONS)
 
 export function BenefitSection() {
   return (
     <div data-admin-section="benefit" className="space-y-4">
-      <PageHead title="Benefit & Tier" sub="Empat kartu benefit, tabel tier RMC, diskon dasar mitra, dan aturan poin." />
+      <PageHead title="Benefit & Tier" sub="Kartu privilege member, tabel tier RMC, diskon dasar mitra, dan aturan poin." />
       <BenefitsCard />
       <TiersCard />
       <div className="grid gap-4 lg:grid-cols-2">
@@ -33,7 +32,7 @@ function BenefitsCard() {
   const set = d.setDraft
   const update = (id: string, p: Partial<Benefit>) => set(list.map(b => (b.id === id ? { ...b, ...p } : b)))
   return (
-    <SettingsCard title="Kartu benefit" desc="Tampil di seksi “Kenapa jadi member RMC?”." actions={<Button type="button" variant="outline" size="sm" onClick={() => set([...list, { id: `b-${uid()}`, icon: 'Sparkles', title: 'Benefit baru', desc: '' }])}><Plus strokeWidth={1.6} />Tambah</Button>}>
+    <SettingsCard title="Kartu privilege member" desc="Tampil di seksi “Yang didapat member RMC”. Angka besar memimpin tiap kartu." actions={<Button type="button" variant="outline" size="sm" onClick={() => set([...list, { id: `b-${uid()}`, icon: 'Sparkles', figure: '', figureNote: '', title: 'Benefit baru', desc: '' }])}><Plus strokeWidth={1.6} />Tambah</Button>}>
       <ol className="divide-y divide-line-2">
         {list.map((b, i) => {
           const Icon = BENEFIT_ICONS[b.icon] || Sparkles
@@ -46,6 +45,10 @@ function BenefitsCard() {
                 </Select>
               </Field>
               <div className="grid gap-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Field label="Angka besar" htmlFor={`bn-fig-${b.id}`}><Input id={`bn-fig-${b.id}`} value={b.figure || ''} placeholder="0–5%" className="h-9 text-[13px]" onChange={e => update(b.id, { figure: e.target.value })} /></Field>
+                  <Field label="Keterangan angka" htmlFor={`bn-fign-${b.id}`}><Input id={`bn-fign-${b.id}`} value={b.figureNote || ''} placeholder="diskon belanja" className="h-9 text-[13px]" onChange={e => update(b.id, { figureNote: e.target.value })} /></Field>
+                </div>
                 <Field label="Judul" htmlFor={`bn-title-${b.id}`}><Input id={`bn-title-${b.id}`} value={b.title} className="h-9 text-[13px]" onChange={e => update(b.id, { title: e.target.value })} /></Field>
                 <Field label="Deskripsi" htmlFor={`bn-desc-${b.id}`}><Textarea id={`bn-desc-${b.id}`} value={b.desc} rows={2} className="min-h-[56px] text-[13px]" onChange={e => update(b.id, { desc: e.target.value })} /></Field>
               </div>

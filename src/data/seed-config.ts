@@ -11,11 +11,13 @@ export const SEED_TIERS: Tier[] = [
   { key: 'ultimate',     name: 'Ultimate',     sw: '#d4a04e', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 0,       consult: 3, benefitCopy: 'Diskon 5%, gratis ongkir tanpa minimum, 3 sesi konsultasi, produk baru lebih dulu.' },
 ]
 
+/* Five RMC privileges (Lurd, 4 Sep): diskon belanja · gratis ongkir · gratis konsultasi bisnis · redeem poin · event tahunan. */
 export const SEED_BENEFITS: Benefit[] = [
-  { id: 'b1', icon: 'UserPlus',  title: 'Daftar pakai nomor HP', desc: 'Isi data sekali. Kalau nomor HP sudah ada di data Resique, poin langsung tersambung.' },
-  { id: 'b2', icon: 'Coins',     title: 'Rp1.000 = 1 poin', desc: 'Berlaku untuk semua belanja chemical & perlengkapan yang Lunas. Poin berlaku sampai 20 Des.' },
-  { id: 'b3', icon: 'Gift',      title: 'Tukar poin jadi hadiah', desc: 'Voucher belanja, parfum 5L, tablet, sampai laptop. Minimal tukar 500 poin.' },
-  { id: 'b4', icon: 'Crown',     title: 'Diskon & gratis ongkir', desc: 'Diskon 1–5% sesuai tier, gratis ongkir, konsultasi laundry, undangan Gala Dinner.' },
+  { id: 'b-diskon',     icon: 'Percent',        figure: '0–5%',     figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.' },
+  { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',   figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.' },
+  { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1–3 sesi', figureNote: 'konsultasi',     title: 'Gratis konsultasi bisnis',        desc: 'Sesi konsultasi operasional laundry bersama tim Resique, mulai tier Winner.' },
+  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',  figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja Lunas jadi 1 poin. Tukar mulai 500 poin: voucher, parfum 5L, tablet, sampai laptop. Poin berlaku sampai 20 Des.' },
+  { id: 'b-event',      icon: 'PartyPopper',    figure: '1×',       figureNote: 'per tahun',      title: 'Event tahunan eksklusif Resique', desc: 'Undangan Gala Dinner dan gathering member Resique, mulai tier Champion.' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [
@@ -41,12 +43,12 @@ export const SEED_PRIZES: Prize[] = [
 
 export const DEFAULT_CONFIG: Config = {
   copy: {
-    hook: 'Resique Turun Harga',
+    hook: 'Resique Turun Harga!',
     hookSub: 'Harga chemical & perlengkapan turun. Setiap Rp1.000 belanja tetap dapat 1 poin RMC.',
     tagline: 'Tingkatkan transaksi, dapatkan hadiahnya!',
     taglineSub: 'Rp1.000 belanja = 1 poin RMC. Poin bisa ditukar voucher, parfum, sampai laptop.',
     benefitTitle: 'Yang didapat member RMC',
-    benefitSub: 'Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.',
+    benefitSub: 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.',
     tierTitle: 'Diskon tier 0% sampai 5%',
     tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des).',
     ctaPoints: 'Cek poin-mu!',

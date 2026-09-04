@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ShoppingBag } from 'lucide-react'
+import { ArrowRight, ChevronsRight, ShoppingBag, Sparkles, Trophy } from 'lucide-react'
+import { BENEFIT_ICONS } from '@/lib/benefit-icons'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { rupiah, fmtDate } from '@/lib/format'
@@ -16,11 +17,11 @@ import { Price } from '@/components/shop/Price'
 import { QtyStepper } from '@/components/shop/QtyStepper'
 import type { GoldenSaleItem, Tier } from '@/model/types'
 
-/* Landing — 7 sections, one colour block (hero), one emphasis (prize strip).
-   Rhythm: hook (paper) → hero (teal) → benefits (paper, definition list) → tier ladder (white)
-   → CTA band (white, quiet) → Golden Sale (paper) → Klasemen (white). No eyebrows, no gradient
-   text, no orbs, no glass, cards ≤ 10px radius, border OR shadow. Motion: hook fade-up on load,
-   marquee, basket bar slide — nothing else. (ui-designer + impeccable review, 4 Sep 2026) */
+/* Landing — 7 sections, two colour blocks (hero + "Cek poin-mu!" band), gold reserved for reward/rank.
+   Rhythm: hook (paper) → hero (teal) → 5 privilege blocks (paper) → tier cards (white) → CTA band (teal)
+   → Golden Sale (paper) → Klasemen (white, gold leader card). No eyebrows, no gradient text, no orbs, no glass,
+   cards ≤ 10px radius. Motion: hook fade-up on load, marquee, basket bar slide, and pointer-only hover
+   (.lift / .slide / .u-slide / .arrow-nudge in index.css) — Lurd round 5, 4 Sep 2026. */
 
 export function LandingPage() {
   const hasCart = useCart(s => Object.keys(s.qty).length > 0)
@@ -64,25 +65,26 @@ function HookSection() {
             {copy.hook.split(' ').slice(0, -1).join(' ')} <span className="text-teal-700">{copy.hook.split(' ').slice(-1)}</span>
           </h1>
           <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button asChild size="lg">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <Button asChild size="lg" className="arrow-nudge hover:-translate-y-0.5">
               <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
                 Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </a>
             </Button>
-            <Link to="/login" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-800">{copy.ctaPoints}</Link>
+            <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-teal-700 transition-colors duration-base hover:text-teal-800 [--u-bottom:8px]">{copy.ctaPoints} <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>
           </div>
         </div>
         {drops.length > 0 && (
           <div className="min-w-0 lg:col-span-5">
+            {/* three biggest drops (Rp saved) among active Golden Sale items — same config the grid below reads */}
             <div className="rounded-lg border border-line bg-white">
               <div className="flex items-baseline justify-between border-b border-line px-5 py-4">
-                <p className="text-[15px] font-bold text-ink">Contoh harga turun</p>
+                <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
                 <p className="t-num text-[13px] font-semibold text-gold-700">sampai -{maxPct}%</p>
               </div>
               <ul className="divide-y divide-line-2">
                 {drops.map(d => (
-                  <li key={d.id} className="flex items-center gap-4 px-5 py-4">
+                  <li key={d.id} className="slide flex items-center gap-4 px-5 py-4 hover:bg-surface-2">
                     <img src={d.image} alt="" width={64} height={48} className="h-12 w-16 shrink-0 rounded-md bg-surface-2 object-cover" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[14px] font-semibold text-ink">{d.name}</p>
@@ -92,7 +94,7 @@ function HookSection() {
                   </li>
                 ))}
               </ul>
-              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="flex min-h-[48px] items-center justify-between border-t border-line px-5 text-[14px] font-semibold text-teal-700 hover:bg-teal-50">
+              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="arrow-nudge flex min-h-[48px] items-center justify-between border-t border-line px-5 text-[14px] font-semibold text-teal-700 transition-colors duration-base hover:bg-teal-50">
                 Semua {items.filter(i => i.active).length} produk promo <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </a>
             </div>
@@ -133,36 +135,35 @@ function HeroSection() {
   )
 }
 
-/* 3 — Benefit RMC: asymmetric figure blocks — each benefit leads with its own number (the fact IS the visual).
-   Figures come from config so they never drift from the rules. */
+/* 3 — Privilege member RMC: five blocks (diskon belanja · gratis ongkir · konsultasi bisnis · redeem poin · event
+   tahunan), each led by its icon + figure. Desktop reads [½ ½] / [⅓ ⅓ ⅓]; content from config (admin-defined). */
 function BenefitSection() {
-  const { copy, benefits, rules, tiers } = useConfig(s => s.config)
-  const maxDisc = Math.max(...tiers.map(t => t.discount))
-  const figures = [
-    { big: `Rp${rules.earnPerRp.toLocaleString('id-ID')}`, small: '= 1 poin' },
-    { big: `${tiers[0]?.discount ?? 0}–${maxDisc}%`, small: 'diskon tier' },
-    { big: rules.minRedeem.toLocaleString('id-ID'), small: 'poin min. tukar' },
-    { big: rules.expiry, small: 'poin berlaku' },
-  ]
-  const tones = ['bg-teal-700 text-white', 'bg-gold-50', 'bg-white', 'bg-teal-50']
+  const { copy, benefits } = useConfig(s => s.config)
+  const tones = ['bg-teal-700 text-white', 'bg-gold-50', 'bg-white', 'bg-teal-50', 'bg-white']
+  const five = benefits.length === 5
   return (
     <section id="benefit" className="scroll-mt-20 py-14 lg:py-24">
       <div className="container">
         <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} />
-        <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+        <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4">
           {benefits.map((b, i) => {
             const dark = i === 0
-            const fig = figures[i] || { big: '', small: '' }
-            // rows read [2,1] / [1,2] on desktop — asymmetric, never four identical tiles
-            const span = (i === 0 || i === 3) && benefits.length >= 4 ? 'sm:col-span-2 lg:col-span-2' : ''
+            const Icon = BENEFIT_ICONS[b.icon] || Sparkles
+            const span = five ? (i < 2 ? 'lg:col-span-3' : 'lg:col-span-2') : 'lg:col-span-2'
+            const lastOdd = i === benefits.length - 1 && benefits.length % 2 === 1 ? 'sm:col-span-2' : ''
             return (
-              <li key={b.id} className={cn('flex min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'border-teal-700', span)}>
-                <div>
-                  <p className={cn('t-num text-[40px] font-extrabold leading-none tracking-tight', dark ? 'text-white' : 'text-teal-700')}>{fig.big}</p>
-                  <p className={cn('t-num mt-1 text-[13px] font-semibold', dark ? 'text-white/80' : 'text-ink-2')}>{fig.small}</p>
+              <li key={b.id} className={cn('lift flex min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'border-teal-700', span, lastOdd, five && i >= 2 && 'sm:col-span-1')}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    {b.figure && <p className={cn('t-num text-[40px] font-extrabold leading-none tracking-tight', dark ? 'text-white' : 'text-teal-700')}>{b.figure}</p>}
+                    {b.figureNote && <p className={cn('t-num mt-1 text-[13px] font-semibold', dark ? 'text-white/80' : 'text-ink-2')}>{b.figureNote}</p>}
+                  </div>
+                  <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-md', dark ? 'bg-white/15 text-white' : 'bg-white text-teal-700 shadow-1')} aria-hidden>
+                    <Icon className="h-5 w-5" strokeWidth={1.6} />
+                  </span>
                 </div>
                 <div className="mt-6">
-                  <h3 className={cn('text-[17px] font-bold', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
+                  <h3 className={cn('text-[17px] font-bold text-balance', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
                   <p className={cn('mt-1 text-[14px] leading-relaxed text-pretty', dark ? 'text-white/85' : 'text-ink-2')}>{b.desc}</p>
                 </div>
               </li>
@@ -197,7 +198,7 @@ function TierSection() {
 /* Tier card: colour identity from the tier swatch (badge + discount), gold surface for the top tier. */
 function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
   return (
-    <li className={cn('flex flex-col rounded-lg border p-5', top ? 'border-gold-200 bg-gold-50' : 'border-line bg-white')}>
+    <li className={cn('lift group flex flex-col rounded-lg border p-5', top ? 'border-gold-200 bg-gold-50 hover:border-gold' : 'border-line bg-white hover:border-teal-200')}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="t-num grid h-9 w-9 shrink-0 place-items-center rounded-md text-[13px] font-extrabold text-white" style={{ background: tier.sw }} aria-hidden>{idx + 1}</span>
@@ -206,7 +207,7 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
             <p className="t-num text-[13px] text-ink-2">{tier.perMonth} / bulan</p>
           </div>
         </div>
-        <p className="t-num text-[34px] font-extrabold leading-none tracking-tight" style={{ color: top ? '#8A6A00' : tier.sw }}>{tier.discount}%</p>
+        <p className="t-num origin-right text-[34px] font-extrabold leading-none tracking-tight transition-transform duration-slow ease-out group-hover:scale-110" style={{ color: top ? '#8A6A00' : tier.sw }}>{tier.discount}%</p>
       </div>
       <p className="mt-4 text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
       <dl className="t-num mt-4 grid grid-cols-3 gap-2 border-t border-line-2 pt-3 text-[12px]">
@@ -218,21 +219,39 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
   )
 }
 
-/* 5 — CTA band: the quietest section on purpose. */
+/* 5 — CTA band: second colour block (teal) — the conversion point. Left: ask + buttons; right: the 3 real steps. */
 function CtaSection() {
-  const { copy } = useConfig(s => s.config)
+  const { copy, rules } = useConfig(s => s.config)
   const acc = useCurrentAccount()
+  const steps = [
+    { t: 'Masuk pakai nomor HP', d: 'Nomor yang terdaftar di Resique. Belum punya akun? Daftar 1 menit.' },
+    { t: 'Lihat poin, tier & diskon', d: `Rp${rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin. Grafik poin per bulan ikut tampil.` },
+    { t: 'Tukar poin jadi hadiah', d: `Mulai ${rules.minRedeem.toLocaleString('id-ID')} poin — voucher, parfum, sampai laptop.` },
+  ]
   return (
-    <section id="cek-poin" className="scroll-mt-20 border-y border-line bg-white py-10 lg:py-14">
-      <div className="container flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="max-w-xl">
-          <h2 className="t-h2 text-ink">{copy.ctaPoints}</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{copy.ctaPointsSub}</p>
+    <section id="cek-poin" className="scroll-mt-20 bg-teal-700 py-16 text-white lg:py-24">
+      <div className="container grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
+        <div className="min-w-0 lg:col-span-6">
+          <h2 className="t-h1 text-balance text-white">{copy.ctaPoints}</h2>
+          <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-pretty text-white/85 sm:text-[17px]">{copy.ctaPointsSub}</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <Button asChild size="lg" variant="inverse" className="arrow-nudge hover:-translate-y-0.5">
+              <Link to={acc ? '/profile' : '/login'}>{acc ? 'Buka profil RMC' : 'Masuk & cek poin'} <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link>
+            </Button>
+            {!acc && <Link to="/register" className="u-slide inline-flex min-h-[44px] items-center text-[15px] font-semibold text-white [--u-bottom:8px]">Belum punya akun? Daftar</Link>}
+          </div>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button asChild size="lg"><Link to={acc ? '/profile' : '/login'}>{acc ? 'Buka profil RMC' : 'Masuk & cek poin'}</Link></Button>
-          {!acc && <Link to="/register" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4">Belum punya akun? Daftar</Link>}
-        </div>
+        <ol className="min-w-0 divide-y divide-white/15 border-y border-white/15 lg:col-span-6" aria-label="Cara cek poin">
+          {steps.map((s, i) => (
+            <li key={s.t} className="slide flex items-start gap-4 py-4 lg:py-5">
+              <span className="t-num grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white/15 text-[15px] font-extrabold text-white" aria-hidden>{i + 1}</span>
+              <div className="min-w-0">
+                <p className="text-[16px] font-bold text-white sm:text-[17px]">{s.t}</p>
+                <p className="mt-0.5 text-[14px] leading-relaxed text-pretty text-white/80">{s.d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )
@@ -334,7 +353,8 @@ function BasketBar() {
   )
 }
 
-/* 7 — Klasemen: plain list, ends the page on paper. */
+/* 7 — Klasemen: leader gets a gold card (rank 1 = hadiah utama), the rest a list with a spend bar relative to the
+   leader. One <ol> so the ranking stays a single ordered list. Rows slide on hover (pointer devices). */
 function KlasemenSection() {
   const cfg = useConfig(s => s.config)
   const orders = useOrders(s => s.orders)
@@ -342,28 +362,46 @@ function KlasemenSection() {
   const rows = React.useMemo(() => klasemen(orders, cfg.campaign.start, cfg.campaign.end), [orders, cfg.campaign.start, cfg.campaign.end])
   const top = rows.slice(0, cfg.klasemen.topN)
   const mine = acc ? rows.find(r => r.accountId === acc.id || (acc.crmCustomerId && r.crmCustomerId === acc.crmCustomerId) || r.phone === acc.phone) : undefined
+  const leadSpend = top[0]?.spend || 1
   return (
     <section id="klasemen" className="scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
-          <ol className="mt-8 divide-y divide-line-2 border-y border-line" aria-label="Peringkat belanja Golden Sale">
-            {top.map(r => {
+          <ol className="mt-8" aria-label="Peringkat belanja Golden Sale">
+            {top.map((r, i) => {
               const me = !!mine && r.key === mine.key
-              return (
-                <li key={r.key} data-rank={r.rank} className={cn('flex items-center gap-4 py-3.5', me && '-mx-3 bg-teal-50 px-3 sm:-mx-4 sm:px-4')}>
-                  <span className={cn('t-num w-8 shrink-0 text-[18px] font-extrabold', r.rank <= 3 ? 'text-gold-700' : 'text-ink-3')}>{r.rank}</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
-                    {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
+              if (i === 0) return (
+                <li key={r.key} data-rank={r.rank} className="lift mb-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-lg border border-gold-200 bg-gold-50 p-5 sm:grid-cols-[auto_1fr_auto] sm:gap-6 sm:p-6">
+                  <span className="grid h-14 w-14 place-items-center rounded-md bg-gold text-gold-ink sm:h-16 sm:w-16" aria-hidden><Trophy className="h-7 w-7" strokeWidth={1.6} /></span>
+                  <div className="min-w-0">
+                    <p className="t-num text-[13px] font-bold text-gold-700">Peringkat 1 · kandidat hadiah utama</p>
+                    <p className="mt-1 break-words text-[20px] font-extrabold leading-tight text-balance text-ink sm:text-[24px]">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
+                    {cfg.klasemen.showPic && <p className="t-num mt-0.5 truncate text-[14px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
                   </div>
-                  <p className="t-num shrink-0 text-[15px] font-extrabold text-teal-700 sm:text-[17px]">{rupiah(r.spend)}</p>
+                  <p className="t-num col-start-2 text-[24px] font-extrabold leading-none tracking-tight text-teal-700 sm:col-start-3 sm:text-right sm:text-[30px]">{rupiah(r.spend)}</p>
+                </li>
+              )
+              return (
+                <li key={r.key} data-rank={r.rank} className={cn('slide -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:-mx-4 sm:px-4', me && 'bg-teal-50 hover:bg-teal-50')}>
+                  <div className="flex items-center gap-4">
+                    <span className={cn('t-num grid h-9 w-9 shrink-0 place-items-center rounded-md text-[15px] font-extrabold', r.rank <= 3 ? 'bg-gold-100 text-gold-ink' : 'bg-surface-2 text-ink-3')}>{r.rank}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
+                      {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
+                    </div>
+                    <p className="t-num shrink-0 text-[15px] font-extrabold text-teal-700 sm:text-[17px]">{rupiah(r.spend)}</p>
+                  </div>
+                  {/* spend relative to the leader — the gap to rank 1 at a glance */}
+                  <div className="mt-2 h-1 overflow-hidden rounded-full bg-line-2" style={{ marginLeft: 52 }} aria-hidden>
+                    <div className="h-full rounded-full bg-teal-200 transition-[width] duration-slow ease-out" style={{ width: `${Math.max(4, Math.round((r.spend / leadSpend) * 100))}%` }} />
+                  </div>
                 </li>
               )
             })}
             {mine && mine.rank > cfg.klasemen.topN && (
-              <li className="-mx-3 flex items-center gap-4 bg-teal-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
-                <span className="t-num w-8 shrink-0 text-[18px] font-extrabold text-teal-700">{mine.rank}</span>
+              <li className="-mx-3 mt-2 flex items-center gap-4 rounded-md bg-teal-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
+                <span className="t-num grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white text-[15px] font-extrabold text-teal-700">{mine.rank}</span>
                 <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-ink-2">Peringkatmu saat ini</p></div>
                 <p className="t-num text-[15px] font-extrabold text-teal-700">{rupiah(mine.spend)}</p>
               </li>

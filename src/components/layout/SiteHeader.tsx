@@ -45,7 +45,7 @@ export function SiteHeader() {
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Navigasi utama">
             {NAV.map(n => (
-              <a key={n.to} href={n.to} onClick={go(n.to)} className="rounded-md px-3 py-2 text-[15px] font-medium text-ink-2 transition-colors hover:text-teal-700">{n.label}</a>
+              <a key={n.to} href={n.to} onClick={go(n.to)} className="u-slide rounded-md px-3 py-2 text-[15px] font-medium text-ink-2 transition-colors duration-base hover:text-teal-700 [--u-bottom:4px] [--u-inset:0.75rem]">{n.label}</a>
             ))}
           </nav>
 

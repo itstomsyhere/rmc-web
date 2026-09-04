@@ -21,7 +21,8 @@ export interface Tier {
   benefitCopy: string
 }
 
-export interface Benefit { id: string; icon: string; title: string; desc: string }
+/* figure/figureNote = the big number that leads the card (e.g. "0–5%" / "diskon belanja"); admin-defined */
+export interface Benefit { id: string; icon: string; title: string; desc: string; figure?: string; figureNote?: string }
 export interface HeroPrize { id: string; image: string; label: string }
 
 export interface GoldenSaleItem {

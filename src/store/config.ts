@@ -19,6 +19,16 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
     // @ts-expect-error — generic section merge
     out[k] = { ...DEFAULT_CONFIG[k], ...(stored[k] || {}) }
   })
+  // seed upgrades: a browser that stored an older default (untouched by admin) follows the new default
+  const OLD_BENEFIT_IDS = ['b1', 'b2', 'b3', 'b4']
+  if (!Array.isArray(out.benefits) || !out.benefits.length || out.benefits.every(b => OLD_BENEFIT_IDS.includes(b.id))) out.benefits = DEFAULT_CONFIG.benefits
+  const COPY_UPGRADES: Partial<Record<keyof Config['copy'], string[]>> = {
+    hook: ['Resique Turun Harga'],
+    benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.'],
+  }
+  ;(Object.keys(COPY_UPGRADES) as (keyof Config['copy'])[]).forEach(k => {
+    if (COPY_UPGRADES[k]!.includes(String(out.copy[k]))) (out.copy as Record<string, unknown>)[k] = DEFAULT_CONFIG.copy[k]
+  })
   if (!Array.isArray(out.tiers) || !out.tiers.length) out.tiers = DEFAULT_CONFIG.tiers
   if (!Array.isArray(out.prizeTypes) || !out.prizeTypes.length) out.prizeTypes = DEFAULT_CONFIG.prizeTypes
   out.prizes = (out.prizes || []).map(p => ({ ...p, type: p.type || out.prizeTypes[out.prizeTypes.length - 1] }))

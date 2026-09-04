@@ -68,6 +68,21 @@ body {
   /* scroll-margin keeps anchor jumps (nav links, #hash) clear of the floating nav pill */
   .section { @apply py-14 sm:py-20 lg:py-24 scroll-mt-20 sm:scroll-mt-24; }
   .section-deck { @apply lg:min-h-[92vh] lg:flex lg:flex-col lg:justify-center; }
+
+  /* Hover motion (Lurd, 4 Sep): pointer devices only; transform/opacity/shadow only — never layout. */
+  .lift { transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out), background-color var(--dur-slow) var(--ease-out); }
+  .slide { transition: transform var(--dur-slow) var(--ease-out), background-color var(--dur-slow) var(--ease-out); }
+  @media (hover: hover) {
+    .lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(14, 82, 73, .10), 0 1px 3px rgba(20, 30, 30, .05); }
+    .slide:hover { transform: translateX(4px); }
+  }
+  /* underline grows from the left (nav links, text CTAs) */
+  .u-slide { position: relative; }
+  .u-slide::after { content: ''; position: absolute; left: var(--u-inset, 0); right: var(--u-inset, 0); bottom: var(--u-bottom, 0); height: 2px; border-radius: 2px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--dur-base) var(--ease-out); }
+  .u-slide:hover::after, .u-slide:focus-visible::after { transform: scaleX(1); }
+  /* trailing arrow nudges with the hover */
+  .arrow-nudge svg:last-child { transition: transform var(--dur-base) var(--ease-out); }
+  .arrow-nudge:hover svg:last-child { transform: translateX(3px); }
 }
 
 /* Marquee (prize strip) */
