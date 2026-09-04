@@ -173,7 +173,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
           <div className="mx-auto mt-5 w-full max-w-[320px]">
             <div className={cn('rounded-xl bg-black/5 p-1.5 ring-1 ring-black/5 transition-opacity duration-slow', expired && 'opacity-40 grayscale')}>
               <div className="rounded-xl bg-white p-4 shadow-1">
-                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} width={272} height={300} className="aspect-square w-full rounded-lg object-contain" draggable={false} />
+                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} width={1131} height={1600} className="aspect-square w-full rounded-lg object-contain" draggable={false} />
                 <div className="mt-3 text-center">
                   <p className="text-[13px] font-bold text-ink">{cfg.payment.qrisMerchant}</p>
                   <p className="mt-0.5 font-mono text-[11px] tracking-wide text-ink-3">NMID {cfg.payment.qrisNmid}</p>

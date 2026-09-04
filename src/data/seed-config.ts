@@ -57,7 +57,7 @@ export const DEFAULT_CONFIG: Config = {
     klasemenSub: 'Urutan total belanja dari pesanan Lunas. Belanja terbanyak dapat hadiah utama.',
     snapDesktop: false,
   },
-  assets: { heroPrizes: SEED_HERO, logo: '/img/resique-logo.svg', qrisImage: '/img/qris-demo.svg' },
+  assets: { heroPrizes: SEED_HERO, logo: '/img/resique-logo.svg', qrisImage: '/img/qris-resique.png' },
   benefits: SEED_BENEFITS,
   tiers: SEED_TIERS,
   mitraFloorDiscount: 3,
