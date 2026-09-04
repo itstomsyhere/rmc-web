@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { ArrowLeft, ArrowRight, KeyRound, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, KeyRound } from 'lucide-react'
 import { Reveal } from '@/lib/reveal'
 import { Narrow } from '@/components/layout/Shell'
 import { normalizePhone, displayPhone } from '@/model/phone'
@@ -12,6 +12,7 @@ import { Field } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { MockInboxCard } from '@/components/auth/MockInboxCard'
 import { PasswordInput } from '@/components/auth/PasswordChecklist'
+import { DEMO_LOGIN } from '@/data/seed-accounts'
 
 /* Login — PRD Fitur 3. Username = nomor HP; temp password forces /change-password on first sign-in. */
 export function LoginPage() {
@@ -40,17 +41,16 @@ export function LoginPage() {
     <Narrow>
       <Reveal>
         <div className="flex items-center justify-between gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gold-200 bg-white/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-700 backdrop-blur">
-            <Sparkles className="h-3 w-3" strokeWidth={2} /> Resique Member Card
-          </span>
-          <Link to="/register" className="rounded-full px-3 py-2 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Belum punya akun? Daftar</Link>
+          <Link to="/" className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
+          <Link to="/register" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-md px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Belum punya akun? Daftar</Link>
         </div>
+        <p className="t-eyebrow mt-4">Resique Member Card</p>
       </Reveal>
 
       {mode === 'login' ? (
         <>
           <Reveal delay={40}>
-            <h1 className="t-h1 mt-5 text-ink">Masuk</h1>
+            <h1 className="t-h1 mt-2 text-ink">Masuk</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan pesanan Golden Sale.</p>
           </Reveal>
           <Reveal delay={80}>
@@ -70,6 +70,14 @@ export function LoginPage() {
                 <button type="button" onClick={() => { setMode('reset'); setError(null) }} className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">
                   <KeyRound className="h-4 w-4" strokeWidth={1.6} /> Lupa kata sandi?
                 </button>
+              </div>
+              {/* prototype only — demo login for walkthroughs (Laundry 24 Jam Kuningan, tier + poin + pesanan terisi) */}
+              <div data-demo-login className="flex flex-col gap-3 rounded-lg border border-line bg-surface-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="t-num text-[13px] text-ink-2">
+                  <p className="font-semibold text-ink">Akun demo (prototype)</p>
+                  <p>No. HP <strong>{DEMO_LOGIN.phone}</strong> · Kata sandi <strong>{DEMO_LOGIN.password}</strong></p>
+                </div>
+                <Button type="button" variant="outline" size="sm" onClick={() => { setPhone(DEMO_LOGIN.phone); setPw(DEMO_LOGIN.password); setError(null) }}>Isi akun demo</Button>
               </div>
             </form>
           </Reveal>

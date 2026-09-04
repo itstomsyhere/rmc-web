@@ -47,23 +47,57 @@ function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: strin
   )
 }
 
-/* 1 — Hook: the only h1, one primary button, one text link. Animates once on load. */
+/* 1 — Hook: headline left, proof right — the three biggest real price drops from Golden Sale.
+   Content is the visual; no decoration. Animates once on load. */
 function HookSection() {
-  const { copy, campaign } = useConfig(s => s.config)
+  const { copy, campaign, items } = useConfig(s => s.config)
+  const drops = items.filter(i => i.active && i.realPrice > i.promoPrice)
+    .map(i => ({ ...i, pct: Math.round((1 - i.promoPrice / i.realPrice) * 100), save: i.realPrice - i.promoPrice }))
+    .sort((a, b) => b.save - a.save).slice(0, 3)
+  const maxPct = Math.max(...items.filter(i => i.realPrice > i.promoPrice).map(i => Math.round((1 - i.promoPrice / i.realPrice) * 100)), 0)
   return (
-    <section id="hook" className="scroll-mt-20 pb-10 pt-24 lg:pb-16 lg:pt-28">
-      <div className="container animate-fade-up">
-        <h1 className="t-display max-w-4xl text-balance text-ink">{copy.hook}</h1>
-        <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
-        <p className="t-num mt-3 text-[15px] text-ink-2">Berlaku {fmtDate(campaign.start)} – {fmtDate(campaign.end)}.</p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button asChild size="lg">
-            <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
-              Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
-            </a>
-          </Button>
-          <Link to="/login" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-800">{copy.ctaPoints}</Link>
+    <section id="hook" className="scroll-mt-20 pb-12 pt-20 lg:pb-20 lg:pt-24">
+      <div className="container grid grid-cols-1 items-center gap-10 animate-fade-up lg:grid-cols-12 lg:gap-14">
+        <div className="min-w-0 lg:col-span-7">
+          <p className="t-num inline-flex items-center gap-2 rounded-md bg-gold-100 px-2.5 py-1 text-[13px] font-bold text-gold-ink">{fmtDate(campaign.start)} – {fmtDate(campaign.end)}</p>
+          <h1 className="t-display mt-5 max-w-4xl text-balance text-ink">
+            {copy.hook.split(' ').slice(0, -1).join(' ')} <span className="text-teal-700">{copy.hook.split(' ').slice(-1)}</span>
+          </h1>
+          <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg">
+              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
+                Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
+              </a>
+            </Button>
+            <Link to="/login" className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-800">{copy.ctaPoints}</Link>
+          </div>
         </div>
+        {drops.length > 0 && (
+          <div className="min-w-0 lg:col-span-5">
+            <div className="rounded-lg border border-line bg-white">
+              <div className="flex items-baseline justify-between border-b border-line px-5 py-4">
+                <p className="text-[15px] font-bold text-ink">Contoh harga turun</p>
+                <p className="t-num text-[13px] font-semibold text-gold-700">sampai -{maxPct}%</p>
+              </div>
+              <ul className="divide-y divide-line-2">
+                {drops.map(d => (
+                  <li key={d.id} className="flex items-center gap-4 px-5 py-4">
+                    <img src={d.image} alt="" width={64} height={48} className="h-12 w-16 shrink-0 rounded-md bg-surface-2 object-cover" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[14px] font-semibold text-ink">{d.name}</p>
+                      <p className="t-num text-[13px] text-ink-2"><span className="strike text-ink-3">{rupiah(d.realPrice)}</span> → <strong className="text-teal-700">{rupiah(d.promoPrice)}</strong></p>
+                    </div>
+                    <span className="t-num shrink-0 rounded-md bg-gold-100 px-2 py-1 text-[13px] font-extrabold text-gold-ink">-{d.pct}%</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="flex min-h-[48px] items-center justify-between border-t border-line px-5 text-[14px] font-semibold text-teal-700 hover:bg-teal-50">
+                Semua {items.filter(i => i.active).length} produk promo <ArrowRight className="h-4 w-4" strokeWidth={2} />
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
@@ -99,21 +133,42 @@ function HeroSection() {
   )
 }
 
-/* 3 — Benefit RMC: definition list, no cards, no icons. */
+/* 3 — Benefit RMC: asymmetric figure blocks — each benefit leads with its own number (the fact IS the visual).
+   Figures come from config so they never drift from the rules. */
 function BenefitSection() {
-  const { copy, benefits } = useConfig(s => s.config)
+  const { copy, benefits, rules, tiers } = useConfig(s => s.config)
+  const maxDisc = Math.max(...tiers.map(t => t.discount))
+  const figures = [
+    { big: `Rp${rules.earnPerRp.toLocaleString('id-ID')}`, small: '= 1 poin' },
+    { big: `${tiers[0]?.discount ?? 0}–${maxDisc}%`, small: 'diskon tier' },
+    { big: rules.minRedeem.toLocaleString('id-ID'), small: 'poin min. tukar' },
+    { big: rules.expiry, small: 'poin berlaku' },
+  ]
+  const tones = ['bg-teal-700 text-white', 'bg-gold-50', 'bg-white', 'bg-teal-50']
   return (
     <section id="benefit" className="scroll-mt-20 py-14 lg:py-24">
       <div className="container">
         <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} />
-        <dl className="mt-8 divide-y divide-line-2 border-y border-line">
-          {benefits.map(b => (
-            <div key={b.id} className="grid gap-1 py-5 sm:grid-cols-[220px_1fr] sm:gap-8">
-              <dt className="text-[17px] font-bold text-ink">{b.title}</dt>
-              <dd className="text-[15px] leading-relaxed text-pretty text-ink-2">{b.desc}</dd>
-            </div>
-          ))}
-        </dl>
+        <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+          {benefits.map((b, i) => {
+            const dark = i === 0
+            const fig = figures[i] || { big: '', small: '' }
+            // rows read [2,1] / [1,2] on desktop — asymmetric, never four identical tiles
+            const span = (i === 0 || i === 3) && benefits.length >= 4 ? 'sm:col-span-2 lg:col-span-2' : ''
+            return (
+              <li key={b.id} className={cn('flex min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'border-teal-700', span)}>
+                <div>
+                  <p className={cn('t-num text-[40px] font-extrabold leading-none tracking-tight', dark ? 'text-white' : 'text-teal-700')}>{fig.big}</p>
+                  <p className={cn('t-num mt-1 text-[13px] font-semibold', dark ? 'text-white/80' : 'text-ink-2')}>{fig.small}</p>
+                </div>
+                <div className="mt-6">
+                  <h3 className={cn('text-[17px] font-bold', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
+                  <p className={cn('mt-1 text-[14px] leading-relaxed text-pretty', dark ? 'text-white/85' : 'text-ink-2')}>{b.desc}</p>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
       </div>
     </section>
   )
@@ -126,26 +181,39 @@ function TierSection() {
     <section id="tier" className="scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
       <div className="container">
         <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} />
-        <ol className="mt-8 divide-y divide-line-2 border-y border-line" aria-label="Daftar tier RMC">
-          {cfg.tiers.map((t, i) => <TierRow key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
+        <ol className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4" aria-label="Daftar tier RMC">
+          {cfg.tiers.map((t, i) => <TierCardV key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
         </ol>
-        <p className="mt-6 max-w-2xl border-l-2 border-teal pl-4 text-[15px] leading-relaxed text-ink-2">
-          Mitra Apique Management: diskon minimal <strong className="t-num text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Kalau diskon tier lebih besar, itu yang dipakai.
-        </p>
+        <div className="mt-6 flex max-w-2xl items-start gap-3 rounded-lg bg-teal-50 p-4">
+          <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md bg-white text-[13px] font-extrabold text-teal-700">M</span>
+          <p className="text-[15px] leading-relaxed text-ink-2">
+            <strong className="text-ink">Mitra Apique Management</strong> punya diskon minimal <strong className="t-num text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Kalau diskon tier lebih besar, itu yang dipakai.
+          </p>
+        </div>
       </div>
     </section>
   )
 }
-function TierRow({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
+/* Tier card: colour identity from the tier swatch (badge + discount), gold surface for the top tier. */
+function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
   return (
-    <li className={cn('grid grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-4 sm:grid-cols-[2.5rem_10rem_8rem_1fr_auto]', top && 'bg-gold-50 -mx-3 px-3 sm:-mx-4 sm:px-4')}>
-      <span className="t-num text-[15px] font-bold text-ink-3">{idx + 1}</span>
-      <h3 className="text-[17px] font-bold text-ink">{tier.name}</h3>
-      <p className="t-num col-start-3 row-start-1 text-right text-[22px] font-extrabold leading-none tracking-tight sm:col-start-5" style={{ color: top ? '#8A6A00' : undefined }}>
-        <span className={cn(!top && 'text-teal-700')}>{tier.discount}%</span>
-      </p>
-      <p className="t-num col-span-2 col-start-2 text-[13px] text-ink-2 sm:col-span-1 sm:col-start-3 sm:row-start-1 sm:text-[15px]">{tier.perMonth} / bulan</p>
-      <p className="col-span-2 col-start-2 mt-1 text-[15px] leading-relaxed text-ink-2 sm:col-span-1 sm:col-start-4 sm:row-start-1 sm:mt-0">{tier.benefitCopy}</p>
+    <li className={cn('flex flex-col rounded-lg border p-5', top ? 'border-gold-200 bg-gold-50' : 'border-line bg-white')}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="t-num grid h-9 w-9 shrink-0 place-items-center rounded-md text-[13px] font-extrabold text-white" style={{ background: tier.sw }} aria-hidden>{idx + 1}</span>
+          <div>
+            <h3 className="text-[17px] font-extrabold leading-tight text-ink">{tier.name}</h3>
+            <p className="t-num text-[13px] text-ink-2">{tier.perMonth} / bulan</p>
+          </div>
+        </div>
+        <p className="t-num text-[34px] font-extrabold leading-none tracking-tight" style={{ color: top ? '#8A6A00' : tier.sw }}>{tier.discount}%</p>
+      </div>
+      <p className="mt-4 text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
+      <dl className="t-num mt-4 grid grid-cols-3 gap-2 border-t border-line-2 pt-3 text-[12px]">
+        <div><dt className="text-ink-3">Belanja 6 bln</dt><dd className="font-semibold text-ink">{tier.max ? `${rupiah(tier.min, { short: true }).replace('Rp', '')}–${rupiah(tier.max, { short: true })}` : `≥ ${rupiah(tier.min, { short: true })}`}</dd></div>
+        <div><dt className="text-ink-3">Gratis ongkir</dt><dd className="font-semibold text-ink">{tier.freeDelivMin === null ? '—' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`}</dd></div>
+        <div><dt className="text-ink-3">Konsultasi</dt><dd className="font-semibold text-ink">{tier.consult ? `${tier.consult} sesi` : '—'}</dd></div>
+      </dl>
     </li>
   )
 }

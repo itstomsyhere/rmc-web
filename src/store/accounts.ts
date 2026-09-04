@@ -10,6 +10,7 @@ import { uid } from '@/lib/id'
 import { useCrm } from './crm'
 import { useInbox } from './inbox'
 import { cfg } from './config'
+import { SEED_ACCOUNTS } from '@/data/seed-accounts'
 
 export interface RegisterForm {
   isMitra: boolean
@@ -43,7 +44,7 @@ interface AccountsState {
 export const useAccounts = create<AccountsState>()(
   persist(
     (set, get) => ({
-      accounts: [],
+      accounts: SEED_ACCOUNTS,
       redemptions: [],
       byPhone: phone => { const p = normalizePhone(phone); return p ? get().accounts.find(a => a.phone === p) : undefined },
 
@@ -140,9 +141,18 @@ export const useAccounts = create<AccountsState>()(
         return r
       },
 
-      reset: () => set({ accounts: [], redemptions: [] }),
+      reset: () => set({ accounts: SEED_ACCOUNTS, redemptions: [] }),
     }),
-    persistOpts<AccountsState>('accounts'),
+    {
+      ...persistOpts<AccountsState>('accounts'),
+      // browsers that persisted an account list before the demo account existed still get it
+      merge: (persisted, current) => {
+        const p = (persisted as Partial<AccountsState> | undefined) || {}
+        const accounts = p.accounts || []
+        const withDemo = SEED_ACCOUNTS.filter(d => !accounts.some(a => a.phone === d.phone)).concat(accounts)
+        return { ...current, ...p, accounts: withDemo } as AccountsState
+      },
+    },
   ),
 )
 syncAcrossTabs(useAccounts)
