@@ -24,8 +24,11 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   if (!Array.isArray(out.benefits) || !out.benefits.length || out.benefits.every(b => OLD_BENEFIT_IDS.includes(b.id))) out.benefits = DEFAULT_CONFIG.benefits
   const COPY_UPGRADES: Partial<Record<keyof Config['copy'], string[]>> = {
     hook: ['Resique Turun Harga'],
-    benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.'],
+    benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
+    tierTitle: ['Diskon tier 0% sampai 5%'],
   }
+  // R.010: "0–5%" → "Hingga 5%" on the seed diskon block (only if the admin has not changed it)
+  out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && b.figure === '0–5%' ? { ...b, figure: seed.figure } : b })
   ;(Object.keys(COPY_UPGRADES) as (keyof Config['copy'])[]).forEach(k => {
     if (COPY_UPGRADES[k]!.includes(String(out.copy[k]))) (out.copy as Record<string, unknown>)[k] = DEFAULT_CONFIG.copy[k]
   })

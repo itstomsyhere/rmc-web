@@ -13,7 +13,7 @@ export const SEED_TIERS: Tier[] = [
 
 /* Five RMC privileges (Lurd, 4 Sep): diskon belanja · gratis ongkir · gratis konsultasi bisnis · redeem poin · event tahunan. */
 export const SEED_BENEFITS: Benefit[] = [
-  { id: 'b-diskon',     icon: 'Percent',        figure: '0–5%',     figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.' },
+  { id: 'b-diskon',     icon: 'Percent',        figure: 'Hingga 5%', figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.' },
   { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',   figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.' },
   { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1–3 sesi', figureNote: 'konsultasi',     title: 'Gratis konsultasi bisnis',        desc: 'Sesi konsultasi operasional laundry bersama tim Resique, mulai tier Winner.' },
   { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',  figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja Lunas jadi 1 poin. Tukar mulai 500 poin: voucher, parfum 5L, tablet, sampai laptop. Poin berlaku sampai 20 Des.' },
@@ -48,8 +48,8 @@ export const DEFAULT_CONFIG: Config = {
     tagline: 'Tingkatkan transaksi, dapatkan hadiahnya!',
     taglineSub: 'Rp1.000 belanja = 1 poin RMC. Poin bisa ditukar voucher, parfum, sampai laptop.',
     benefitTitle: 'Yang didapat member RMC',
-    benefitSub: 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.',
-    tierTitle: 'Diskon tier 0% sampai 5%',
+    benefitSub: 'Diskon hingga 5%, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.',
+    tierTitle: 'Diskon tier hingga 5%',
     tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des).',
     ctaPoints: 'Cek poin-mu!',
     ctaPointsSub: 'Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.',

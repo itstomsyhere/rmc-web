@@ -2,6 +2,11 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ChevronsRight, ShoppingBag, Sparkles, Trophy } from 'lucide-react'
 import { BENEFIT_ICONS } from '@/lib/benefit-icons'
+import { Reveal } from '@/lib/reveal'
+import { poin } from '@/lib/format'
+import { rmcFor } from '@/model/rmc'
+import { useCrm } from '@/store/crm'
+import { SEED_ACCOUNTS } from '@/data/seed-accounts'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { rupiah, fmtDate } from '@/lib/format'
@@ -15,7 +20,7 @@ import { EmptyState } from '@/components/ui/misc'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Price } from '@/components/shop/Price'
 import { QtyStepper } from '@/components/shop/QtyStepper'
-import type { GoldenSaleItem, Tier } from '@/model/types'
+import type { Config, GoldenSaleItem, Tier } from '@/model/types'
 
 /* Landing — 7 sections, two colour blocks (hero + "Cek poin-mu!" band), gold reserved for reward/rank.
    Rhythm: hook (paper) → hero (teal) → 5 privilege blocks (paper) → tier cards (white) → CTA band (teal)
@@ -39,12 +44,18 @@ export function LandingPage() {
   )
 }
 
+/* Last word of a title carries the highlighter mark (draws in when the title scrolls into view — .mark in index.css). */
+function Marked({ text, className }: { text: string; className?: string }) {
+  const words = text.trim().split(' ')
+  return <>{words.slice(0, -1).join(' ')}{words.length > 1 ? ' ' : ''}<span className={cn('mark', className)}>{words.slice(-1)[0]}</span></>
+}
+
 function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: string; tone?: 'ink' | 'white' }) {
   return (
-    <div className="max-w-2xl">
-      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}>{title}</h2>
+    <Reveal className="max-w-2xl">
+      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}><Marked text={title} className={tone === 'white' ? 'mark-light' : undefined} /></h2>
       {sub && <p className={cn('mt-3 text-[15px] leading-relaxed text-pretty sm:text-[17px]', tone === 'white' ? 'text-white/80' : 'text-ink-2')}>{sub}</p>}
-    </div>
+    </Reveal>
   )
 }
 
@@ -61,9 +72,9 @@ function HookSection() {
       <div className="container grid grid-cols-1 items-center gap-10 animate-fade-up lg:grid-cols-12 lg:gap-14">
         <div className="min-w-0 lg:col-span-7">
           <p className="t-num inline-flex items-center gap-2 rounded-md bg-gold-100 px-2.5 py-1 text-[13px] font-bold text-gold-ink">{fmtDate(campaign.start)} – {fmtDate(campaign.end)}</p>
-          <h1 className="t-display mt-5 max-w-4xl text-balance text-ink">
-            {copy.hook.split(' ').slice(0, -1).join(' ')} <span className="text-teal-700">{copy.hook.split(' ').slice(-1)}</span>
-          </h1>
+          <Reveal>
+            <h1 className="t-display mt-5 max-w-4xl text-balance text-ink"><Marked text={copy.hook} className="text-teal-700" /></h1>
+          </Reveal>
           <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
             <Button asChild size="lg" className="arrow-nudge hover:-translate-y-0.5">
@@ -152,21 +163,23 @@ function BenefitSection() {
             const span = five ? (i < 2 ? 'lg:col-span-3' : 'lg:col-span-2') : 'lg:col-span-2'
             const lastOdd = i === benefits.length - 1 && benefits.length % 2 === 1 ? 'sm:col-span-2' : ''
             return (
-              <li key={b.id} className={cn('lift flex min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'border-teal-700', span, lastOdd, five && i >= 2 && 'sm:col-span-1')}>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    {b.figure && <p className={cn('t-num text-[40px] font-extrabold leading-none tracking-tight', dark ? 'text-white' : 'text-teal-700')}>{b.figure}</p>}
-                    {b.figureNote && <p className={cn('t-num mt-1 text-[13px] font-semibold', dark ? 'text-white/80' : 'text-ink-2')}>{b.figureNote}</p>}
+              <Reveal as="li" key={b.id} delay={i * 70} className={cn('min-w-0', span, lastOdd, five && i >= 2 && 'sm:col-span-1')}>
+                <div className={cn('lift-lg flex h-full min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'border-teal-700')}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="fig">
+                      {b.figure && <p className={cn('t-num text-[40px] font-extrabold leading-none tracking-tight', dark ? 'text-white' : 'text-teal-700')}>{b.figure}</p>}
+                      {b.figureNote && <p className={cn('t-num mt-1 text-[13px] font-semibold', dark ? 'text-white/80' : 'text-ink-2')}>{b.figureNote}</p>}
+                    </div>
+                    <span className={cn('chip grid h-11 w-11 shrink-0 place-items-center rounded-md', dark ? 'bg-white/15 text-white' : 'bg-white text-teal-700 shadow-1')} aria-hidden>
+                      <Icon className="h-5 w-5" strokeWidth={1.6} />
+                    </span>
                   </div>
-                  <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-md', dark ? 'bg-white/15 text-white' : 'bg-white text-teal-700 shadow-1')} aria-hidden>
-                    <Icon className="h-5 w-5" strokeWidth={1.6} />
-                  </span>
+                  <div className="mt-6">
+                    <h3 className={cn('text-[17px] font-bold text-balance', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
+                    <p className={cn('mt-1 text-[14px] leading-relaxed text-pretty', dark ? 'text-white/85' : 'text-ink-2')}>{b.desc}</p>
+                  </div>
                 </div>
-                <div className="mt-6">
-                  <h3 className={cn('text-[17px] font-bold text-balance', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
-                  <p className={cn('mt-1 text-[14px] leading-relaxed text-pretty', dark ? 'text-white/85' : 'text-ink-2')}>{b.desc}</p>
-                </div>
-              </li>
+              </Reveal>
             )
           })}
         </ul>
@@ -219,41 +232,89 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
   )
 }
 
-/* 5 — CTA band: second colour block (teal) — the conversion point. Left: ask + buttons; right: the 3 real steps. */
+/* 5 — CTA band: second colour block (teal) — the conversion point. Left: ask + 3 step chips + buttons.
+   Right: a real RMC card preview (demo member's live numbers), tilted; straightens on hover. */
 function CtaSection() {
-  const { copy, rules } = useConfig(s => s.config)
+  const cfg = useConfig(s => s.config)
+  const { copy, rules } = cfg
   const acc = useCurrentAccount()
-  const steps = [
-    { t: 'Masuk pakai nomor HP', d: 'Nomor yang terdaftar di Resique. Belum punya akun? Daftar 1 menit.' },
-    { t: 'Lihat poin, tier & diskon', d: `Rp${rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin. Grafik poin per bulan ikut tampil.` },
-    { t: 'Tukar poin jadi hadiah', d: `Mulai ${rules.minRedeem.toLocaleString('id-ID')} poin — voucher, parfum, sampai laptop.` },
-  ]
+  const steps = ['Masuk pakai nomor HP', 'Lihat poin, tier & diskon', 'Tukar poin jadi hadiah']
   return (
-    <section id="cek-poin" className="scroll-mt-20 bg-teal-700 py-16 text-white lg:py-24">
-      <div className="container grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
-        <div className="min-w-0 lg:col-span-6">
-          <h2 className="t-h1 text-balance text-white">{copy.ctaPoints}</h2>
-          <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-pretty text-white/85 sm:text-[17px]">{copy.ctaPointsSub}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+    <section id="cek-poin" className="scroll-mt-20 overflow-hidden bg-teal-700 py-16 text-white lg:py-24">
+      <div className="container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+        <div className="min-w-0 lg:col-span-7">
+          <Reveal>
+            <h2 className="t-h1 text-balance text-white"><Marked text={copy.ctaPoints} className="mark-light" /></h2>
+            <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-pretty text-white/85 sm:text-[17px]">{copy.ctaPointsSub}</p>
+          </Reveal>
+          <Reveal delay={90}>
+            <ol className="mt-7 flex flex-wrap items-center gap-y-3" aria-label="Cara cek poin">
+              {steps.map((s, i) => (
+                <li key={s} className="flex items-center">
+                  <span className="step-chip inline-flex min-h-[44px] items-center gap-2.5 rounded-full border border-white/25 py-2 pl-2 pr-4 text-[14px] font-semibold text-white sm:text-[15px]">
+                    <span className="t-num grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-[13px] font-extrabold text-teal-700" aria-hidden>{i + 1}</span>
+                    {s}
+                  </span>
+                  {i < steps.length - 1 && <ChevronsRight className="mx-1.5 h-4 w-4 shrink-0 text-white/50 sm:mx-2" strokeWidth={2} aria-hidden />}
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+          <Reveal delay={160} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
             <Button asChild size="lg" variant="inverse" className="arrow-nudge hover:-translate-y-0.5">
               <Link to={acc ? '/profile' : '/login'}>{acc ? 'Buka profil RMC' : 'Masuk & cek poin'} <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link>
             </Button>
             {!acc && <Link to="/register" className="u-slide inline-flex min-h-[44px] items-center text-[15px] font-semibold text-white [--u-bottom:8px]">Belum punya akun? Daftar</Link>}
-          </div>
+          </Reveal>
         </div>
-        <ol className="min-w-0 divide-y divide-white/15 border-y border-white/15 lg:col-span-6" aria-label="Cara cek poin">
-          {steps.map((s, i) => (
-            <li key={s.t} className="slide flex items-start gap-4 py-4 lg:py-5">
-              <span className="t-num grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white/15 text-[15px] font-extrabold text-white" aria-hidden>{i + 1}</span>
-              <div className="min-w-0">
-                <p className="text-[16px] font-bold text-white sm:text-[17px]">{s.t}</p>
-                <p className="mt-0.5 text-[14px] leading-relaxed text-pretty text-white/80">{s.d}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <Reveal delay={120} className="min-w-0 lg:col-span-5">
+          <RmcCardPreview rules={rules} />
+        </Reveal>
       </div>
     </section>
+  )
+}
+
+/* The demo member's card, computed with the same rmcFor() the profile uses — real tier, real points, real months. */
+function RmcCardPreview({ rules }: { rules: Config['rules'] }) {
+  const cfg = useConfig(s => s.config)
+  const orders = useOrders(s => s.orders)
+  const demo = SEED_ACCOUNTS[0]
+  const customer = useCrm(s => s.customers.find(c => c.id === demo.crmCustomerId)) || null
+  const rmc = React.useMemo(() => rmcFor(cfg, customer, orders, [], demo.id, demo.isMitra), [cfg, customer, orders, demo.id, demo.isMitra])
+  if (!customer) return null
+  const months = rmc.monthly.slice(-6)
+  const maxPts = Math.max(1, ...months.map(m => m.points))
+  return (
+    <div className="tilt-wrap relative mx-auto max-w-[400px] pt-3 pr-3 lg:ml-auto lg:mr-0">
+      <p className="mb-4 text-[13px] font-semibold text-white/70">Contoh profil member — {demo.laundry}</p>
+      <div className="relative">
+        <div className="tilt-back absolute inset-0 rounded-xl bg-gold" aria-hidden />
+        <div data-rmc-card className="tilt relative rounded-xl bg-white p-5 text-ink shadow-3 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <img src={cfg.assets.logo} alt="" width={28} height={28} className="h-7 w-7 rounded-md" />
+              <p className="text-[13px] font-bold text-ink">Resique Member Card</p>
+            </div>
+            <span className="rounded-md px-2.5 py-1 text-[12px] font-extrabold text-white" style={{ background: rmc.tier.sw }}>{rmc.tier.name}</span>
+          </div>
+          <p className="mt-6 text-[13px] font-semibold text-ink-3">Poin RMC</p>
+          <p className="t-num mt-1 text-[40px] font-extrabold leading-none tracking-[-0.02em] text-teal-700 sm:text-[44px]">{poin(rmc.points)}</p>
+          <p className="t-num mt-1.5 text-[13px] text-ink-2">Diskon {rmc.discount}% · poin berlaku sampai {rules.expiry}</p>
+          <div className="mt-5 flex items-end justify-between gap-4 border-t border-line-2 pt-4">
+            <div className="min-w-0">
+              <p className="truncate text-[14px] font-bold text-ink">{demo.laundry}</p>
+              <p className="truncate text-[13px] text-ink-2">{demo.pic} · {demo.rsl}</p>
+            </div>
+            <div className="flex h-9 shrink-0 items-end gap-1" aria-label="Poin 6 bulan terakhir">
+              {months.map((m, i) => (
+                <span key={m.ym} className={cn('w-2 rounded-sm', i === months.length - 1 ? 'bg-gold' : 'bg-teal-200')} style={{ height: `${Math.max(12, Math.round((m.points / maxPts) * 100))}%` }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -22,6 +22,16 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   const ctaBg = await p.evaluate(() => getComputedStyle(document.getElementById('cek-poin')).backgroundColor)
   ok(ctaBg === 'rgb(14, 82, 73)', `CTA section is a teal block (${ctaBg})`)
   ok((await p.locator('#cek-poin ol li').count()) === 3, 'CTA section lists the 3 steps')
+  ok(/Hingga 5%/.test(t) && !/0–5%/.test(t), 'diskon block reads "Hingga 5%" (no "0–5%")')
+  const card = await text(p, '[data-rmc-card]')
+  ok(/Resique Member Card/.test(card) && /Poin RMC/.test(card) && /Laundry 24 Jam Kuningan/.test(card) && /Winner/.test(card), 'CTA band shows the demo member RMC card (tier + poin)')
+  // title marks: every section h2 + the hook h1 carry the highlighter on the last word; it draws in (scaleX 1) once in view
+  for (const sel of ['#hook h1', '#benefit h2', '#tier h2', '#cek-poin h2', '#golden-sale h2', '#klasemen h2']) {
+    await p.locator(sel).scrollIntoViewIfNeeded(); await p.waitForTimeout(900)
+    const m = await p.evaluate(sel => { const el = document.querySelector(sel + ' .mark'); return el ? getComputedStyle(el, '::before').transform : 'missing' }, sel)
+    ok(/^matrix\(0\.99|^matrix\(1/.test(m), `${sel} highlighter mark drawn in (${m.slice(0, 22)})`)
+  }
+  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(300)
   ok(/Tingkatkan transaksi, dapatkan hadiahnya/.test(t), 'hero tagline')
   ok(/Cek poin-mu/.test(t), 'CTA "Cek poin-mu!"')
   ok((await p.locator('.marquee-track li').count()) >= 2, 'hero marquee has duplicated strip')
@@ -56,6 +66,11 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok((await tf('#tier ol > li')) !== 'none', `tier card transforms on hover (${await tf('#tier ol > li')})`)
   await p.locator('#klasemen ol li[data-rank="2"]').hover(); await p.waitForTimeout(350)
   ok((await tf('#klasemen ol li[data-rank="2"]')) !== 'none', 'klasemen row slides on hover')
+  await p.locator('#benefit ul > li > div').first().hover(); await p.waitForTimeout(450)
+  ok((await tf('#benefit ul > li > div')) !== 'none' && (await tf('#benefit ul > li > div .chip')) !== 'none', 'privilege block lifts + icon chip springs on hover')
+  await p.locator('[data-rmc-card]').hover(); await p.waitForTimeout(500)
+  const tilt = await tf('[data-rmc-card]')
+  ok(/^matrix\(1, 0, 0, 1, 0, -6\)/.test(tilt), `RMC card straightens on hover (${tilt})`)
   ok((await tf('header nav a', '::after')).startsWith('matrix(0'), 'nav underline hidden at rest (scaleX 0)')
   await p.locator('header nav a').first().hover(); await p.waitForTimeout(350)
   ok(/^matrix\(1/.test(await tf('header nav a', '::after')), 'nav underline grows on hover (scaleX 1)')
