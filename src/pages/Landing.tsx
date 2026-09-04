@@ -78,9 +78,9 @@ function HeroSection() {
   return (
     <section id="hero" className="section section-deck teal-gradient relative overflow-hidden text-white">
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
-      <div className="container relative grid gap-10 lg:grid-cols-12 lg:items-center">
-        <div className="lg:col-span-5">
-          <Reveal><p className="t-eyebrow text-gold-200">Resique Member Card</p></Reveal>
+      <div className="container relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
+        <div className="min-w-0 lg:col-span-5">
+          <Reveal><p className="t-eyebrow text-gold-100">Resique Member Card</p></Reveal>
           <Reveal delay={60}><h2 className="t-h1 mt-3 text-white">{copy.tagline}</h2></Reveal>
           <Reveal delay={120}><p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/75 sm:text-base">{copy.taglineSub}</p></Reveal>
           <Reveal delay={180} className="mt-7">
@@ -89,9 +89,9 @@ function HeroSection() {
             </Button>
           </Reveal>
         </div>
-        <div className="lg:col-span-7">
+        <div className="min-w-0 lg:col-span-7">
           <Reveal delay={100}>
-            <div className="marquee -mx-5 overflow-hidden py-2 lg:mx-0" aria-label="Hadiah yang bisa ditukar" role="region">
+            <div className="marquee -mx-5 max-w-[100vw] overflow-hidden py-2 lg:mx-0 lg:max-w-none" aria-label="Hadiah yang bisa ditukar" role="region">
               <ul className="marquee-track px-5 lg:px-0" style={{ animationDuration: `${Math.max(24, assets.heroPrizes.length * 6)}s` }}>
                 {strip.map((p, i) => (
                   <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="w-[210px] shrink-0 sm:w-[250px]">
@@ -145,7 +145,11 @@ function TierSection() {
     <section id="tier" className="section section-deck bg-white">
       <div className="container">
         <Reveal><SectionHead eyebrow="Benefit Tier RMC" title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} /></Reveal>
-        <div className="no-scrollbar -mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0">
+        {/* mobile/tablet: one clear vertical ladder (no hidden cards); desktop: 6-up card row */}
+        <ol className="mt-8 space-y-3 lg:hidden" aria-label="Daftar tier RMC">
+          {cfg.tiers.map((t, i) => <TierRow key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
+        </ol>
+        <div className="mt-14 hidden gap-4 lg:grid lg:grid-cols-6">
           {cfg.tiers.map((t, i) => <TierCard key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
         </div>
         <Reveal delay={120}>
@@ -161,9 +165,26 @@ function TierSection() {
     </section>
   )
 }
+function TierRow({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
+  return (
+    <Reveal as="li" delay={idx * 40}>
+      <div className={cn('flex items-center gap-4 rounded-2xl border p-4 shadow-1', top ? 'border-gold-600/40 bg-gradient-to-r from-gold-100 via-gold-50 to-white' : 'border-line bg-white')}>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-[13px] font-extrabold text-white ring-4 ring-white" style={{ background: tier.sw }} aria-hidden>{idx + 1}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className={cn('truncate text-[17px] font-extrabold tracking-tight', top ? 'text-gold-ink' : 'text-ink')}>{tier.name}</h3>
+            <p className={cn('t-num shrink-0 text-[22px] font-extrabold leading-none tracking-tight', top ? 'text-gold-700' : 'text-teal-700')}>{tier.discount}%</p>
+          </div>
+          <p className="t-num mt-0.5 text-[12px] font-semibold text-ink-3">{tier.perMonth} / bulan</p>
+          <p className={cn('mt-1.5 text-[13px] leading-snug', top ? 'text-gold-ink/90' : 'text-ink-2')}>{tier.benefitCopy}</p>
+        </div>
+      </div>
+    </Reveal>
+  )
+}
 function TierCard({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
   return (
-    <Reveal delay={idx * 50} className="w-[240px] shrink-0 snap-start lg:w-auto">
+    <Reveal delay={idx * 50}>
       <div className={cn('flex h-full flex-col rounded-2xl border p-5 shadow-1 transition-[transform,box-shadow] duration-slow ease-out hover:-translate-y-0.5 hover:shadow-2', top ? 'gold-gradient border-transparent text-gold-ink' : 'border-line bg-white')}>
         <div className="flex items-center justify-between">
           <span className="h-3 w-3 rounded-full ring-2 ring-white" style={{ background: tier.sw }} aria-hidden />

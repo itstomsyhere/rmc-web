@@ -16,7 +16,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok(/Tingkatkan transaksi, dapatkan hadiahnya/.test(t), 'hero tagline')
   ok(/Cek poin-mu/.test(t), 'CTA "Cek poin-mu!"')
   ok((await p.locator('.marquee-track li').count()) >= 2, 'hero marquee has duplicated strip')
-  ok((await p.locator('#tier h3').count()) === 6, '6 tier cards')
+  ok((await p.locator('#tier h3:visible').count()) === 6, '6 tier cards visible (mobile ladder / desktop cards)')
   ok(/Mitra Apique Management/.test(t) && /Floor 3%/.test(t), 'Mitra floor 3% row')
   ok((await p.locator('#klasemen ol li').count()) === 10, 'klasemen shows 10 rows')
 

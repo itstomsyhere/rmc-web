@@ -64,7 +64,8 @@ body {
   .t-num { font-variant-numeric: tabular-nums; }
 
   /* Sections: full-viewport storytelling on desktop (pitch-deck mode), natural flow on mobile. */
-  .section { @apply py-14 sm:py-20 lg:py-24; }
+  /* scroll-margin keeps anchor jumps (nav links, #hash) clear of the floating nav pill */
+  .section { @apply py-14 sm:py-20 lg:py-24 scroll-mt-20 sm:scroll-mt-24; }
   .section-deck { @apply lg:min-h-[92vh] lg:flex lg:flex-col lg:justify-center; }
 }
 

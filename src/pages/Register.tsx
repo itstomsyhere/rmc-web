@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, MessageCircle, ShieldCheck, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, MessageCircle, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/lib/reveal'
 import { Narrow } from '@/components/layout/Shell'
@@ -139,12 +139,11 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
     <div>
       <Reveal>
         <div className="flex items-center justify-between gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gold-200 bg-white/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-700 backdrop-blur">
-            <Sparkles className="h-3 w-3" strokeWidth={2} /> Resique Member Card
-          </span>
-          <Link to="/login" className="rounded-full px-3 py-2 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Sudah punya akun? Masuk</Link>
+          <Link to="/" className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
+          <Link to="/login" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Sudah punya akun? Masuk</Link>
         </div>
-        <h1 className="t-h1 mt-5 text-ink">Daftar Resique Member Card</h1>
+        <p className="t-eyebrow mt-4">Resique Member Card</p>
+        <h1 className="t-h1 mt-2 text-ink">Daftar RMC</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">Satu menit saja. Kami cocokkan datamu dengan pelanggan Resique supaya poin RMC-mu langsung terhubung.</p>
       </Reveal>
 

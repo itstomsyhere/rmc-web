@@ -82,10 +82,10 @@ export function SiteHeader() {
       </header>
 
       {/* Mobile overlay */}
-      <div aria-hidden={!open} className={cn('fixed inset-0 z-30 flex flex-col justify-center bg-white/85 px-8 backdrop-blur-2xl transition-opacity duration-slow ease-out md:hidden', open ? 'opacity-100' : 'pointer-events-none opacity-0')}>
+      <div aria-hidden={!open} className={cn('fixed inset-0 z-[35] flex flex-col justify-center bg-white/90 px-6 backdrop-blur-2xl transition-opacity duration-slow ease-out md:hidden', open ? 'opacity-100' : 'pointer-events-none opacity-0')}>
         <nav className="flex flex-col gap-1" aria-label="Navigasi seluler">
           {NAV.map((n, i) => (
-            <a key={n.to} href={n.to} onClick={go(n.to)} style={{ transitionDelay: open ? `${80 + i * 50}ms` : '0ms' }} className={cn('rounded-2xl px-3 py-3 text-[28px] font-extrabold tracking-tight text-ink transition-[opacity,transform] duration-500 ease-out', open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0')}>{n.label}</a>
+            <a key={n.to} href={n.to} onClick={go(n.to)} style={{ transitionDelay: open ? `${80 + i * 50}ms` : '0ms' }} className={cn('flex min-h-[48px] items-center justify-between rounded-xl border-b border-line-2 px-2 text-[18px] font-bold tracking-tight text-ink transition-[opacity,transform] duration-500 ease-out', open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0')}>{n.label}<ArrowUpRight className="h-4 w-4 text-ink-4" strokeWidth={1.8} /></a>
           ))}
           <div style={{ transitionDelay: open ? '320ms' : '0ms' }} className={cn('mt-6 flex gap-2 transition-[opacity,transform] duration-500 ease-out', open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0')}>
             {acc ? (
