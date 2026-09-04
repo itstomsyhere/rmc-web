@@ -177,6 +177,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
                 <div className="mt-3 text-center">
                   <p className="text-[13px] font-bold text-ink">{cfg.payment.qrisMerchant}</p>
                   <p className="mt-0.5 font-mono text-[11px] tracking-wide text-ink-3">NMID {cfg.payment.qrisNmid}</p>
+                  <p className="mt-1.5 text-[11px] leading-snug text-ink-3">QRIS statis — masukkan nominal sesuai total pembayaran di aplikasi bank / e-wallet.</p>
                 </div>
               </div>
             </div>

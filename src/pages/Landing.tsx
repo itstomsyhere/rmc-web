@@ -21,8 +21,9 @@ const ICONS: Record<string, LucideIcon> = { UserPlus, Coins, Gift, Crown, Sparkl
 
 export function LandingPage() {
   const cfg = useConfig(s => s.config)
+  const hasCart = useCart(s => Object.keys(s.qty).length > 0)
   return (
-    <div className={cn(cfg.copy.snapDesktop && 'lg:snap-y lg:snap-mandatory')}>
+    <div className={cn(cfg.copy.snapDesktop && 'lg:snap-y lg:snap-mandatory', hasCart && 'pb-24')}>
       <HookSection />
       <HeroSection />
       <BenefitSection />
@@ -39,7 +40,7 @@ export function LandingPage() {
 function HookSection() {
   const { copy, campaign } = useConfig(s => s.config)
   return (
-    <section id="hook" className="section section-deck relative overflow-hidden pt-28 sm:pt-36">
+    <section id="hook" className="section section-deck relative overflow-hidden pt-36 sm:pt-40">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold-100/70 blur-3xl sm:h-[28rem] sm:w-[28rem]" />
       <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-teal-50 blur-3xl" />
       <div className="container relative">

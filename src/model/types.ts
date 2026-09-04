@@ -97,7 +97,8 @@ export interface Account {
   email: string
   laundry: string
   pic: string
-  kota: Kota
+  /** optional since 4 Sep 2026 (Lurd) — helps route the lead to the nearest outlet */
+  kota?: Kota
   isMitra: boolean
   hasCard: boolean
   rsl?: string
@@ -136,7 +137,7 @@ export interface Lead {
   pic: string
   hp: string
   email: string
-  kota: Kota
+  kota?: Kota
   source: 'Golden Privilege Web'
   referral?: string
   createdAt: string

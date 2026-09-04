@@ -18,7 +18,7 @@ export interface RegisterForm {
   pic: string
   phone: string
   email: string
-  kota: Kota
+  kota?: Kota
   rsl?: string
   referral?: string
   password?: string

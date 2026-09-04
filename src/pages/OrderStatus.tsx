@@ -11,7 +11,7 @@ import { Narrow } from '@/components/layout/Shell'
 import { Button } from '@/components/ui/button'
 import { Badge, statusVariant } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { EmptyState, Separator, Table, THead, TBody, TR, TH, TD } from '@/components/ui/misc'
+import { EmptyState, Separator } from '@/components/ui/misc'
 import { QrisSheet } from '@/components/shop/QrisSheet'
 
 const HAPPY: { key: OrderStatus; title: string; desc: string }[] = [
@@ -152,19 +152,18 @@ export function OrderStatusPage() {
         <Card className="mt-6">
           <CardHeader><CardTitle>Rincian belanja</CardTitle></CardHeader>
           <CardContent>
-            <Table>
-              <THead><TR><TH>Item</TH><TH className="text-right">Qty</TH><TH className="text-right">Harga</TH><TH className="text-right">Subtotal</TH></TR></THead>
-              <TBody>
-                {order.lines.map(l => (
-                  <TR key={l.itemId}>
-                    <TD><p className="font-semibold text-ink">{l.name}</p><p className="font-mono text-[11px] text-ink-4">{l.code}</p></TD>
-                    <TD className="t-num text-right">{l.qty}</TD>
-                    <TD className="t-num text-right"><span className="block">{rupiah(l.promoPrice)}</span>{l.realPrice > l.promoPrice && <span className="strike block text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>}</TD>
-                    <TD className="t-num text-right font-bold">{rupiah(l.qty * l.promoPrice)}</TD>
-                  </TR>
-                ))}
-              </TBody>
-            </Table>
+            {/* stacked rows — a 4-column table wraps item names letter-by-letter at 390px */}
+            <ul className="divide-y divide-line-2">
+              {order.lines.map(l => (
+                <li key={l.itemId} className="flex items-start justify-between gap-4 py-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[14px] font-semibold leading-snug text-ink">{l.name}</p>
+                    <p className="t-num mt-0.5 text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}{l.realPrice > l.promoPrice && <span className="strike ml-1.5 text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>} <span className="ml-1.5 font-mono text-[10px] text-ink-4">{l.code}</span></p>
+                  </div>
+                  <p className="t-num shrink-0 text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
+                </li>
+              ))}
+            </ul>
             <Separator className="my-4" />
             <div className="space-y-2 text-[14px]">
               <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-num gold-text">{rupiah(order.savings)}</span></div>

@@ -47,7 +47,7 @@ export function AdminShell({ active, onChange, badges = {}, embed, children }: S
   const mobile = useIsMobile(1024)
   return (
     <div className={cn('mx-auto w-full max-w-[1200px]', embed ? 'px-3 py-3 sm:px-4' : 'px-4 py-5 sm:px-6 lg:py-7')}>
-      <div className={cn('grid items-start gap-5', !mobile && 'grid-cols-[220px_1fr]')}>
+      <div className={cn('grid items-start gap-5', mobile ? 'grid-cols-1' : 'grid-cols-[220px_minmax(0,1fr)]')}>
         {mobile ? <PillStrip active={active} onChange={onChange} badges={badges} /> : <Rail active={active} onChange={onChange} badges={badges} embed={embed} />}
         <div className="min-w-0">{children}</div>
       </div>

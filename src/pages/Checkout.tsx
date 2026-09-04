@@ -156,7 +156,7 @@ export function CheckoutPage() {
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-3">Isi data pemesan, pilih cara pengambilan, lalu bayar lewat QRIS. Belanja yang lunas langsung masuk klasemen Golden Privilege.</p>
       </Reveal>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:gap-10">
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
         {/* Form — left column */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="lg:col-span-7">
           <div className="max-w-xl space-y-10">
@@ -259,15 +259,18 @@ export function CheckoutPage() {
                     const left = it && it.quota > 0 ? Math.max(0, it.quota - soldQty(orders, it.id)) : Infinity
                     const max = Math.min(it && it.maxPerCustomer > 0 ? it.maxPerCustomer : Infinity, left)
                     return (
-                      <li key={l.itemId} className="flex items-center gap-3 py-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-[14px] font-semibold text-ink">{l.name}</p>
-                          <p className="t-num text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}</p>
+                      <li key={l.itemId} className="py-3">
+                        {/* name on its own line at 390px; stepper + subtotal share the second row */}
+                        <p className="text-[14px] font-semibold leading-snug text-ink">{l.name}</p>
+                        <div className="mt-2 flex items-center justify-between gap-3">
+                          <QtyStepper qty={l.qty} label={l.name} max={Number.isFinite(max) ? max : undefined}
+                            onInc={() => { if (Number.isFinite(max) && l.qty >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(l.itemId, Number.isFinite(max) ? max : undefined) }}
+                            onDec={() => dec(l.itemId)} />
+                          <div className="text-right">
+                            <p className="t-num text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
+                            <p className="t-num text-[11px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}</p>
+                          </div>
                         </div>
-                        <QtyStepper qty={l.qty} label={l.name} max={Number.isFinite(max) ? max : undefined}
-                          onInc={() => { if (Number.isFinite(max) && l.qty >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(l.itemId, Number.isFinite(max) ? max : undefined) }}
-                          onDec={() => dec(l.itemId)} />
-                        <p className="t-num w-24 shrink-0 text-right text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
                       </li>
                     )
                   })}

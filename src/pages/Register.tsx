@@ -43,7 +43,7 @@ const schema = z.object({
   pic: z.string().trim().min(2, 'Nama PIC wajib diisi'),
   phone: z.string().refine(v => normalizePhone(v) !== null, 'Nomor HP tidak valid — contoh 0812 3456 7890'),
   email: z.string().trim().email('Format email tidak valid'),
-  kota: z.enum(KOTA_TUPLE, { required_error: 'Pilih kota / outlet terdekat' }),
+  kota: z.enum(KOTA_TUPLE).optional(),
   rsl: z.string().optional(),
   referral: z.string().optional(),
   consent: z.boolean().refine(v => v, 'Persetujuan wajib dicentang'),
@@ -153,8 +153,8 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
           <Field label="Apakah kamu Mitra Apique Management?" required error={errors.isMitra?.message}>
             <Controller name="isMitra" control={control} render={({ field }) => (
               <RadioGroup value={field.value} onValueChange={field.onChange} className="grid-cols-2" aria-invalid={!!errors.isMitra}>
-                <RadioCard id="rc-mitra-ya" value="ya" title="Ya" desc="Diskon dasar 3% sejak Starter" />
-                <RadioCard id="rc-mitra-tidak" value="tidak" title="Tidak" desc="Pelanggan Resique reguler" />
+                <RadioCard id="rc-mitra-ya" value="ya" title="Ya" />
+                <RadioCard id="rc-mitra-tidak" value="tidak" title="Tidak" />
               </RadioGroup>
             )} />
           </Field>
@@ -162,8 +162,8 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
           <Field label="Apakah kamu pemegang Resique Member Card?" required error={errors.hasCard?.message}>
             <Controller name="hasCard" control={control} render={({ field }) => (
               <RadioGroup value={field.value} onValueChange={field.onChange} className="grid-cols-2" aria-invalid={!!errors.hasCard}>
-                <RadioCard id="rc-card-ya" value="ya" title="Ya" desc="Punya kartu fisik RSL…" />
-                <RadioCard id="rc-card-tidak" value="tidak" title="Tidak" desc="Belum pernah dapat kartu" />
+                <RadioCard id="rc-card-ya" value="ya" title="Ya" />
+                <RadioCard id="rc-card-tidak" value="tidak" title="Tidak" />
               </RadioGroup>
             )} />
           </Field>
@@ -186,7 +186,7 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
             <Input id="email" type="email" inputMode="email" placeholder="nama@laundry.id" autoComplete="email" aria-invalid={!!errors.email} {...register('email')} />
           </Field>
 
-          <Field label="Kota / outlet Resique terdekat" required htmlFor="kota" error={errors.kota?.message}>
+          <Field label="Kota / outlet Resique terdekat" hint="Opsional — membantu sales outlet terdekat menghubungi kamu" htmlFor="kota" error={errors.kota?.message}>
             <Controller name="kota" control={control} render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger id="kota" aria-invalid={!!errors.kota} className={cn(errors.kota && 'border-danger')}><SelectValue placeholder="Pilih kota" /></SelectTrigger>

@@ -67,8 +67,8 @@ export const DEFAULT_CONFIG: Config = {
   prizes: SEED_PRIZES,
   prizeTypes: SEED_PRIZE_TYPES,
   payment: {
-    qrisMerchant: 'Resique Supermarket Laundry',
-    qrisNmid: 'ID1024RSQ0001',
+    qrisMerchant: 'Resique Jakarta',
+    qrisNmid: 'ID2023263339905',
     qrTimeoutSec: 300,
     uploadDelaySec: 30,
     vaEnabled: false,
