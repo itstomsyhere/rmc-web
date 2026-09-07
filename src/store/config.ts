@@ -42,6 +42,8 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && (OLD_BENEFIT_DESC[b.id] || []).includes(b.desc) ? seed : b })
   // R.010: "0–5%" → "Hingga 5%" on the seed diskon block (only if the admin has not changed it)
   out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && b.figure === '0–5%' ? { ...b, figure: seed.figure } : b })
+  // R.017: Satoshi 900 draws the en-dash wide (reads as an em-dash, Lurd's #1 tell) — the seed figure is now '1-2 sesi'
+  out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && b.figure === '1–2 sesi' ? { ...b, figure: seed.figure } : b })
   ;(Object.keys(COPY_UPGRADES) as (keyof Config['copy'])[]).forEach(k => {
     if (COPY_UPGRADES[k]!.includes(String(out.copy[k]))) (out.copy as Record<string, unknown>)[k] = DEFAULT_CONFIG.copy[k]
   })

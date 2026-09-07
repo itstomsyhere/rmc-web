@@ -75,7 +75,7 @@ function HookSection() {
       <span aria-hidden className="band hidden bg-green-50 lg:block" style={{ top: '-10%', right: '-14%', width: '44%', height: '120%' }} />
       <div className="container grid grid-cols-1 items-center gap-10 animate-fade-up lg:grid-cols-12 lg:gap-14">
         <div className="min-w-0 lg:col-span-7">
-          <p className="t-code inline-flex items-center gap-2 rounded-md bg-gold-100 px-2.5 py-1 text-[13px] font-bold text-gold-ink">{fmtDate(campaign.start)} – {fmtDate(campaign.end)}</p>
+          <p className="t-code inline-flex items-center gap-2 rounded-md bg-gold-100 px-2.5 py-1 text-[13px] font-bold text-gold-ink">{fmtDate(campaign.start)} - {fmtDate(campaign.end)}</p>
           <Reveal>
             <h1 className="t-display mt-5 max-w-4xl text-balance text-ink"><Marked text={copy.hook} className="mark-green text-navy-700" /></h1>
           </Reveal>
