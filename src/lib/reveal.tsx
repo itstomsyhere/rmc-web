@@ -29,7 +29,7 @@ export function Reveal({ children, className, delay = 0, as: Tag = 'div', ...res
       ref={ref}
       {...rest}
       data-reveal={inView ? 'in' : 'out'}
-      style={{ transitionDelay: settled ? '0ms' : `${delay}ms` }}
+      style={{ ...((rest as { style?: React.CSSProperties }).style || {}), transitionDelay: settled ? '0ms' : `${delay}ms` }}
       className={cn('transition-[opacity,transform,box-shadow,background-color,border-color] duration-slow ease-out', inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2', className)}
     >
       {children}
