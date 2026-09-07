@@ -52,6 +52,23 @@ function Marked({ text, className }: { text: string; className?: string }) {
   return <>{words.slice(0, -1).join(' ')}{words.length > 1 ? ' ' : ''}<span className={cn('mark', className)}>{words.slice(-1)[0]}</span></>
 }
 
+/* Hook headline: each word rises in on load (stagger), the last word keeps the highlighter mark for the gate. */
+function StaggerWords({ text }: { text: string }) {
+  const words = text.trim().split(' ')
+  return (
+    <>
+      {words.map((w, i) => (
+        <React.Fragment key={i}>
+          <span className="hook-word inline-block" style={{ '--i': `${i * 90}ms` } as React.CSSProperties}>
+            {i === words.length - 1 ? <span className="mark mark-green text-navy-700">{w}</span> : w}
+          </span>
+          {i < words.length - 1 ? ' ' : ''}
+        </React.Fragment>
+      ))}
+    </>
+  )
+}
+
 function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: string; tone?: 'ink' | 'white' }) {
   return (
     <Reveal className="max-w-2xl">
@@ -64,7 +81,7 @@ function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: strin
 /* 1, Hook: headline left, proof right, the three biggest real price drops from Golden Sale.
    Content is the visual; no decoration. Animates once on load. */
 function HookSection() {
-  const { copy, campaign, items } = useConfig(s => s.config)
+  const { copy, items } = useConfig(s => s.config)
   const drops = items.filter(i => i.active && i.realPrice > i.promoPrice)
     .map(i => ({ ...i, pct: Math.round((1 - i.promoPrice / i.realPrice) * 100), save: i.realPrice - i.promoPrice }))
     .sort((a, b) => b.save - a.save).slice(0, 3)
@@ -73,14 +90,13 @@ function HookSection() {
     <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden pb-12 pt-20 lg:pb-20 lg:pt-24">
       {/* one solid green band behind the price card (desktop), the only colour on the paper */}
       <span aria-hidden className="band hidden bg-green-50 lg:block" style={{ top: '-10%', right: '-14%', width: '44%', height: '120%' }} />
-      <div className="container grid grid-cols-1 items-center gap-10 animate-fade-up lg:grid-cols-12 lg:gap-14">
+      <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
         <div className="min-w-0 lg:col-span-7">
-          <p className="t-code inline-flex items-center gap-2 rounded-md bg-gold-100 px-2.5 py-1 text-[13px] font-bold text-gold-ink">{fmtDate(campaign.start)} - {fmtDate(campaign.end)}</p>
           <Reveal>
-            <h1 className="t-display mt-5 max-w-4xl text-balance text-ink"><Marked text={copy.hook} className="mark-green text-navy-700" /></h1>
+            <h1 className="t-display max-w-4xl text-balance text-ink"><StaggerWords text={copy.hook} /></h1>
           </Reveal>
-          <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2">{copy.hookSub}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+          <p className="hook-in mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2" style={{ '--i': '260ms' } as React.CSSProperties}>{copy.hookSub}</p>
+          <div className="hook-in mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5" style={{ '--i': '360ms' } as React.CSSProperties}>
             <Button asChild size="lg" className="arrow-nudge hover:-translate-y-0.5">
               <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
                 Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
@@ -90,10 +106,12 @@ function HookSection() {
           </div>
         </div>
         {drops.length > 0 && (
-          <Reveal delay={120} className="min-w-0 lg:col-span-5">
+          <Reveal delay={120} className="hook-card-wrap relative min-w-0 lg:col-span-5">
             {/* three biggest drops (Rp saved) among active Golden Sale items, same config the grid below reads.
-                Photo-led: the biggest drop is the featured tile, the other two sit compact beneath it. */}
-            <div className="overflow-hidden rounded-xl bg-white shadow-2">
+                Photo-led: the biggest drop is the featured tile, the other two sit compact beneath it. The card rests
+                slightly tilted and floats; a gold sticker with the biggest cut sits on its corner. */}
+            <span aria-hidden className="sticker t-fig t-fig-black absolute -left-3 -top-4 z-10 grid h-[76px] w-[76px] place-items-center rounded-full bg-gold text-center text-[13px] leading-[1.05] text-gold-ink shadow-2 sm:-left-5 sm:-top-5 sm:h-[88px] sm:w-[88px] sm:text-[14px]">hemat<br /><span className="text-[22px] sm:text-[26px]">-{maxPct}%</span></span>
+            <div className="hook-card overflow-hidden rounded-xl bg-white shadow-3">
               <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
                 <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
                 <p className="t-code text-[13px] font-bold text-gold-700">sampai -{maxPct}%</p>
@@ -261,8 +279,9 @@ function PrizeDeck({ prizes }: { prizes: Config['assets']['heroPrizes'] }) {
    tahunan), each led by its icon + figure. Desktop reads [½ ½] / [⅓ ⅓ ⅓]; content from config (admin-defined). */
 function BenefitSection() {
   const { copy, benefits } = useConfig(s => s.config)
-  const tones = ['bg-navy-700 text-white', 'bg-gold-50', 'bg-white', 'bg-green-50', 'bg-white']
-  const tints = ['rgba(255,255,255,.08)', '#F6E8CC', '#F1F9EA', '#DFF2CF', '#F1F9EA']
+  /* ticket heads: navy · gold · green · navy · gold (solid brand colours); the body is always white */
+  const heads = ['bg-navy-700 text-white', 'bg-gold text-gold-ink', 'bg-green-700 text-white', 'bg-navy-700 text-white', 'bg-gold text-gold-ink']
+  const chips = ['bg-green text-navy-900', 'bg-white text-gold-700', 'bg-white text-green-700', 'bg-green text-navy-900', 'bg-white text-gold-700']
   const five = benefits.length === 5
   return (
     <section id="benefit" className="tex tex-grain scroll-mt-20 py-14 lg:py-24">
@@ -276,19 +295,23 @@ function BenefitSection() {
             const lastOdd = i === benefits.length - 1 && benefits.length % 2 === 1 ? 'sm:col-span-2' : ''
             return (
               <Reveal as="li" key={b.id} delay={i * 70} className={cn('reveal-pop min-w-0', span, lastOdd, five && i >= 2 && 'sm:col-span-1')}>
-                <div className={cn('lift-lg card-fx flex h-full min-h-[220px] flex-col justify-between rounded-lg border border-line p-5', tones[i % tones.length], dark && 'sweep border-navy-700')} style={{ '--tint': tints[i % tints.length] } as React.CSSProperties}>
-                  <div className="flex items-start justify-between gap-4">
+                <div className={cn('ticket lift-lg card-fx flex h-full min-h-[240px] flex-col rounded-lg bg-white', dark && 'sweep')} style={{ '--tint': '#F1F9EA' } as React.CSSProperties}>
+                  {/* ticket head: solid brand colour, icon chip + the big figure */}
+                  <div className={cn('ticket-head relative flex h-[112px] items-start justify-between gap-4 overflow-hidden px-5 pt-5', heads[i % heads.length])}>
                     <div className="fig">
-                      {b.figure && <p className={cn('t-fig t-fig-black text-[40px] leading-none', dark ? 'text-white' : 'text-navy-700')}>{b.figure}</p>}
-                      {b.figureNote && <p className={cn('t-code mt-1 text-[13px] font-bold', dark ? 'text-white/80' : 'text-ink-2')}>{b.figureNote}</p>}
+                      {b.figure && <p className="t-fig t-fig-black text-[38px] leading-none">{b.figure}</p>}
+                      {b.figureNote && <p className="t-code mt-1 text-[13px] font-bold opacity-85">{b.figureNote}</p>}
                     </div>
-                    <span className={cn('chip grid h-11 w-11 shrink-0 place-items-center rounded-md', dark ? 'bg-white/15 text-white' : 'bg-white text-green-700 shadow-1')} aria-hidden>
-                      <Icon className="h-5 w-5" strokeWidth={1.6} />
+                    <span className={cn('chip grid h-12 w-12 shrink-0 place-items-center rounded-full shadow-1', chips[i % chips.length])} aria-hidden>
+                      <Icon className="h-[22px] w-[22px]" strokeWidth={1.8} />
                     </span>
+                    <Icon aria-hidden className="ticket-mark pointer-events-none absolute -bottom-4 right-16 h-24 w-24 opacity-[0.14]" strokeWidth={1} />
                   </div>
-                  <div className="mt-6">
-                    <h3 className={cn('text-[17px] font-bold text-balance', dark ? 'text-white' : 'text-ink')}>{b.title}</h3>
-                    <p className={cn('mt-1 text-[14px] leading-relaxed text-pretty', dark ? 'text-white/85' : 'text-ink-2')}>{b.desc}</p>
+                  {/* perforation between head and body */}
+                  <span aria-hidden className="ticket-cut" />
+                  <div className="px-5 pb-5 pt-4">
+                    <h3 className="text-[17px] font-bold text-balance text-ink">{b.title}</h3>
+                    <p className="mt-1 text-[14px] leading-relaxed text-pretty text-ink-2">{b.desc}</p>
                   </div>
                 </div>
               </Reveal>
@@ -320,39 +343,45 @@ function TierSection() {
     </section>
   )
 }
-/* Tier card: colour identity from the tier swatch (bar + badge + figure), gold surface for the top tier. Hover: lift,
-   the accent bar draws in, the badge springs, the % grows, a tint fades in; the % counts up on scroll-in. */
+/* Tier card = a membership card: solid header in the tier colour (number · name · per-month · big %), white body with
+   the copy and the rules. Hover: lift, the bottom accent draws in, the badge springs, the % grows, tint fades in;
+   the % counts up on scroll-in. Light swatches (Starter grey, Beginner green, Ultimate gold) get dark text. */
+const LIGHT_SW = (hex: string) => { const m = /^#?([0-9a-f]{6})$/i.exec(hex); if (!m) return false; const n = parseInt(m[1], 16); const r = n >> 16, g = (n >> 8) & 255, bl = n & 255; return (0.2126 * r + 0.7152 * g + 0.0722 * bl) / 255 > 0.55 }
 function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
-  const fg = tier.fg || tier.sw
+  const light = LIGHT_SW(tier.sw)
+  const onSw = light ? 'text-navy-900' : 'text-white'
+  const onSwMuted = light ? 'text-navy-900/70' : 'text-white/80'
   return (
-    <Reveal as="li" delay={idx * 60} className={cn('lift tier-card card-fx reveal-pop group relative flex flex-col rounded-lg border p-5', top ? 'sweep border-gold-200 bg-gold-50 hover:shadow-gold' : 'border-line bg-white')}
-      style={{ '--tier': tier.sw, '--tint': top ? '#F6E8CC' : undefined } as React.CSSProperties}>
-      <span className="bar" aria-hidden />
-      <div className="flex items-center justify-between gap-3">
+    <Reveal as="li" delay={idx * 60} className={cn('lift tier-card card-fx reveal-pop group relative flex flex-col overflow-hidden rounded-lg border bg-white', top ? 'sweep border-gold-200 hover:shadow-gold' : 'border-line')}
+      style={{ '--tier': tier.sw, '--tint': top ? '#FBF5E8' : undefined } as React.CSSProperties}>
+      <div className={cn('tier-head relative flex items-center justify-between gap-3 px-5 pb-4 pt-4', onSw)} style={{ background: tier.sw }}>
         <div className="flex items-center gap-3">
-          <span className={cn('badge t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md text-[14px]', top ? 'float-6 bg-gold text-gold-ink' : 'text-white')} style={top ? undefined : { background: tier.sw }} aria-hidden>{idx + 1}</span>
+          <span className={cn('badge t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md text-[14px]', light ? 'bg-navy-900/10 text-navy-900' : 'bg-white/15 text-white', top && 'float-6')} aria-hidden>{idx + 1}</span>
           <div>
-            <h3 className="flex flex-wrap items-center gap-2 text-[17px] font-extrabold leading-tight text-ink">{tier.name}{top && <span className="rounded-md bg-gold-100 px-2 py-0.5 text-[11px] font-bold text-gold-ink">Tier tertinggi</span>}</h3>
-            <p className="t-code text-[13px] text-ink-2">{tier.perMonth} / bulan</p>
+            <h3 className="flex flex-wrap items-center gap-2 text-[17px] font-extrabold leading-tight">{tier.name}{top && <span className="rounded-md bg-white/70 px-2 py-0.5 text-[11px] font-bold text-gold-ink">Tier tertinggi</span>}</h3>
+            <p className={cn('t-code text-[13px]', onSwMuted)}>{tier.perMonth} / bulan</p>
           </div>
         </div>
-        <CountPct value={tier.discount} color={fg} />
+        <CountPct value={tier.discount} className={onSw} />
       </div>
-      <p className="mt-4 text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
-      {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
-      <dl className="t-code mt-4 grid grid-cols-[1.35fr_1fr_1fr] gap-2 border-t border-line-2 pt-3 text-[12px]">
-        <div><dt className="text-ink-3">Belanja 6 bln (Rp)</dt><dd className="font-bold text-ink">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</dd></div>
-        <div><dt className="text-ink-3">Gratis ongkir</dt><dd className="font-bold text-ink">{tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`}</dd></div>
-        <div><dt className="text-ink-3">Konsultasi</dt><dd className="font-bold text-ink">{tier.consult ? `${tier.consult} sesi/bln` : '-'}</dd></div>
-      </dl>
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+        <p className="text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
+        {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
+        <dl className="t-code mt-auto grid grid-cols-[1.35fr_1fr_1fr] gap-2 border-t border-line-2 pt-3 text-[12px]">
+          <div><dt className="text-ink-3">Belanja 6 bln (Rp)</dt><dd className="font-bold text-ink">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</dd></div>
+          <div><dt className="text-ink-3">Gratis ongkir</dt><dd className="font-bold text-ink">{tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`}</dd></div>
+          <div><dt className="text-ink-3">Konsultasi</dt><dd className="font-bold text-ink">{tier.consult ? `${tier.consult} sesi/bln` : '-'}</dd></div>
+        </dl>
+      </div>
+      <span className="bar" aria-hidden />
     </Reveal>
   )
 }
 /* the discount figure counts up from 0 once the card is in view (final value under reduced motion) */
-function CountPct({ value, color }: { value: number; color: string }) {
+function CountPct({ value, className }: { value: number; className?: string }) {
   const { ref, inView } = useInView<HTMLParagraphElement>()
   const v = useCountUp(value, inView)
-  return <p ref={ref} className="t-fig t-fig-black origin-right text-[36px] leading-none transition-transform duration-slow ease-out group-hover:scale-110" style={{ color }} data-pct={value}>{v}%</p>
+  return <p ref={ref} className={cn('t-fig t-fig-black origin-right text-[36px] leading-none transition-transform duration-slow ease-out group-hover:scale-110', className)} data-pct={value}>{v}%</p>
 }
 
 /* 5, CTA band: second colour block (navy), the conversion point. Left: ask + 3 step chips + buttons.

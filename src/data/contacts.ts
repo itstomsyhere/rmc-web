@@ -12,7 +12,6 @@ export const CONTACTS = {
   /** "Customer Solution Resique (pembelian produk)" from the linktree */
   waSolution: 'http://wa.link/i8cfkl',
   hours: '08.00 - 21.00 WIB',
-  location: 'Jakarta, Indonesia',
   email: 'operation.resique@gmail.com',
   site: 'https://www.resique.co.id/',
   siteLabel: 'resique.co.id',

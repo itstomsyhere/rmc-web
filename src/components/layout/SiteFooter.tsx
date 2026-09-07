@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Clock, ExternalLink, Facebook, Instagram, Mail, MapPin, MessageCircle, Store, Youtube } from 'lucide-react'
+import { Clock, ExternalLink, Facebook, Instagram, Mail, MessageCircle, Store, Youtube } from 'lucide-react'
 import { useConfig } from '@/store/config'
 import { srcSet2x } from '@/lib/logo'
 import { Reveal } from '@/lib/reveal'
@@ -16,7 +16,6 @@ export function SiteFooter() {
   const contact = [
     { icon: MessageCircle, label: `WhatsApp ${CONTACTS.waDisplay}`, href: CONTACTS.wa, ext: true },
     { icon: Clock, label: `Jam buka ${CONTACTS.hours}` },
-    { icon: MapPin, label: CONTACTS.location },
     { icon: Mail, label: CONTACTS.email, href: `mailto:${CONTACTS.email}`, ext: false },
     { icon: Store, label: 'Katalog produk', href: CONTACTS.catalog, ext: true },
     { icon: ExternalLink, label: 'Semua outlet & hotline', href: CONTACTS.outlets, ext: true },

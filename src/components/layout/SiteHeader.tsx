@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Clock, Facebook, Instagram, MapPin, MessageCircle, Phone, Youtube } from 'lucide-react'
+import { Clock, Facebook, Instagram, MessageCircle, Phone, Youtube } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { srcSet2x } from '@/lib/logo'
 import { useConfig } from '@/store/config'
@@ -82,7 +82,6 @@ export function SiteHeader() {
   const info = [
     { icon: Phone, label: 'Customer Services', value: CONTACTS.waDisplay, href: `tel:+${CONTACTS.waNumber}` },
     { icon: Clock, label: 'Jam Buka', value: CONTACTS.hours, code: true },
-    { icon: MapPin, label: 'Lokasi', value: CONTACTS.location },
   ]
 
   return (
