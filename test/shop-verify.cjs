@@ -58,8 +58,7 @@ const { ok, launch, go, resetStores, patchConfig, readStore, fill, text, finish 
   ok(o.status === 'Bukti Diunggah' && o.payment.proofName === '_fixture-proof.png', 'order → Bukti Diunggah with proof')
 
   // admin verify
-  const cfg = (await readStore(p, 'config')).config
-  await go(p, `/admin?key=${cfg.admin.passcode}&tab=transaksi`)
+  await go(p, '/admin?embed=1&actor=Satrio%20Wibowo&role=BoD&level=Full&caps=super_admin,manage_config&tab=transaksi')
   ok(/Transaksi/i.test(await text(p)), 'admin transaksi section renders')
   await p.locator(`text=${order.id}`).first().click()
   await p.waitForTimeout(400)

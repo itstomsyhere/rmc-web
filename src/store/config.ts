@@ -15,7 +15,7 @@ interface ConfigState {
 function mergeConfig(stored: Partial<Config> | undefined): Config {
   if (!stored) return DEFAULT_CONFIG
   const out: Config = { ...DEFAULT_CONFIG, ...stored }
-  ;(['copy', 'assets', 'rules', 'campaign', 'payment', 'klasemen', 'admin', 'matching', 'password'] as const).forEach(k => {
+  ;(['copy', 'assets', 'rules', 'campaign', 'payment', 'klasemen', 'matching', 'password'] as const).forEach(k => {
     // @ts-expect-error — generic section merge
     out[k] = { ...DEFAULT_CONFIG[k], ...(stored[k] || {}) }
   })

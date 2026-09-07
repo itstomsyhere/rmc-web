@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useAdminAccess } from '../access'
+import { useCrm } from '@/store/crm'
 import { toast } from 'sonner'
 import { CheckCircle2, FileText, RotateCcw, XCircle } from 'lucide-react'
 import type { Order } from '@/model/types'
@@ -19,9 +21,11 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
   const [reason, setReason] = React.useState('')
   React.useEffect(() => { if (!order) { setRejecting(false); setReason('') } }, [order])
 
+  const { canEdit, actor } = useAdminAccess()
   const act = (status: Order['status'], r?: string) => {
-    if (!order) return
+    if (!order || !canEdit) return
     setStatus(order.id, status, r)
+    useCrm.getState().log('Status pesanan diubah', `${order.id} → ${status} · oleh ${actor || '—'}`)
     toast.success(`${order.id} → ${status}`)
     setRejecting(false); setReason('')
     if (status !== 'Menunggu Pembayaran') onClose()
@@ -88,18 +92,18 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
 
             <DialogFooter className="sm:justify-between">
               <div className="flex gap-2">
-                {o.status !== 'Menunggu Pembayaran' && <Button type="button" variant="ghost" size="sm" onClick={() => act('Menunggu Pembayaran')}><RotateCcw strokeWidth={1.6} />Tandai Menunggu</Button>}
+                {o.status !== 'Menunggu Pembayaran' && <Button type="button" variant="ghost" size="sm" disabled={!canEdit} onClick={() => act('Menunggu Pembayaran')}><RotateCcw strokeWidth={1.6} />Tandai Menunggu</Button>}
               </div>
               <div className="flex gap-2">
                 {rejecting ? (
                   <>
                     <Button type="button" variant="ghost" size="sm" onClick={() => setRejecting(false)}>Batal</Button>
-                    <Button type="button" variant="destructive" size="sm" disabled={!reason.trim()} onClick={() => act('Ditolak', reason.trim())}><XCircle strokeWidth={1.6} />Konfirmasi tolak</Button>
+                    <Button type="button" variant="destructive" size="sm" disabled={!canEdit || !reason.trim()} onClick={() => act('Ditolak', reason.trim())}><XCircle strokeWidth={1.6} />Konfirmasi tolak</Button>
                   </>
                 ) : (
                   <>
-                    {o.status !== 'Ditolak' && <Button type="button" variant="outline" size="sm" className="text-danger" onClick={() => setRejecting(true)}><XCircle strokeWidth={1.6} />Tolak</Button>}
-                    {o.status !== 'Lunas' && <Button type="button" size="sm" onClick={() => act('Lunas')}><CheckCircle2 strokeWidth={1.6} />Verifikasi (Lunas)</Button>}
+                    {o.status !== 'Ditolak' && <Button type="button" variant="outline" size="sm" className="text-danger" disabled={!canEdit} onClick={() => setRejecting(true)}><XCircle strokeWidth={1.6} />Tolak</Button>}
+                    {o.status !== 'Lunas' && <Button type="button" size="sm" disabled={!canEdit} title={canEdit ? undefined : 'Hanya lihat'} onClick={() => act('Lunas')}><CheckCircle2 strokeWidth={1.6} />Verifikasi (Lunas)</Button>}
                   </>
                 )}
               </div>

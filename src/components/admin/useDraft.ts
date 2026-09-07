@@ -3,6 +3,8 @@ import { toast } from 'sonner'
 import type { Config } from '@/model/types'
 import { useConfig } from '@/store/config'
 import { DEFAULT_CONFIG } from '@/data/seed-config'
+import { useCrm } from '@/store/crm'
+import { useAdminAccess } from './access'
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
@@ -36,11 +38,13 @@ export function useDraft<K extends keyof Config>(key: K, label = 'Pengaturan'): 
   }, [value])
 
   const dirty = !same(draft, value)
+  const { actor, role } = useAdminAccess()
   const patch = React.useCallback((p: Partial<Config[K]>) => setDraft(d => ({ ...(d as object), ...p }) as Config[K]), [])
   const save = React.useCallback((what = label) => {
     setSection(key, clone(draft))
+    useCrm.getState().log('Konfigurasi Golden Privilege disimpan', `${what} · oleh ${actor || '—'} (${role || '—'})`)
     toast.success(`${what} disimpan`)
-  }, [draft, key, label, setSection])
+  }, [draft, key, label, setSection, actor, role])
   const reset = React.useCallback(() => setDraft(clone(value)), [value])
 
   return { draft, setDraft, patch, dirty, save, reset, defaults: DEFAULT_CONFIG[key] }

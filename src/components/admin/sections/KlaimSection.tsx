@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAdminAccess } from '../access'
 import { toast } from 'sonner'
 import { ArrowRight, Check, UserX } from 'lucide-react'
 import type { Claim } from '@/model/types'
@@ -81,8 +82,9 @@ function ClaimCard({ claim }: { claim: Claim }) {
   const decide = useCrm(s => s.decideClaim)
   const link = useAccounts(s => s.linkAccount)
   const unlink = useAccounts(s => s.unlinkToLead)
-  const approve = () => { decide(claim.id, 'approved'); link(claim.accountId, claim.candidateCustomerId); toast.success(`${claim.id} disetujui — akun terhubung ke ${customer?.outlet || claim.candidateCustomerId}`) }
-  const reject = () => { decide(claim.id, 'rejected'); unlink(claim.accountId); toast.success(`${claim.id} ditolak — akun dijadikan lead`) }
+  const { canEdit, actor } = useAdminAccess()
+  const approve = () => { if (!canEdit) return; decide(claim.id, 'approved'); link(claim.accountId, claim.candidateCustomerId); useCrm.getState().log('Klaim akun disetujui', `${claim.id} · oleh ${actor || '—'}`); toast.success(`${claim.id} disetujui — akun terhubung ke ${customer?.outlet || claim.candidateCustomerId}`) }
+  const reject = () => { if (!canEdit) return; decide(claim.id, 'rejected'); unlink(claim.accountId); useCrm.getState().log('Klaim akun ditolak', `${claim.id} · oleh ${actor || '—'}`); toast.success(`${claim.id} ditolak — akun dijadikan lead`) }
   return (
     <li className="rounded-xl border border-line p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -95,8 +97,8 @@ function ClaimCard({ claim }: { claim: Claim }) {
         <Side title="Kandidat pelanggan CRM" rows={[['Outlet', customer?.outlet], ['PIC', customer?.pic], ['RSL', customer?.rsl || '—'], ['Kota', customer?.kota]]} />
       </div>
       <div className="mt-3 flex flex-wrap justify-end gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={reject}><UserX strokeWidth={1.6} />Tolak → jadikan lead</Button>
-        <Button type="button" size="sm" onClick={approve}><Check strokeWidth={1.6} />Setujui → hubungkan</Button>
+        <Button type="button" variant="outline" size="sm" disabled={!canEdit} onClick={reject}><UserX strokeWidth={1.6} />Tolak → jadikan lead</Button>
+        <Button type="button" size="sm" disabled={!canEdit} title={canEdit ? undefined : 'Hanya lihat'} onClick={approve}><Check strokeWidth={1.6} />Setujui → hubungkan</Button>
       </div>
     </li>
   )

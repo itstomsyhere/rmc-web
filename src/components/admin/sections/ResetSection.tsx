@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAdminAccess } from '../access'
 import { toast } from 'sonner'
 import { AlertTriangle, Database, Receipt, Settings2 } from 'lucide-react'
 import { useConfig } from '@/store/config'
@@ -9,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { PageHead, SettingsCard } from '../parts'
 
 export function ResetSection() {
+  const { canEdit } = useAdminAccess()
   const [confirmAll, setConfirmAll] = React.useState(false)
   const orders = useOrders(s => s.orders.length)
 
@@ -17,11 +19,11 @@ export function ResetSection() {
       <PageHead title="Reset demo" sub="Kembalikan data prototype di browser ini. Tidak memengaruhi tab/perangkat lain kecuali berbagi localStorage yang sama." />
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <ResetCard icon={Settings2} title="Reset konfigurasi ke bawaan" desc="Copy, aset, benefit, tier, item, hadiah, pembayaran kembali ke seed. Transaksi dan akun tetap." action="Reset konfigurasi"
+        <ResetCard icon={Settings2} title="Reset konfigurasi ke bawaan" desc="Copy, aset, benefit, tier, item, hadiah, pembayaran kembali ke seed. Transaksi dan akun tetap." action="Reset konfigurasi" disabled={!canEdit}
           onClick={() => { useConfig.getState().reset(); toast.success('Konfigurasi dikembalikan ke bawaan') }} />
-        <ResetCard icon={Receipt} title="Reset transaksi" desc={`Ganti ${orders} pesanan saat ini dengan seed transaksi awal. Konfigurasi dan akun tetap.`} action="Reset transaksi"
+        <ResetCard icon={Receipt} title="Reset transaksi" desc={`Ganti ${orders} pesanan saat ini dengan seed transaksi awal. Konfigurasi dan akun tetap.`} action="Reset transaksi" disabled={!canEdit}
           onClick={() => { useOrders.getState().reset(); toast.success('Transaksi dikembalikan ke seed') }} />
-        <ResetCard icon={Database} title="Reset semua data demo" desc="Hapus seluruh rmcweb_* di localStorage (konfigurasi, transaksi, akun, CRM mock, inbox) lalu muat ulang halaman." action="Reset semua…" danger
+        <ResetCard icon={Database} title="Reset semua data demo" desc="Hapus seluruh rmcweb_* di localStorage (konfigurasi, transaksi, akun, CRM mock, inbox) lalu muat ulang halaman." action="Reset semua…" danger disabled={!canEdit}
           onClick={() => setConfirmAll(true)} />
       </div>
 
@@ -33,7 +35,7 @@ export function ResetSection() {
           </DialogHeader>
           <DialogFooter>
             <Button type="button" variant="ghost" size="sm" onClick={() => setConfirmAll(false)}>Batal</Button>
-            <Button type="button" variant="destructive" size="sm" onClick={() => resetAllStores()}>Ya, hapus semua</Button>
+            <Button type="button" variant="destructive" size="sm" disabled={!canEdit} onClick={() => resetAllStores()}>Ya, hapus semua</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -41,11 +43,11 @@ export function ResetSection() {
   )
 }
 
-function ResetCard({ icon: Icon, title, desc, action, onClick, danger }: { icon: typeof Database; title: string; desc: string; action: string; onClick: () => void; danger?: boolean }) {
+function ResetCard({ icon: Icon, title, desc, action, onClick, danger, disabled }: { icon: typeof Database; title: string; desc: string; action: string; onClick: () => void; danger?: boolean; disabled?: boolean }) {
   return (
     <SettingsCard title={title} desc={desc} className="flex flex-col" bodyClassName="mt-auto flex items-center justify-between gap-3">
       <Icon className={danger ? 'h-5 w-5 text-danger' : 'h-5 w-5 text-teal-600'} strokeWidth={1.6} />
-      <Button type="button" variant={danger ? 'destructive' : 'outline'} size="sm" onClick={onClick}>{action}</Button>
+      <Button type="button" variant={danger ? 'destructive' : 'outline'} size="sm" disabled={disabled} title={disabled ? 'Hanya lihat' : undefined} onClick={onClick}>{action}</Button>
     </SettingsCard>
   )
 }

@@ -1,15 +1,14 @@
 import * as React from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { ExternalLink, Lock, LockKeyhole } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { Eye, ShieldAlert } from 'lucide-react'
 import { useConfig } from '@/store/config'
-import { useSession } from '@/store/session'
 import { useCrm } from '@/store/crm'
 import { useOrders } from '@/store/orders'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Field } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AdminShell, isAdminSection, type AdminSectionId } from '@/components/admin/AdminShell'
+import { AdminAccessContext } from '@/components/admin/access'
+import { EDIT_CAPABILITY, parseActor } from '@/model/access'
 import { KontenSection } from '@/components/admin/sections/KontenSection'
 import { AsetSection } from '@/components/admin/sections/AsetSection'
 import { BenefitSection } from '@/components/admin/sections/BenefitSection'
@@ -28,78 +27,78 @@ const SECTIONS: Record<AdminSectionId, React.ComponentType> = {
   pembayaran: PembayaranSection, transaksi: TransaksiSection, klaim: KlaimSection,
   akun: AkunSection, reset: ResetSection,
 }
+/* Form-only sections are wrapped in <fieldset disabled> when read-only; the operational ones keep their
+   filters/rows usable and guard each mutating control explicitly (Verifikasi, Setujui, import, reset). */
+const FORM_SECTIONS: AdminSectionId[] = ['konten', 'aset', 'benefit', 'kampanye', 'hadiah', 'items', 'pembayaran']
 
-/* `#/admin?embed=1&tab=…` is what the CRM (Member Card (RMC) → Golden Privilege) iframes; `?key=<passcode>` skips the gate for deep links. */
+const CRM_URL = 'https://crm-apique.vercel.app'
+
+/* `#/admin?embed=1&tab=…&actor=…&role=…&level=…&caps=…` is what the CRM (Member Card (RMC) → Golden Privilege)
+   iframes (R.014). No passcode: rights come from the Role Access Matrix sub-module level + capability
+   manage_config, exactly the two axes production UM exposes via /me/permissions. Outside the embed → denied. */
 export function AdminPage() {
   const [params, setParams] = useSearchParams()
-  const embed = params.get('embed') === '1'
-  const key = params.get('key')
+  const access = React.useMemo(() => parseActor(params), [params])
   const tabParam = params.get('tab')
   const tab: AdminSectionId = isAdminSection(tabParam) ? tabParam : 'konten'
 
-  const passcode = useConfig(s => s.config.admin.passcode)
   const logo = useConfig(s => s.config.assets.logo)
-  const unlocked = useSession(s => s.adminUnlocked)
-  const unlock = useSession(s => s.unlockAdmin)
-  const lock = useSession(s => s.lockAdmin)
   const openClaims = useCrm(s => s.claims.filter(c => c.status === 'open').length)
   const pendingProofs = useOrders(s => s.orders.filter(o => o.status === 'Bukti Diunggah').length)
 
   React.useEffect(() => { document.title = 'Golden Privilege · Konfigurasi' }, [])
-  React.useEffect(() => { if (!unlocked && key && key === passcode) unlock() }, [key, passcode, unlocked, unlock])
 
   const setTab = (id: AdminSectionId) => setParams(p => { const n = new URLSearchParams(p); n.set('tab', id); return n }, { replace: true })
 
-  if (!unlocked && key !== passcode) return <Gate onUnlock={unlock} passcode={passcode} logo={logo} />
+  if (!access.allowed) return <Denied logo={logo} reason={!access.embed ? 'outside' : !access.actor ? 'anonymous' : 'none'} />
 
   const Section = SECTIONS[tab]
+  const body = <Section key={tab} />
   return (
-    <div className="min-h-dvh bg-bg">
-      {!embed && (
-        <header className="sticky top-0 z-20 border-b border-line bg-white/90 backdrop-blur">
-          <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-3 px-4 sm:px-6">
-            <div className="flex min-w-0 items-center gap-2.5">
-              <img src={logo} alt="" className="h-8 w-8 rounded-[9px]" />
-              <p className="truncate text-[14px] font-extrabold tracking-tight text-teal-700">Golden Privilege <span className="font-semibold text-ink-3">· Konfigurasi</span></p>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Button asChild variant="ghost" size="sm"><Link to="/">Lihat situs<ExternalLink strokeWidth={1.6} /></Link></Button>
-              <Button variant="outline" size="sm" onClick={() => lock()}><Lock strokeWidth={1.6} />Kunci</Button>
-            </div>
+    <AdminAccessContext.Provider value={access}>
+      <div className="min-h-dvh bg-bg">
+        <div className="mx-auto w-full max-w-[1200px] px-3 pt-3 sm:px-4">
+          <div data-admin-actor className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-white px-3 py-2 text-[13px]">
+            <p className="min-w-0 truncate text-ink-2">
+              <span className="font-semibold text-ink">{access.actor}</span>
+              <span className="text-ink-3"> · {access.role || '—'} · level </span>
+              <span className={access.canEdit ? 'font-semibold text-teal-700' : 'font-semibold text-warn'}>{access.level}</span>
+              {access.caps.includes('super_admin') && <span className="text-ink-3"> · super_admin</span>}
+            </p>
+            <p className="text-[12px] text-ink-3">Hak akses: Role Access Matrix (sub-modul Golden Privilege) + capability {EDIT_CAPABILITY} — User Management</p>
           </div>
-        </header>
-      )}
-      <AdminShell active={tab} onChange={setTab} embed={embed} badges={{ klaim: openClaims, transaksi: pendingProofs }}>
-        <Section key={tab} />
-      </AdminShell>
-    </div>
+          {access.readOnly && (
+            <p data-admin-readonly role="status" className="mt-2 flex items-center gap-2 rounded-lg border border-warn-100 bg-warn-50 px-3 py-2 text-[13px] text-ink">
+              <Eye className="h-4 w-4 shrink-0 text-warn" strokeWidth={1.6} />
+              <span><strong>Hanya lihat.</strong> Role {access.role || '—'}: {access.reason}. Perubahan tidak bisa disimpan.</span>
+            </p>
+          )}
+        </div>
+        <AdminShell active={tab} onChange={setTab} embed={access.embed} badges={{ klaim: openClaims, transaksi: pendingProofs }}>
+          {access.readOnly && FORM_SECTIONS.includes(tab)
+            ? <fieldset disabled aria-describedby="admin-readonly" className="min-w-0 border-0 p-0 [&_input]:opacity-70 [&_textarea]:opacity-70">{body}</fieldset>
+            : body}
+        </AdminShell>
+      </div>
+    </AdminAccessContext.Provider>
   )
 }
 
-function Gate({ onUnlock, passcode, logo }: { onUnlock: () => void; passcode: string; logo: string }) {
-  const [v, setV] = React.useState('')
-  const [err, setErr] = React.useState<string | undefined>()
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (v === passcode) { onUnlock(); return }
-    setErr('Kode akses salah')
-  }
+function Denied({ logo, reason }: { logo: string; reason: 'outside' | 'anonymous' | 'none' }) {
+  const text = reason === 'none'
+    ? 'Role kamu punya level None untuk sub-modul Golden Privilege di Role Access Matrix. Minta admin User Management menaikkan levelnya.'
+    : 'Halaman ini tidak dibuka langsung. Buka lewat CRM Resique → Member Card (RMC) → Golden Privilege; hak aksesnya mengikuti Role Access Matrix (sub-modul Golden Privilege) dan capability manage_config di User Management.'
   return (
     <div className="grid min-h-dvh place-items-center bg-bg px-4 py-10">
-      <Card className="w-full max-w-sm" data-admin-gate>
+      <Card className="w-full max-w-md" data-admin-denied>
         <CardHeader className="items-center text-center">
           <img src={logo} alt="" className="mb-2 h-12 w-12 rounded-xl" />
-          <CardTitle>Golden Privilege — Admin</CardTitle>
-          <CardDescription>Masukkan kode akses untuk membuka konfigurasi.</CardDescription>
+          <CardTitle className="flex items-center gap-2"><ShieldAlert className="h-5 w-5 text-warn" strokeWidth={1.6} />Konfigurasi Golden Privilege</CardTitle>
+          <CardDescription className="text-pretty">{text}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={submit} className="space-y-4">
-            <Field label="Kode akses" htmlFor="admin-passcode" error={err}>
-              <Input id="admin-passcode" type="password" autoFocus autoComplete="current-password" value={v} aria-invalid={!!err || undefined} onChange={e => { setV(e.target.value); setErr(undefined) }} />
-            </Field>
-            <Button type="submit" className="w-full" disabled={!v}><LockKeyhole strokeWidth={1.6} />Buka</Button>
-            <p className="text-center text-[12px] text-ink-3">Prototype: kode akses menggantikan peran UM. <Link to="/" className="text-teal-600 underline-offset-2 hover:underline">Kembali ke situs</Link></p>
-          </form>
+        <CardContent className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+          <Button asChild><a href={CRM_URL}>Buka CRM Resique</a></Button>
+          <Button asChild variant="outline"><a href="#/">Kembali ke situs</a></Button>
         </CardContent>
       </Card>
     </div>

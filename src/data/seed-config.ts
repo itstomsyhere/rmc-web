@@ -83,7 +83,6 @@ export const DEFAULT_CONFIG: Config = {
     vaBanks: ['BCA', 'BNI', 'Mandiri', 'BRI'],
   },
   klasemen: { topN: 10, showPic: true },
-  admin: { passcode: 'resique2026' },
   outlets: ['Jakarta', 'Palembang', 'Jambi', 'Bandung', 'Palu', 'Pontianak'],
   matching: { fuzzyThreshold: 0.8 },
   password: { minLength: 8 },

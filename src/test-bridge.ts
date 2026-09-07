@@ -12,6 +12,7 @@ import { checkPassword, genTempPassword } from '@/model/password'
 import { currentWindow, tierForSpend, rmcFor } from '@/model/rmc'
 import { SEED_CUSTOMERS } from '@/data/seed-customers'
 import { DEFAULT_CONFIG } from '@/data/seed-config'
+import { parseActor } from '@/model/access'
 
 declare global {
   interface Window { __rmcweb?: Record<string, unknown> }
@@ -24,6 +25,7 @@ window.__rmcweb = {
   crm: () => useCrm.getState(),
   orders: () => useOrders.getState().orders,
   config: () => useConfig.getState().config,
+  access: () => parseActor(new URLSearchParams(location.hash.split('?')[1] || '')),
   model: {
     normalizePhone, dice, normName, matchRegistration, checkPassword, genTempPassword, currentWindow, tierForSpend, rmcFor,
     tiers: DEFAULT_CONFIG.tiers, seedCustomers: SEED_CUSTOMERS,

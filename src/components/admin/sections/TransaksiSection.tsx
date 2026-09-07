@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAdminAccess } from '../access'
 import { toast } from 'sonner'
 import { Download, FileSpreadsheet, Search, Upload } from 'lucide-react'
 import type { Order, OrderStatus } from '@/model/types'
@@ -25,6 +26,7 @@ export function TransaksiSection() {
   const [filter, setFilter] = React.useState<Filter>('Semua')
   const [q, setQ] = React.useState('')
   const [openId, setOpenId] = React.useState<string | null>(null)
+  const { canEdit } = useAdminAccess()
   const [preview, setPreview] = React.useState<ImportPreview | null>(null)
   const [fileName, setFileName] = React.useState('')
   const fileRef = React.useRef<HTMLInputElement>(null)
@@ -60,7 +62,7 @@ export function TransaksiSection() {
             <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="sr-only" tabIndex={-1} aria-hidden onChange={e => onImport(e.target.files?.[0])} />
             <Button type="button" variant="outline" size="sm" onClick={() => { exportOrders(filtered); toast.success(`${filtered.length} transaksi diekspor`) }}><Download strokeWidth={1.6} />Export xlsx</Button>
             <Button type="button" variant="outline" size="sm" onClick={downloadTemplate}><FileSpreadsheet strokeWidth={1.6} />Template import</Button>
-            <Button type="button" size="sm" onClick={() => fileRef.current?.click()}><Upload strokeWidth={1.6} />Import xlsx</Button>
+            <Button type="button" size="sm" disabled={!canEdit} title={canEdit ? undefined : 'Hanya lihat'} onClick={() => fileRef.current?.click()}><Upload strokeWidth={1.6} />Import xlsx</Button>
           </>
         }
       />

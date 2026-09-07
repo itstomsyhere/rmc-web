@@ -83,7 +83,6 @@ export interface Config {
     vaBanks: string[]
   }
   klasemen: { topN: number; showPic: boolean }
-  admin: { passcode: string }
   outlets: Kota[]
   matching: { fuzzyThreshold: number }
   password: { minLength: number }

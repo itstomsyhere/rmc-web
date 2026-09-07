@@ -1,3 +1,5 @@
+import { useAdminAccess } from '../access'
+import { useCrm } from '@/store/crm'
 import { toast } from 'sonner'
 import type { Order } from '@/model/types'
 import type { ImportPreview } from '@/lib/xlsx'
@@ -17,8 +19,11 @@ export function TransaksiImport({ preview, fileName, onClose }: { preview: Impor
   const fresh = rows.filter(r => !existing.has(r.id))
   const dupes = rows.length - fresh.length
 
+  const { canEdit, actor } = useAdminAccess()
   const confirm = () => {
+    if (!canEdit) return
     const n = importRows(rows)
+    useCrm.getState().log('Transaksi diimpor', `${n} baris · oleh ${actor || '—'}`)
     toast.success(`${n} transaksi diimpor${dupes ? ` · ${dupes} dilewati (ID sudah ada)` : ''}`)
     onClose()
   }
@@ -63,7 +68,7 @@ export function TransaksiImport({ preview, fileName, onClose }: { preview: Impor
 
         <DialogFooter>
           <Button type="button" variant="ghost" size="sm" onClick={onClose}>Batal</Button>
-          <Button type="button" size="sm" disabled={fresh.length === 0} onClick={confirm}>Konfirmasi import ({fresh.length})</Button>
+          <Button type="button" size="sm" disabled={!canEdit || fresh.length === 0} onClick={confirm}>Konfirmasi import ({fresh.length})</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

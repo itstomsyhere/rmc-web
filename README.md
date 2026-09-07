@@ -5,7 +5,7 @@ Consumer web prototype for the **Resique Golden Privilege** campaign (Apique Gro
 upload, spending Klasemen, and the admin config surface that the Apique CRM embeds (Member Card (RMC) → Golden Privilege).
 
 - Live: https://rmc-web-beta.vercel.app (auto-deploys from `main`)
-- Admin: `/#/admin` (demo passcode in `src/data/seed-config.ts`) · embed mode `/#/admin?embed=1` (used by crm-apique CRM → Member Card (RMC) → Golden Privilege)
+- Config surface: `/#/admin?embed=1&actor=<name>&role=<role>&level=Full|Edit|View&caps=manage_config,…` — opened only from crm-apique CRM → Member Card (RMC) → Golden Privilege; no passcode. Level comes from the Role Access Matrix sub-module, editing needs capability `manage_config` (View = read-only). Direct `/#/admin` shows an access-denied card.
 - PRD: `Apique\prd\PRD-CRM-Resique-Golden-Privilege-v1.0.md` (Google Doc canonical)
 - Design notes: `DESIGN-RMC.md`
 
