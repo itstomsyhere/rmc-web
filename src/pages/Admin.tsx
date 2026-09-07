@@ -29,7 +29,7 @@ const SECTIONS: Record<AdminSectionId, React.ComponentType> = {
   akun: AkunSection, reset: ResetSection,
 }
 
-/* `#/admin?embed=1&tab=…` is what the UM app iframes; `?key=<passcode>` skips the gate for deep links. */
+/* `#/admin?embed=1&tab=…` is what the CRM (Member Card (RMC) → Golden Privilege) iframes; `?key=<passcode>` skips the gate for deep links. */
 export function AdminPage() {
   const [params, setParams] = useSearchParams()
   const embed = params.get('embed') === '1'

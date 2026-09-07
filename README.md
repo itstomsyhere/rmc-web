@@ -2,10 +2,10 @@
 
 Consumer web prototype for the **Resique Golden Privilege** campaign (Apique Group): mobile-first landing
 ("Resique Turun Harga"), RMC member profile (points · tier · prizes), Golden Sale with QRIS checkout + proof
-upload, spending Klasemen, and the admin config surface that the Apique UM app embeds.
+upload, spending Klasemen, and the admin config surface that the Apique CRM embeds (Member Card (RMC) → Golden Privilege).
 
 - Live: https://rmc-web-beta.vercel.app (auto-deploys from `main`)
-- Admin: `/#/admin` (demo passcode in `src/data/seed-config.ts`) · embed mode `/#/admin?embed=1` (used by crm-apique UM → Module Config → Golden Privilege)
+- Admin: `/#/admin` (demo passcode in `src/data/seed-config.ts`) · embed mode `/#/admin?embed=1` (used by crm-apique CRM → Member Card (RMC) → Golden Privilege)
 - PRD: `Apique\prd\PRD-CRM-Resique-Golden-Privilege-v1.0.md` (Google Doc canonical)
 - Design notes: `DESIGN-RMC.md`
 

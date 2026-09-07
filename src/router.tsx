@@ -9,7 +9,7 @@ import { CheckoutPage } from '@/pages/Checkout'
 import { OrderStatusPage } from '@/pages/OrderStatus'
 import { AdminPage } from '@/pages/Admin'
 
-/* Hash router: static Vercel deploy needs no rewrites, and the UM iframe embeds `#/admin?embed=1`. */
+/* Hash router: static Vercel deploy needs no rewrites, and the CRM iframe (Member Card (RMC) → Golden Privilege) embeds `#/admin?embed=1`. */
 export const router = createHashRouter([
   {
     element: <Shell />,

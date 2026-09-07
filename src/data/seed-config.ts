@@ -17,11 +17,11 @@ export const SEED_TIERS: Tier[] = [
 /* Five RMC privileges (Lurd, 4 Sep) — wording per RSQ-RMC-001 v2.0 §3–§6. Golden Privilege prizes are campaign-specific
    (admin-defined, BR-4.11); the RMC policy itself redeems poin as voucher belanja. */
 export const SEED_BENEFITS: Benefit[] = [
-  { id: 'b-diskon',     icon: 'Percent',        figure: 'Hingga 5%', figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Diskon 1–5% sesuai level, langsung dipotong saat transaksi — tidak perlu klaim. Mitra Apique Management minimal 3%.' },
-  { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',    figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Semua level, tiap transaksi yang memenuhi minimum: belanja Rp500 rb (Starter–Intermediate) atau Rp350 rb (Winner ke atas).' },
-  { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1–2 sesi',  figureNote: 'per bulan',      title: 'Gratis konsultasi bisnis',        desc: '1 sesi = 1 jam bersama trainer Apique Academy. Winner & Champion 1 sesi per bulan, Ultimate 2 sesi per bulan.' },
-  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',   figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja jadi 1 poin (mesin cuci tidak dihitung). Tukar mulai 500 poin jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des.' },
-  { id: 'b-event',      icon: 'PartyPopper',    figure: 'Des',       figureNote: 'tiap tahun',     title: 'Event tahunan eksklusif Resique', desc: 'Undangan untuk member dengan belanja tertinggi periode Juli–Desember, RMC biasa maupun Mitra. Ada undian grandprize untuk tamu undangan.' },
+  { id: 'b-diskon',     icon: 'Percent',        figure: 'Hingga 5%', figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Naik level, naik potongan: 1% sampai 5%, langsung dipotong di kasir tanpa klaim apa pun. Mitra Apique Management dapat minimal 3% sejak Starter.' },
+  { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',    figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Berlaku di semua level, tiap transaksi. Belanja Rp500 rb ke atas (Starter–Intermediate) atau Rp350 rb ke atas (Winner ke atas), ongkirnya kami yang tanggung.' },
+  { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1–2 sesi',  figureNote: 'per bulan',      title: 'Gratis konsultasi bisnis',        desc: 'Satu jam bersama trainer Apique Academy untuk bedah strategi laundry-mu. Winner & Champion 1 sesi per bulan, Ultimate 2 sesi per bulan.' },
+  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',   figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja jadi 1 poin, otomatis (mesin cuci tidak dihitung). Kumpulkan 500 poin, tukar jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des — tukar sebelum itu.' },
+  { id: 'b-event',      icon: 'PartyPopper',    figure: '1×',        figureNote: 'tiap Desember',  title: 'Event tahunan eksklusif Resique', desc: 'Belanja terbanyak Juli–Desember? Kamu diundang ke event apresiasi akhir tahun — RMC biasa maupun Mitra — lengkap dengan undian grandprize khusus tamu undangan.' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [

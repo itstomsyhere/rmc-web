@@ -33,11 +33,11 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   // R.012: bands became inclusive (x.999.999) — a stored max that still equals the next tier's min moves down by 1
   out.tiers = out.tiers.map(t => { const seed = DEFAULT_CONFIG.tiers.find(d => d.key === t.key); return seed && seed.max !== null && t.max === seed.max + 1 ? { ...t, max: seed.max } : t })
   const OLD_BENEFIT_DESC: Record<string, string[]> = {
-    'b-diskon': ['Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.'],
-    'b-ongkir': ['Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.'],
-    'b-konsultasi': ['Sesi konsultasi operasional laundry bersama tim Resique, mulai tier Winner.'],
-    'b-poin': ['Tiap Rp1.000 belanja Lunas jadi 1 poin. Tukar mulai 500 poin: voucher, parfum 5L, tablet, sampai laptop. Poin berlaku sampai 20 Des.'],
-    'b-event': ['Undangan Gala Dinner dan gathering member Resique, mulai tier Champion.'],
+    'b-diskon': ['Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.', 'Diskon 1–5% sesuai level, langsung dipotong saat transaksi — tidak perlu klaim. Mitra Apique Management minimal 3%.'],
+    'b-ongkir': ['Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.', 'Semua level, tiap transaksi yang memenuhi minimum: belanja Rp500 rb (Starter–Intermediate) atau Rp350 rb (Winner ke atas).'],
+    'b-konsultasi': ['Sesi konsultasi operasional laundry bersama tim Resique, mulai tier Winner.', '1 sesi = 1 jam bersama trainer Apique Academy. Winner & Champion 1 sesi per bulan, Ultimate 2 sesi per bulan.'],
+    'b-poin': ['Tiap Rp1.000 belanja Lunas jadi 1 poin. Tukar mulai 500 poin: voucher, parfum 5L, tablet, sampai laptop. Poin berlaku sampai 20 Des.', 'Tiap Rp1.000 belanja jadi 1 poin (mesin cuci tidak dihitung). Tukar mulai 500 poin jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des.'],
+    'b-event': ['Undangan Gala Dinner dan gathering member Resique, mulai tier Champion.', 'Undangan untuk member dengan belanja tertinggi periode Juli–Desember, RMC biasa maupun Mitra. Ada undian grandprize untuk tamu undangan.'],
   }
   out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && (OLD_BENEFIT_DESC[b.id] || []).includes(b.desc) ? seed : b })
   // R.010: "0–5%" → "Hingga 5%" on the seed diskon block (only if the admin has not changed it)
