@@ -76,6 +76,8 @@ body {
   /* Display figures (tier %, poin, prices ≥ 20px): Satoshi, tabular + lining, tight (Lurd, 7 Sep: "numbers in the card on tier section"). */
   .t-fig { font-family: Satoshi, "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.02em; }
   .t-fig-black { font-weight: 900; }
+  /* Lurd (7 Sep, night): the tier / privilege card figures go back to the brand face, extra-bold tabular */
+  .t-fig-sans { font-family: "Plus Jakarta Sans", Satoshi, "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; letter-spacing: -0.03em; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
      .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
   .t-eyebrow { @apply text-[13px] font-semibold text-navy-700; }

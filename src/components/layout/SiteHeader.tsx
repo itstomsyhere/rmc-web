@@ -151,7 +151,7 @@ export function SiteHeader() {
               </ul>
               {acc ? (
                 <>
-                  <Button asChild variant="secondary"><Link to="/profile">Profil RMC</Link></Button>
+                  <Button asChild><Link to="/profile">Profil RMC</Link></Button>
                   <Button variant="ghost" className="hidden sm:inline-flex" onClick={() => { signOut(); nav('/') }}>Keluar</Button>
                 </>
               ) : (

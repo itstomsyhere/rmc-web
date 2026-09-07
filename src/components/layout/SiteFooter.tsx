@@ -4,7 +4,9 @@ import { Clock, ExternalLink, Facebook, Instagram, Mail, MessageCircle, Store, Y
 import { useConfig } from '@/store/config'
 import { srcSet2x } from '@/lib/logo'
 import { Reveal } from '@/lib/reveal'
+import { cn } from '@/lib/utils'
 import { CONTACTS, EXT, SOCIALS } from '@/data/contacts'
+import { Doodle } from '@/components/Doodle'
 
 const SOCIAL_ICON = { instagram: Instagram, youtube: Youtube, facebook: Facebook } as const
 
@@ -28,8 +30,9 @@ export function SiteFooter() {
   ]
   const jump = (to: string) => (e: React.MouseEvent) => { if (to.startsWith('/#') && location.hash.replace(/\?.*$/, '') === '#/') { e.preventDefault(); document.getElementById(to.slice(2))?.scrollIntoView({ behavior: 'smooth' }) } }
   return (
-    <footer className="tex tex-grain mt-auto bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]">
-      <Reveal className="container grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:py-16">
+    <footer className="tex tex-grain relative isolate mt-auto overflow-hidden bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]">
+      <Doodle variant="footer" />
+      <Reveal className="container relative z-10 grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:py-16">
         <div>
           <img src={cfg.assets.logoWhite} srcSet={srcSet2x(cfg.assets.logoWhite)} alt="Resique Supermarket Laundry" width={180} height={39} className="h-9 w-auto" loading="lazy" decoding="async" />
           <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-pretty text-white/75">Supermarket laundry terlengkap di Indonesia. Chemical, perlengkapan, mesin, dan paket usaha laundry di satu tempat.</p>
@@ -60,12 +63,12 @@ export function SiteFooter() {
           <p className="text-[13px] font-bold text-green-200">Golden Privilege</p>
           <ul className="mt-3 space-y-1.5" aria-label="Tautan kaki">
             {site.map(s => <li key={s.to}><a href={s.to} onClick={jump(s.to)} className={link}>{s.label}</a></li>)}
-            <li><Link to="/login" className={link}>Masuk / cek poin</Link></li>
-            <li><Link to="/register" className={link}>Daftar RMC</Link></li>
+            <li><Link to="/login" className={cn(link, "font-bold text-green-200 hover:text-green-100")}>Masuk / cek poin</Link></li>
+            <li><Link to="/register" className={cn(link, "font-bold text-green-200 hover:text-green-100")}>Daftar RMC</Link></li>
           </ul>
         </div>
       </Reveal>
-      <div className="border-t border-white/10">
+      <div className="relative z-10 border-t border-white/10">
         <div className="container flex flex-col gap-2 py-5 text-[13px] text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Resique Supermarket Laundry · Apique Group</p>
           <a href={CONTACTS.site} {...EXT} className="u-slide inline-flex min-h-[32px] items-center gap-1.5 font-semibold text-white/85 transition-colors duration-base hover:text-white [--u-bottom:2px]">Situs resmi {CONTACTS.siteLabel} <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden /></a>

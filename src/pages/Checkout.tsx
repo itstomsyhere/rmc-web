@@ -232,8 +232,8 @@ export function CheckoutPage() {
             </Reveal>
           </div>
 
-          {/* Submit, sticky bottom bar on mobile (safe-area aware), inline on desktop */}
-          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:static lg:mt-10 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+          {/* Submit: fixed bottom bar on mobile (safe-area aware), sticky at the bottom of the form column on desktop (Lurd, 7 Sep) */}
+          <div data-pay-bar className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:sticky lg:inset-x-auto lg:bottom-4 lg:mt-10 lg:rounded-xl lg:border lg:bg-white/95 lg:p-4 lg:shadow-3">
             <div className="mx-auto flex max-w-xl items-center gap-3">
               <div className="min-w-0 flex-1 lg:hidden">
                 <p className="text-[11px] font-semibold text-ink-3"><span className="t-code">{count}</span> item · hemat <span className="t-code gold-text font-bold">{rupiah(savings)}</span></p>
