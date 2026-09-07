@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ChevronsRight, Gift, ShoppingBag, Sparkles, Trophy } from 'lucide-react'
+import { ArrowRight, Check, ChevronsRight, Crown, Gift, ShoppingBag, Sparkles, Trophy, X } from 'lucide-react'
 import { BENEFIT_ICONS } from '@/lib/benefit-icons'
 import { Reveal, useCountUp, useInView } from '@/lib/reveal'
 import { poin } from '@/lib/format'
@@ -52,6 +52,15 @@ function Marked({ text, className }: { text: string; className?: string }) {
   return <>{words.slice(0, -1).join(' ')}{words.length > 1 ? ' ' : ''}<span className={cn('mark', className)}>{words.slice(-1)[0]}</span></>
 }
 
+/* Concentric ring outlines, a recurring background motif (paper sections). Decorative, thin, brand tints. */
+function Rings({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden className={cn('pointer-events-none absolute opacity-70', className)} viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <circle cx="100" cy="100" r="98" /><circle cx="100" cy="100" r="74" /><circle cx="100" cy="100" r="50" /><circle cx="100" cy="100" r="26" />
+    </svg>
+  )
+}
+
 /* Hook headline: each word rises in on load (stagger), the last word keeps the highlighter mark for the gate. */
 function StaggerWords({ text }: { text: string }) {
   const words = text.trim().split(' ')
@@ -90,6 +99,8 @@ function HookSection() {
     <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden pb-12 pt-20 lg:pb-20 lg:pt-24">
       {/* one solid green band behind the price card (desktop), the only colour on the paper */}
       <span aria-hidden className="band hidden bg-green-50 lg:block" style={{ top: '-10%', right: '-14%', width: '44%', height: '120%' }} />
+      <Rings className="left-[-160px] top-[-140px] h-[460px] w-[460px] text-green-200" />
+      <span aria-hidden className="pointer-events-none absolute bottom-[-40px] left-[38%] hidden h-[180px] w-[180px] rounded-full border-[10px] border-gold-100 lg:block" />
       <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
         <div className="min-w-0 lg:col-span-7">
           <Reveal>
@@ -284,7 +295,10 @@ function BenefitSection() {
   const chips = ['bg-green text-navy-900', 'bg-white text-gold-700', 'bg-white text-green-700', 'bg-green text-navy-900', 'bg-white text-gold-700']
   const five = benefits.length === 5
   return (
-    <section id="benefit" className="tex tex-grain scroll-mt-20 py-14 lg:py-24">
+    <section id="benefit" className="tex tex-grain scroll-mt-20 overflow-hidden py-14 lg:py-24">
+      {/* navy band low-left + two ring outlines top-right: the paper is worked, not blank */}
+      <span aria-hidden className="band bg-navy-50" style={{ left: '-14%', bottom: '-30%', width: '46%', height: '60%' }} />
+      <Rings className="right-[-120px] top-[-80px] h-[420px] w-[420px] text-green-200" />
       <div className="container">
         <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} />
         <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4">
@@ -327,10 +341,13 @@ function BenefitSection() {
 function TierSection() {
   const cfg = useConfig(s => s.config)
   return (
-    <section id="tier" className="tex tex-dots scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
+    <section id="tier" className="tex tex-dots scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
+      {/* a gold band leans behind the Ultimate column, a navy one behind the title */}
+      <span aria-hidden className="band bg-gold-50" style={{ right: '-10%', top: '18%', width: '30%', height: '70%' }} />
+      <span aria-hidden className="band bg-navy-50" style={{ left: '-12%', top: '-10%', width: '38%', height: '42%' }} />
       <div className="container">
         <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} />
-        <ol className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4" aria-label="Daftar tier RMC">
+        <ol className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 lg:gap-3" aria-label="Daftar tier RMC">
           {cfg.tiers.map((t, i) => <TierCardV key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
         </ol>
         <div className="mt-6 flex max-w-2xl items-start gap-3 rounded-lg bg-green-50 p-4">
@@ -343,35 +360,46 @@ function TierSection() {
     </section>
   )
 }
-/* Tier card = a membership card: solid header in the tier colour (number · name · per-month · big %), white body with
-   the copy and the rules. Hover: lift, the bottom accent draws in, the badge springs, the % grows, tint fades in;
-   the % counts up on scroll-in. Light swatches (Starter grey, Beginner green, Ultimate gold) get dark text. */
-const LIGHT_SW = (hex: string) => { const m = /^#?([0-9a-f]{6})$/i.exec(hex); if (!m) return false; const n = parseInt(m[1], 16); const r = n >> 16, g = (n >> 8) & 255, bl = n & 255; return (0.2126 * r + 0.7152 * g + 0.0722 * bl) / 255 > 0.55 }
+/* Tier column (the RGP mock's six coloured columns, tightened): a full-colour card in the tier colour, emblem on top
+   (crown on Ultimate), name + per-month, then four rows — diskon (big %), gratis ongkir, konsultasi, belanja 6 bulan —
+   each with a check / cross mark and a hairline divider. A big faint tier number sits in the corner. Hover: lift,
+   white tint, emblem springs, the bottom bar draws in; the % counts up on scroll-in. */
 function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
-  const light = LIGHT_SW(tier.sw)
-  const onSw = light ? 'text-navy-900' : 'text-white'
-  const onSwMuted = light ? 'text-navy-900/70' : 'text-white/80'
+  const rows: { label: string; value: React.ReactNode; on: boolean }[] = [
+    { label: 'Gratis ongkir', value: tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`, on: tier.freeDelivMin !== null },
+    { label: 'Konsultasi bisnis', value: tier.consult ? `${tier.consult} sesi/bln` : '-', on: tier.consult > 0 },
+  ]
   return (
-    <Reveal as="li" delay={idx * 60} className={cn('lift tier-card card-fx reveal-pop group relative flex flex-col overflow-hidden rounded-lg border bg-white', top ? 'sweep border-gold-200 hover:shadow-gold' : 'border-line')}
-      style={{ '--tier': tier.sw, '--tint': top ? '#FBF5E8' : undefined } as React.CSSProperties}>
-      <div className={cn('tier-head relative flex items-center justify-between gap-3 px-5 pb-4 pt-4', onSw)} style={{ background: tier.sw }}>
-        <div className="flex items-center gap-3">
-          <span className={cn('badge t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md text-[14px]', light ? 'bg-navy-900/10 text-navy-900' : 'bg-white/15 text-white', top && 'float-6')} aria-hidden>{idx + 1}</span>
-          <div>
-            <h3 className="flex flex-wrap items-center gap-2 text-[17px] font-extrabold leading-tight">{tier.name}{top && <span className="rounded-md bg-white/70 px-2 py-0.5 text-[11px] font-bold text-gold-ink">Tier tertinggi</span>}</h3>
-            <p className={cn('t-code text-[13px]', onSwMuted)}>{tier.perMonth} / bulan</p>
+    <Reveal as="li" delay={idx * 60} className={cn('lift tier-card card-fx reveal-pop group relative flex flex-col overflow-hidden rounded-xl p-4 text-white', top && 'sweep ring-2 ring-gold ring-offset-2 ring-offset-white hover:shadow-gold')}
+      style={{ '--tier': tier.sw, '--tint': 'rgba(255,255,255,.10)', background: tier.sw } as React.CSSProperties}>
+      <span aria-hidden className="t-fig t-fig-black pointer-events-none absolute -bottom-3 -right-1 select-none text-[96px] leading-none text-white/10">{idx + 1}</span>
+      <div className="tier-head relative flex items-start justify-between gap-2">
+        <span className={cn('badge grid h-11 w-11 shrink-0 place-items-center rounded-full', top ? 'bg-gold text-gold-ink' : 'bg-white/15 text-white')} aria-hidden>
+          {top ? <Crown className="h-6 w-6" strokeWidth={1.6} fill="currentColor" /> : <span className="t-fig text-[15px]">{idx + 1}</span>}
+        </span>
+        {top && <span className="t-code rounded-md bg-gold px-2 py-0.5 text-[11px] font-bold text-gold-ink">Ultimate</span>}
+      </div>
+      <h3 className="mt-3 text-[18px] font-extrabold leading-tight">{tier.name}</h3>
+      <p className="t-code text-[12px] text-white/75">{tier.perMonth} / bulan</p>
+      <div className="mt-3 border-t border-white/20 pt-3">
+        <p className="text-[11px] font-semibold text-white/75">Diskon tiap transaksi</p>
+        <CountPct value={tier.discount} className={top ? 'text-gold' : 'text-white'} />
+      </div>
+      {rows.map(r => (
+        <div key={r.label} className="mt-3 flex items-start gap-2 border-t border-white/20 pt-3">
+          <span className={cn('mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full', r.on ? 'bg-white/20' : 'bg-white/10 text-white/50')} aria-hidden>
+            {r.on ? <Check className="h-3 w-3" strokeWidth={3} /> : <X className="h-3 w-3" strokeWidth={2.5} />}
+          </span>
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-white/75">{r.label}</p>
+            <p className={cn('t-code text-[13px] font-bold', !r.on && 'text-white/60')}>{r.value}</p>
           </div>
         </div>
-        <CountPct value={tier.discount} className={onSw} />
-      </div>
-      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <p className="text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
-        {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
-        <dl className="t-code mt-auto grid grid-cols-[1.35fr_1fr_1fr] gap-2 border-t border-line-2 pt-3 text-[12px]">
-          <div><dt className="text-ink-3">Belanja 6 bln (Rp)</dt><dd className="font-bold text-ink">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</dd></div>
-          <div><dt className="text-ink-3">Gratis ongkir</dt><dd className="font-bold text-ink">{tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`}</dd></div>
-          <div><dt className="text-ink-3">Konsultasi</dt><dd className="font-bold text-ink">{tier.consult ? `${tier.consult} sesi/bln` : '-'}</dd></div>
-        </dl>
+      ))}
+      {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
+      <div className="mt-3 border-t border-white/20 pt-3">
+        <p className="text-[11px] font-semibold text-white/75">Belanja 6 bln (Rp)</p>
+        <p className="t-code text-[13px] font-bold">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</p>
       </div>
       <span className="bar" aria-hidden />
     </Reveal>
@@ -381,7 +409,7 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
 function CountPct({ value, className }: { value: number; className?: string }) {
   const { ref, inView } = useInView<HTMLParagraphElement>()
   const v = useCountUp(value, inView)
-  return <p ref={ref} className={cn('t-fig t-fig-black origin-right text-[36px] leading-none transition-transform duration-slow ease-out group-hover:scale-110', className)} data-pct={value}>{v}%</p>
+  return <p ref={ref} className={cn('t-fig t-fig-black origin-left text-[36px] leading-none transition-transform duration-slow ease-out group-hover:scale-110', className)} data-pct={value}>{v}%</p>
 }
 
 /* 5, CTA band: second colour block (navy), the conversion point. Left: ask + 3 step chips + buttons.
@@ -482,7 +510,9 @@ function GoldenSaleSection() {
   const items = cfg.items.filter(i => i.active)
   return (
     <section id="golden-sale" className="tex tex-grain scroll-mt-20 overflow-hidden py-14 lg:py-24">
-      <span aria-hidden className="band bg-gold-50" style={{ top: '-6%', left: '-14%', width: '42%', height: '46%' }} />
+      <span aria-hidden className="band bg-gold-50" style={{ top: '-6%', left: '-14%', width: '48%', height: '48%' }} />
+      <span aria-hidden className="band bg-green-50" style={{ right: '-12%', bottom: '-20%', width: '36%', height: '50%' }} />
+      <Rings className="right-[6%] top-[40px] h-[260px] w-[260px] text-gold-200" />
       <div className="container">
         <SectionTitle title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
         <p className="t-num mt-3 text-[15px] text-ink-2">{items.length} produk · sampai {fmtDate(cfg.campaign.end)} · selama stok ada</p>
@@ -580,7 +610,8 @@ function KlasemenSection() {
   const mine = acc ? rows.find(r => r.accountId === acc.id || (acc.crmCustomerId && r.crmCustomerId === acc.crmCustomerId) || r.phone === acc.phone) : undefined
   const leadSpend = top[0]?.spend || 1
   return (
-    <section id="klasemen" className="tex tex-plus scroll-mt-20 border-t border-line bg-white py-14 lg:py-24">
+    <section id="klasemen" className="tex tex-plus scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
+      <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '40%', height: '60%' }} />
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (

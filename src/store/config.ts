@@ -62,8 +62,9 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   if (!out.assets.logoWhite) out.assets = { ...out.assets, logoWhite: DEFAULT_CONFIG.assets.logoWhite }
   if (!out.assets.mark) out.assets = { ...out.assets, mark: DEFAULT_CONFIG.assets.mark }
   // R.017: tier swatches left the teal ramp; a stored seed swatch follows, and every tier gets its text-safe `fg`
-  const OLD_SW: Record<string, string> = { beginner: '#5fb4a2', intermediate: '#2e8577' }
-  out.tiers = out.tiers.map(t => { const seed = DEFAULT_CONFIG.tiers.find(d => d.key === t.key); const sw = seed && OLD_SW[t.key] === t.sw ? seed.sw : t.sw; return { ...t, sw, fg: t.fg || (seed && sw === seed.sw ? seed.fg : undefined) } })
+  // R.019: full-colour tier columns (PDF reference) — every earlier seed swatch follows the new rich set
+  const OLD_SW: Record<string, string[]> = { starter: ['#9ca3af'], beginner: ['#5fb4a2', '#71BD41'], intermediate: ['#2e8577', '#3E8A1E'], champion: ['#7c6ae8'], ultimate: ['#d4a04e'] }
+  out.tiers = out.tiers.map(t => { const seed = DEFAULT_CONFIG.tiers.find(d => d.key === t.key); const sw = seed && (OLD_SW[t.key] || []).includes(t.sw) ? seed.sw : t.sw; return { ...t, sw, fg: t.fg || (seed && sw === seed.sw ? seed.fg : undefined) } })
   return out
 }
 
