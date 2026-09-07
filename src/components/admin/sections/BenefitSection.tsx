@@ -88,7 +88,7 @@ function TiersCard() {
                 <TD>
                   <label className="flex items-center gap-1.5">
                     <input type="color" value={/^#[0-9a-f]{6}$/i.test(t.sw) ? t.sw : '#2E8577'} aria-label="Warna tier" className="h-9 w-9 cursor-pointer rounded-md border border-line bg-white p-0.5" onChange={e => update(t.key, { sw: e.target.value })} />
-                    <Input value={t.sw} aria-label="Kode warna" className={`${cell} w-24 font-mono`} onChange={e => update(t.key, { sw: e.target.value })} />
+                    <Input value={t.sw} aria-label="Kode warna" className={`${cell} w-24 t-code`} onChange={e => update(t.key, { sw: e.target.value })} />
                   </label>
                 </TD>
                 <TD><NumInput value={t.min} aria-label="Minimum" aria-invalid={bad || undefined} className={`${cell} w-32`} onChange={n => update(t.key, { min: n })} /></TD>

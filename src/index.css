@@ -54,8 +54,16 @@ body {
   html { scroll-behavior: auto; }
 }
 
+/* Press feedback on EVERY interactive element (Lurd rule 2, 7 Sep 2026): zero-specificity `:where` so component
+   classes and utilities still win; Radix Select triggers and form labels are excluded. */
+@layer base {
+  :where(button:not(:disabled), a[href], [role="button"], [role="tab"], [role="switch"], [role="menuitem"]):not([data-no-press]):not([role="combobox"]) { touch-action: manipulation; transition-property: transform, background-color, border-color, color, box-shadow, opacity; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-out); }
+  :where(button:not(:disabled), a[href], [role="button"], [role="tab"], [role="switch"], [role="menuitem"]):not([data-no-press]):not([role="combobox"]):active { transform: scale(.98); }
+}
+
 /* Component-layer classes so page-level utilities (e.g. pt-36 on the hook section) still win. */
 @layer components {
+  .t-code { @apply font-code tabular-nums tracking-[0.02em]; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
      .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
   .t-eyebrow { @apply text-[13px] font-semibold text-teal-700; }
@@ -109,6 +117,22 @@ body {
   /* trailing arrow nudges with the hover */
   .arrow-nudge svg:last-child { transition: transform var(--dur-base) var(--ease-out); }
   .arrow-nudge:hover svg:last-child { transform: translateX(3px); }
+
+  /* Press states for the motion helpers (after the hover blocks so press beats hover on desktop, and the only
+     motion on touch devices). Mobile gets a smaller lift on press instead of the hover lift. */
+  .lift:active, .lift-lg:active, .slide:active, .step-chip:active { transform: scale(.98); }
+  @media (hover: none) {
+    .lift:active { transform: translateY(-2px) scale(.99); }
+    .lift-lg:active { transform: translateY(-3px) scale(.99); }
+    .lift-lg:active .chip { transform: rotate(-8deg) scale(1.1); }
+    .slide:active { transform: translateX(3px); }
+    .step-chip:active { background: #fff; color: var(--teal-700); }
+    .u-slide:active::after { transform: scaleX(1); }
+    .arrow-nudge:active svg:last-child { transform: translateX(3px); }
+  }
+  /* image zoom inside a hovered/pressed card */
+  .zoom-img { transition: transform 420ms var(--ease-out); }
+  .group:hover .zoom-img, .group:active .zoom-img { transform: scale(1.05); }
 }
 
 /* Marquee (prize strip) */

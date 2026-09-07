@@ -5,7 +5,7 @@ import { persistOpts, syncAcrossTabs } from './persist'
 import { nowISO } from '@/lib/format'
 import { uid } from '@/lib/id'
 
-/* PROTOTYPE ONLY — stands in for the transactional email service. Production sends real email
+/* PROTOTYPE ONLY, stands in for the transactional email service. Production sends real email
    via the UM Email Templates registry; this panel exists so the demo can show the temp password. */
 interface InboxState {
   mails: InboxMail[]

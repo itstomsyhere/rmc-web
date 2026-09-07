@@ -12,7 +12,7 @@ export function normalizePhone(raw: string | null | undefined): string | null {
 /** "+628123345889" → "0812-3345-8891"-ish display (local format, grouped). */
 export function displayPhone(e164: string | null | undefined): string {
   const n = normalizePhone(e164)
-  if (!n) return e164 || '—'
+  if (!n) return e164 || '-'
   const local = '0' + n.slice(3)
   return local.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3')
 }

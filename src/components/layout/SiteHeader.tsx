@@ -38,7 +38,7 @@ export function SiteHeader() {
     <>
       <header data-site-header className="sticky top-0 z-40 h-14 border-b border-line bg-bg">
         <div className="container flex h-full items-center justify-between gap-3">
-          <Link to="/" className="flex min-h-11 items-center gap-2.5" aria-label="Resique Golden Privilege — beranda">
+          <Link to="/" className="flex min-h-11 items-center gap-2.5 transition-opacity duration-base hover:opacity-80" aria-label="Resique Golden Privilege, beranda">
             <img src={cfg.assets.logo} alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
             <span className="text-[15px] font-extrabold tracking-tight text-teal-700"><span className="sm:hidden">Golden Privilege</span><span className="hidden sm:inline">Resique Golden Privilege</span></span>
           </Link>
@@ -58,7 +58,7 @@ export function SiteHeader() {
             ) : (
               <Button asChild><Link to="/login">Cek poin</Link></Button>
             )}
-            <button type="button" aria-label={open ? 'Tutup menu' : 'Buka menu'} aria-expanded={open} onClick={() => setOpen(o => !o)} className="relative grid h-11 w-11 place-items-center rounded-md text-ink md:hidden">
+            <button type="button" aria-label={open ? 'Tutup menu' : 'Buka menu'} aria-expanded={open} onClick={() => setOpen(o => !o)} className="relative grid h-11 w-11 place-items-center rounded-md text-ink transition-colors duration-fast hover:bg-surface-2 md:hidden">
               <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-base ease-out', open ? 'rotate-45' : '-translate-y-[4px]')} />
               <span className={cn('absolute h-[2px] w-5 rounded-full bg-current transition-transform duration-base ease-out', open ? '-rotate-45' : 'translate-y-[4px]')} />
             </button>
@@ -69,7 +69,7 @@ export function SiteHeader() {
       <div aria-hidden={!open} className={cn('fixed inset-x-0 bottom-0 top-14 z-[35] bg-white px-5 py-6 transition-opacity duration-base ease-out md:hidden', open ? 'opacity-100' : 'pointer-events-none opacity-0')}>
         <nav className="flex flex-col divide-y divide-line-2 border-y border-line" aria-label="Navigasi seluler">
           {NAV.map(n => (
-            <a key={n.to} href={n.to} onClick={go(n.to)} className="flex min-h-[52px] items-center text-[17px] font-semibold text-ink">{n.label}</a>
+            <a key={n.to} href={n.to} onClick={go(n.to)} className="slide flex min-h-[52px] items-center rounded-md text-[17px] font-semibold text-ink">{n.label}</a>
           ))}
         </nav>
         <div className="mt-6 flex gap-3">

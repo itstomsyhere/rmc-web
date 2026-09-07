@@ -9,7 +9,7 @@ interface SessionState {
   signOut: () => void
 }
 
-/** Session lives in sessionStorage — a closed tab = signed out (production: httpOnly cookie). */
+/** Session lives in sessionStorage, a closed tab = signed out (production: httpOnly cookie). */
 export const useSession = create<SessionState>()(
   persist(
     set => ({

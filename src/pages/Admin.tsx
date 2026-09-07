@@ -61,16 +61,16 @@ export function AdminPage() {
           <div data-admin-actor className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-white px-3 py-2 text-[13px]">
             <p className="min-w-0 truncate text-ink-2">
               <span className="font-semibold text-ink">{access.actor}</span>
-              <span className="text-ink-3"> · {access.role || '—'} · level </span>
+              <span className="text-ink-3"> · {access.role || '-'} · level </span>
               <span className={access.canEdit ? 'font-semibold text-teal-700' : 'font-semibold text-warn'}>{access.level}</span>
               {access.caps.includes('super_admin') && <span className="text-ink-3"> · super_admin</span>}
             </p>
-            <p className="text-[12px] text-ink-3">Hak akses: Role Access Matrix (sub-modul Golden Privilege) + capability {EDIT_CAPABILITY} — User Management</p>
+            <p className="text-[12px] text-ink-3">Hak akses: Role Access Matrix (sub-modul Golden Privilege) + capability {EDIT_CAPABILITY}, User Management</p>
           </div>
           {access.readOnly && (
             <p data-admin-readonly role="status" className="mt-2 flex items-center gap-2 rounded-lg border border-warn-100 bg-warn-50 px-3 py-2 text-[13px] text-ink">
               <Eye className="h-4 w-4 shrink-0 text-warn" strokeWidth={1.6} />
-              <span><strong>Hanya lihat.</strong> Role {access.role || '—'}: {access.reason}. Perubahan tidak bisa disimpan.</span>
+              <span><strong>Hanya lihat.</strong> Role {access.role || '-'}: {access.reason}. Perubahan tidak bisa disimpan.</span>
             </p>
           )}
         </div>

@@ -1,4 +1,4 @@
-/* Test bridge — exposes store actions + pure model functions on window.__rmcweb so the Playwright
+/* Test bridge, exposes store actions + pure model functions on window.__rmcweb so the Playwright
    gates (test/*.cjs) can seed state and assert model math without a Node TS toolchain.
    Harmless in production: nothing reads it, no data leaves the page. */
 import { useAccounts } from '@/store/accounts'

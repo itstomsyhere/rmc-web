@@ -1,7 +1,7 @@
 import type { Account } from '@/model/types'
 import { hashPassword } from '@/model/password'
 
-/* Demo account for stakeholder walkthroughs — prototype only. Linked to the top Klasemen customer
+/* Demo account for stakeholder walkthroughs, prototype only. Linked to the top Klasemen customer
    (Laundry 24 Jam Kuningan) so the profile shows a real tier, points, chart, orders and the "Kamu" row. */
 export const DEMO_LOGIN = { phone: '0812 0000 0001', password: 'Demo#2026' }
 

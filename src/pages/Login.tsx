@@ -14,7 +14,7 @@ import { MockInboxCard } from '@/components/auth/MockInboxCard'
 import { PasswordInput } from '@/components/auth/PasswordChecklist'
 import { DEMO_LOGIN } from '@/data/seed-accounts'
 
-/* Login — PRD Fitur 3. Username = nomor HP; temp password forces /change-password on first sign-in. */
+/* Login, PRD Fitur 3. Username = nomor HP; temp password forces /change-password on first sign-in. */
 export function LoginPage() {
   const nav = useNavigate()
   const [params] = useSearchParams()
@@ -41,7 +41,7 @@ export function LoginPage() {
     <Narrow>
       <Reveal>
         <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
+          <Link to="/" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700 [--u-bottom:8px]"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
           <Link to="/register" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-md px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Belum punya akun? Daftar</Link>
         </div>
         <p className="t-eyebrow mt-4">Resique Member Card</p>
@@ -71,7 +71,7 @@ export function LoginPage() {
                   <KeyRound className="h-4 w-4" strokeWidth={1.6} /> Lupa kata sandi?
                 </button>
               </div>
-              {/* prototype only — demo login for walkthroughs (Laundry 24 Jam Kuningan, tier + poin + pesanan terisi) */}
+              {/* prototype only, demo login for walkthroughs (Laundry 24 Jam Kuningan, tier + poin + pesanan terisi) */}
               <div data-demo-login className="flex flex-col gap-3 rounded-lg border border-line bg-surface-2 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="t-num text-[13px] text-ink-2">
                   <p className="font-semibold text-ink">Akun demo (prototype)</p>

@@ -14,10 +14,10 @@ export function SiteFooter() {
           </div>
         </div>
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] font-semibold text-ink-2" aria-label="Tautan kaki">
-          <a href="https://wa.me/6281200000000" target="_blank" rel="noreferrer" className="hover:text-teal-700">WhatsApp sales</a>
-          <Link to="/login" className="hover:text-teal-700">Masuk</Link>
-          <Link to="/register" className="hover:text-teal-700">Daftar RMC</Link>
-          <Link to="/admin" className="text-ink-4 hover:text-teal-700">Admin</Link>
+          <a href="https://wa.me/6281200000000" target="_blank" rel="noreferrer" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">WhatsApp sales</a>
+          <Link to="/login" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Masuk</Link>
+          <Link to="/register" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Daftar RMC</Link>
+          <Link to="/admin" className="u-slide text-ink-4 transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Admin</Link>
         </nav>
       </div>
     </footer>

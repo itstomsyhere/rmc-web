@@ -68,7 +68,7 @@ export function KampanyeSection() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <SettingsCard title="Pencocokan akun" desc="Ambang kemiripan nama laundry/PIC saat pendaftaran tanpa RSL (jalur 3).">
-          <Field label="Ambang fuzzy" htmlFor="match-th" hint={`${Math.round(match.draft.fuzzyThreshold * 100)}% — di bawah ini akun jadi lead, di atasnya masuk antrean Klaim Akun.`}>
+          <Field label="Ambang fuzzy" htmlFor="match-th" hint={`${Math.round(match.draft.fuzzyThreshold * 100)}%, di bawah ini akun jadi lead, di atasnya masuk antrean Klaim Akun.`}>
             <div className="flex items-center gap-3">
               <input id="match-th" type="range" min={0.5} max={0.95} step={0.05} value={match.draft.fuzzyThreshold} className="h-2 flex-1 cursor-pointer accent-teal-500" onChange={e => match.patch({ fuzzyThreshold: Number(e.target.value) })} />
               <NumInput value={match.draft.fuzzyThreshold} step={0.05} min={0.5} max={0.95} aria-label="Ambang fuzzy" className="h-10 w-24" onChange={n => match.patch({ fuzzyThreshold: Math.min(0.95, Math.max(0.5, n)) })} />

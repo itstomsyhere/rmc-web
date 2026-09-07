@@ -4,12 +4,12 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-[transform,background-color,box-shadow,color] duration-base ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[.985] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-[transform,background-color,box-shadow,color] duration-base ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:-translate-y-px active:translate-y-0 active:scale-[.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none',
   {
     variants: {
       variant: {
         default: 'bg-teal-500 text-white shadow-1 hover:bg-teal-600 hover:shadow-2',
-        gold: 'gold-gradient text-gold-ink shadow-gold hover:brightness-[1.03]',
+        gold: 'gold-gradient text-gold-ink shadow-gold hover:brightness-[1.05]',
         secondary: 'bg-teal-50 text-teal-700 hover:bg-teal-100',
         outline: 'border border-line bg-white text-ink hover:bg-surface-2',
         ghost: 'text-ink-2 hover:bg-surface-2 hover:text-ink',

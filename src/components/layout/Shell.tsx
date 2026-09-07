@@ -11,7 +11,7 @@ export function Shell() {
   const nav = useNavigate()
   const acc = useCurrentAccount()
   const expire = useOrders(s => s.expireStale)
-  // BR-3.3 — a temp password must be replaced before any other page opens.
+  // BR-3.3, a temp password must be replaced before any other page opens.
   React.useEffect(() => {
     if (acc?.mustChangePassword && loc.pathname !== '/change-password') nav('/change-password', { replace: true })
   }, [acc?.mustChangePassword, loc.pathname, nav])

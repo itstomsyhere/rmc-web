@@ -25,7 +25,7 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
   const act = (status: Order['status'], r?: string) => {
     if (!order || !canEdit) return
     setStatus(order.id, status, r)
-    useCrm.getState().log('Status pesanan diubah', `${order.id} → ${status} · oleh ${actor || '—'}`)
+    useCrm.getState().log('Status pesanan diubah', `${order.id} → ${status} · oleh ${actor || '-'}`)
     toast.success(`${order.id} → ${status}`)
     setRejecting(false); setReason('')
     if (status !== 'Menunggu Pembayaran') onClose()
@@ -42,7 +42,7 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
           <>
             <DialogHeader>
               <div className="flex flex-wrap items-center gap-2 pr-8">
-                <DialogTitle className="font-mono text-[17px]">{o.id}</DialogTitle>
+                <DialogTitle className="t-code text-[17px]">{o.id}</DialogTitle>
                 <Badge variant={statusVariant(o.status)}>{o.status}</Badge>
               </div>
               <DialogDescription>{fmtDate(o.createdAt, true)} · {o.payment.method}{o.verifiedAt ? ` · diverifikasi ${fmtDate(o.verifiedAt, true)}` : ''}</DialogDescription>
@@ -51,9 +51,9 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px] sm:grid-cols-3">
               <Item k="Pembeli" v={`${o.buyer.name} · ${o.buyer.laundry}`} />
               <Item k="HP" v={displayPhone(o.buyer.phone)} mono />
-              <Item k="Pengambilan" v={o.fulfil.mode === 'kirim' ? `Kirim · ${o.fulfil.address || '—'}` : `Ambil di outlet ${o.fulfil.outlet || '—'}`} />
+              <Item k="Pengambilan" v={o.fulfil.mode === 'kirim' ? `Kirim · ${o.fulfil.address || '-'}` : `Ambil di outlet ${o.fulfil.outlet || '-'}`} />
               <Item k="Akun" v={o.accountId || 'Tamu'} mono />
-              <Item k="Pelanggan CRM" v={o.crmCustomerId || '—'} mono />
+              <Item k="Pelanggan CRM" v={o.crmCustomerId || '-'} mono />
               {o.note && <Item k="Catatan" v={o.note} />}
               {o.rejectReason && <Item k="Alasan tolak" v={o.rejectReason} />}
             </dl>
@@ -62,7 +62,7 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
               <THead><TR><TH>Kode</TH><TH>Item</TH><TH className="text-right">Qty</TH><TH className="text-right">Harga promo</TH><TH className="text-right">Subtotal</TH></TR></THead>
               <TBody>
                 {o.lines.map(l => (
-                  <TR key={l.itemId}><TD className="font-mono text-ink-3">{l.code}</TD><TD>{l.name}</TD><TD className="t-num text-right">{l.qty}</TD><TD className="t-num text-right">{rupiah(l.promoPrice)}</TD><TD className="t-num text-right font-semibold">{rupiah(l.qty * l.promoPrice)}</TD></TR>
+                  <TR key={l.itemId}><TD className="t-code text-ink-3">{l.code}</TD><TD>{l.name}</TD><TD className="t-num text-right">{l.qty}</TD><TD className="t-num text-right">{rupiah(l.promoPrice)}</TD><TD className="t-num text-right font-semibold">{rupiah(l.qty * l.promoPrice)}</TD></TR>
                 ))}
                 <TR className="hover:bg-transparent"><TD colSpan={4} className="text-right text-ink-3">Hemat {rupiah(o.savings)}</TD><TD className="t-num text-right text-[15px] font-extrabold text-teal-700">{rupiah(o.total)}</TD></TR>
               </TBody>
@@ -119,7 +119,7 @@ function Item({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
   return (
     <div className="min-w-0">
       <dt className="text-micro uppercase text-ink-3">{k}</dt>
-      <dd className={mono ? 'truncate font-mono text-[12px] text-ink' : 'text-ink'}>{v}</dd>
+      <dd className={mono ? 'truncate t-code text-[12px] text-ink' : 'text-ink'}>{v}</dd>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import type { GoldenSaleItem } from '@/model/types'
 
-/* Subset of crm-apique RESIQUE_PRODUCTS (data.jsx:482+) — chemical & shoes-care lines.
+/* Subset of crm-apique RESIQUE_PRODUCTS (data.jsx:482+), chemical & shoes-care lines.
    Promo ≈ 85% of list price rounded to Rp500. Quota/limit 🟣 configurable (0 = unlimited). */
 const promo = (p: number) => Math.round((p * 0.85) / 500) * 500
 
@@ -19,11 +19,11 @@ const raw: Omit<GoldenSaleItem, 'id' | 'promoPrice' | 'image' | 'quota' | 'maxPe
   { code: '000216', name: 'Daijin Timbangan Digital 30KG',             cat: 'HouseHold',            unit: 'pcs', realPrice: 470_000 },
 ]
 
-export const SEED_ITEMS: GoldenSaleItem[] = raw.map((r, i) => ({
+export const SEED_ITEMS: GoldenSaleItem[] = raw.map(r => ({
   id: `gs-${r.code}`,
   ...r,
   promoPrice: promo(r.realPrice),
-  image: `/img/product-${(i % 6) + 1}.svg`,
+  image: `/img/product-${r.code}.jpg`, // real photo per product (Lurd rule 5); admin can replace it
   quota: 0,
   maxPerCustomer: 0,
   active: true,

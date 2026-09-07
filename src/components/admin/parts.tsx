@@ -44,13 +44,13 @@ export function SaveBar({ dirty, onSave, onReset, label = 'Simpan', disabled, ch
       <div className="flex items-center gap-2">
         {children}
         <Button type="button" variant="ghost" size="sm" onClick={onReset} disabled={!dirty}>Batal</Button>
-        <Button type="button" size="sm" onClick={onSave} disabled={!dirty || disabled || !canEdit} title={canEdit ? undefined : 'Hanya lihat — tidak bisa menyimpan'}>{label}</Button>
+        <Button type="button" size="sm" onClick={onSave} disabled={!dirty || disabled || !canEdit} title={canEdit ? undefined : 'Hanya lihat, tidak bisa menyimpan'}>{label}</Button>
       </div>
     </div>
   )
 }
 
-/** Number input — `inputMode="numeric"`. Empty string ⇒ `onClear()` when given, else `empty` (default 0). */
+/** Number input, `inputMode="numeric"`. Empty string ⇒ `onClear()` when given, else `empty` (default 0). */
 export function NumInput({ value, onChange, onClear, empty = 0, className, ...rest }: { value: number | null | undefined; onChange: (n: number) => void; onClear?: () => void; empty?: number; className?: string } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'>) {
   const [text, setText] = React.useState(value == null ? '' : String(value))
   React.useEffect(() => { setText(t => (Number(t) === value || (t === '' && value == null) ? t : value == null ? '' : String(value))) }, [value])

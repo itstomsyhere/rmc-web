@@ -64,7 +64,7 @@ export function ItemsSection() {
         if (idx >= 0) { next[idx] = { ...next[idx], ...r }; updated++ } else { next.push({ id: `it-${uid()}`, image: '', ...r }); added++ }
       })
       set(next)
-      toast.success(`${added} item baru, ${updated} diperbarui — dimuat ke draf. Klik Simpan untuk menerapkan.${skipped.length ? ` ${skipped.length} baris dilewati.` : ''}`)
+      toast.success(`${added} item baru, ${updated} diperbarui, dimuat ke draf. Klik Simpan untuk menerapkan.${skipped.length ? ` ${skipped.length} baris dilewati.` : ''}`)
       if (skipped.length) skipped.slice(0, 3).forEach(s => toast.warning(s))
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Gagal membaca berkas')
@@ -98,7 +98,7 @@ export function ItemsSection() {
                 return (
                   <TR key={it.id} className={!it.active ? 'opacity-60' : undefined}>
                     <TD className="pl-5"><Checkbox checked={it.active} aria-label={`Aktifkan ${it.name}`} onCheckedChange={v => update(it.id, { active: v === true })} /></TD>
-                    <TD><Input value={it.code} aria-label="Kode" aria-invalid={dup || undefined} placeholder="000000" className={`${cell} w-24 font-mono`} onChange={e => update(it.id, { code: e.target.value.trim() })} />{dup && <p className="mt-1 text-[11px] text-danger">Kode ganda</p>}</TD>
+                    <TD><Input value={it.code} aria-label="Kode" aria-invalid={dup || undefined} placeholder="000000" className={`${cell} w-24 t-code`} onChange={e => update(it.id, { code: e.target.value.trim() })} />{dup && <p className="mt-1 text-[11px] text-danger">Kode ganda</p>}</TD>
                     <TD>
                       <div className="space-y-2">
                         <Input value={it.name} aria-label="Nama" className={cell} onChange={e => update(it.id, { name: e.target.value })} />

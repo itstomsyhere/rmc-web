@@ -53,7 +53,7 @@ async function proofToDataUrl(file: File): Promise<string> {
 }
 
 /**
- * QRIS payment sheet — shared by Checkout (right after an order is created) and OrderStatus (re-open while
+ * QRIS payment sheet, shared by Checkout (right after an order is created) and OrderStatus (re-open while
  * still "Menunggu Pembayaran"). Reads the live order from the store so status/expiry changes propagate.
  */
 export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -109,13 +109,13 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
       ctx.drawImage(img, pad, pad, size - pad * 2, size - pad * 2)
       ctx.textAlign = 'center'
       ctx.fillStyle = '#1E2A2A'
-      ctx.font = '800 44px "Plus Jakarta Sans", Inter, system-ui, sans-serif'
+      ctx.font = '800 44px "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif'
       ctx.fillText(rupiah(live.total), size / 2, size + 52)
       ctx.fillStyle = '#445050'
-      ctx.font = '600 22px "Plus Jakarta Sans", Inter, system-ui, sans-serif'
+      ctx.font = '600 22px "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif'
       ctx.fillText(cfg.payment.qrisMerchant, size / 2, size + 100)
       ctx.fillStyle = '#6F7878'
-      ctx.font = '500 24px "JetBrains Mono", ui-monospace, monospace'
+      ctx.font = '500 24px "Plus Jakarta Sans", Satoshi, "Helvetica Neue", Helvetica, sans-serif'
       ctx.fillText(live.id, size / 2, size + 150)
       const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'))
       if (!blob) throw new Error('Gagal membuat gambar QR')
@@ -166,17 +166,17 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
         <SheetContent side="bottom" className="sm:bottom-4 sm:mx-auto sm:max-w-md sm:rounded-xl">
           <SheetHeader>
             <SheetTitle>Bayar dengan QRIS</SheetTitle>
-            <SheetDescription>Pesanan <span className="font-mono text-ink-2">{live.id}</span> · scan dengan aplikasi bank / e-wallet apa pun.</SheetDescription>
+            <SheetDescription>Pesanan <span className="t-code text-ink-2">{live.id}</span> · scan dengan aplikasi bank / e-wallet apa pun.</SheetDescription>
           </SheetHeader>
 
-          {/* Double-bezel QR frame — one of two premium objects in DESIGN-RMC §3 */}
+          {/* Double-bezel QR frame, one of two premium objects in DESIGN-RMC §3 */}
           <div className="mx-auto mt-5 w-full max-w-[320px]">
             <div className={cn('rounded-xl bg-black/5 p-1.5 ring-1 ring-black/5 transition-opacity duration-slow', expired && 'opacity-40 grayscale')}>
               <div className="rounded-xl bg-white p-4 shadow-1">
-                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} width={1131} height={1600} className="aspect-square w-full rounded-lg object-contain" draggable={false} />
+                <img src={cfg.assets.qrisImage} alt={`QRIS ${cfg.payment.qrisMerchant}`} width={1135} height={1600} className="mx-auto aspect-[1135/1600] max-h-[62vh] w-auto rounded-lg object-contain" draggable={false} />
                 <div className="mt-3 text-center">
                   <p className="text-[13px] font-bold text-ink">{cfg.payment.qrisMerchant}</p>
-                  <p className="mt-0.5 font-mono text-[11px] tracking-wide text-ink-3">NMID {cfg.payment.qrisNmid}</p>
+                  <p className="mt-0.5 t-code text-[11px] tracking-wide text-ink-3">NMID {cfg.payment.qrisNmid}</p>
                   <p className="mt-1.5 text-[11px] leading-snug text-ink-3">QR ini tanpa nominal. Ketik sendiri jumlahnya sesuai total di bawah.</p>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
             <span className="grid h-12 w-12 place-items-center rounded-xl bg-ok-50 text-ok"><CheckCircle2 className="h-6 w-6" strokeWidth={1.6} /></span>
             <DialogTitle className="pt-2">Terima kasih, {live.buyer.name}!</DialogTitle>
             <DialogDescription>
-              Bukti pembayaran <span className="inline-flex items-center gap-1 font-semibold text-ink-2"><FileText className="h-3.5 w-3.5" strokeWidth={1.6} />{thanks?.fileName}</span> diterima. Admin Resique akan memverifikasi; status pesanan <span className="font-mono text-ink-2">{live.id}</span> bisa dicek kapan saja.
+              Bukti pembayaran <span className="inline-flex items-center gap-1 font-semibold text-ink-2"><FileText className="h-3.5 w-3.5" strokeWidth={1.6} />{thanks?.fileName}</span> diterima. Admin Resique akan memverifikasi; status pesanan <span className="t-code text-ink-2">{live.id}</span> bisa dicek kapan saja.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-2">

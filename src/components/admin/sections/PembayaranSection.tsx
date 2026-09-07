@@ -14,8 +14,8 @@ export function PembayaranSection() {
       <SettingsCard title="QRIS" desc="Prototype menampilkan QR statis; produksi memakai QRIS dinamis per pesanan.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Nama merchant" htmlFor="pay-merchant"><Input id="pay-merchant" value={d.draft.qrisMerchant} className="h-10 text-[14px]" onChange={e => d.patch({ qrisMerchant: e.target.value })} /></Field>
-          <Field label="NMID" htmlFor="pay-nmid"><Input id="pay-nmid" value={d.draft.qrisNmid} className="h-10 font-mono text-[14px]" onChange={e => d.patch({ qrisNmid: e.target.value })} /></Field>
-          <Field label="Batas waktu QR (detik)" htmlFor="pay-timeout" hint={`${Math.round(d.draft.qrTimeoutSec / 60)} menit — pesanan kedaluwarsa jika belum dibayar.`}><NumInput id="pay-timeout" value={d.draft.qrTimeoutSec} min={30} className="h-10" onChange={n => d.patch({ qrTimeoutSec: n })} /></Field>
+          <Field label="NMID" htmlFor="pay-nmid"><Input id="pay-nmid" value={d.draft.qrisNmid} className="h-10 t-code text-[14px]" onChange={e => d.patch({ qrisNmid: e.target.value })} /></Field>
+          <Field label="Batas waktu QR (detik)" htmlFor="pay-timeout" hint={`${Math.round(d.draft.qrTimeoutSec / 60)} menit, pesanan kedaluwarsa jika belum dibayar.`}><NumInput id="pay-timeout" value={d.draft.qrTimeoutSec} min={30} className="h-10" onChange={n => d.patch({ qrTimeoutSec: n })} /></Field>
           <Field label="Jeda unggah bukti (detik)" htmlFor="pay-delay" hint="Tombol unggah bukti baru aktif setelah jeda ini."><NumInput id="pay-delay" value={d.draft.uploadDelaySec} min={0} className="h-10" onChange={n => d.patch({ uploadDelaySec: n })} /></Field>
         </div>
       </SettingsCard>

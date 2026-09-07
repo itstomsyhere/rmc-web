@@ -85,6 +85,15 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.locator('#hook a[href="#/login"]').hover(); await p.waitForTimeout(350)
   ok(/^matrix\(1/.test(await tf('#hook a[href="#/login"]', '::after')), '"Cek poin-mu!" underline grows on hover')
 
+  // R.015 — Lurd's styling rules: fonts, real photos, reveal on lists, press feedback, no em-dash
+  const fam = await p.evaluate(() => ({ body: getComputedStyle(document.body).fontFamily, h1: getComputedStyle(document.querySelector('#hook h1')).fontFamily, code: getComputedStyle(document.querySelector('.t-code') || document.body).fontFamily, loaded: [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family) }))
+  ok(!/JetBrains/i.test(fam.body + fam.h1 + fam.code) && /Plus Jakarta Sans/.test(fam.body) && /Satoshi/.test(fam.code), `fonts: PJS body, Satoshi code, no JetBrains (${fam.code.slice(0, 40)})`)
+  ok(fam.loaded.some(f => /Plus Jakarta Sans/.test(f)) && fam.loaded.some(f => /Satoshi/.test(f)), `webfonts loaded (${[...new Set(fam.loaded)].join(', ')})`)
+  const srcs = await p.evaluate(() => [...document.querySelectorAll('#golden-sale img')].map(i => i.getAttribute('src')))
+  ok(srcs.length >= 12 && srcs.every(x => /\.jpg$/.test(x)) && new Set(srcs).size === srcs.length, `Golden Sale uses ${srcs.length} distinct real photos`)
+  ok((await p.locator('#golden-sale li[data-reveal]').count()) >= 12 && (await p.locator('#tier ol > li[data-reveal]').count()) === 6 && (await p.locator('#klasemen ol li[data-reveal]').count()) === 10, 'product / tier / klasemen items scroll-reveal (mobile motion)')
+  ok(/transform/.test(await p.evaluate(() => getComputedStyle(document.querySelector('#hook a[href="#golden-sale"]')).transitionProperty)), 'buttons transition transform (press feedback)')
+  ok(!/\u2014/.test(await p.evaluate(() => document.body.innerText)), 'no visible em-dash (U+2014)')
   ok(errs.length === 0, `no page errors (${errs.length})`)
   await finish(b, errs, 'landing-verify')
 })()

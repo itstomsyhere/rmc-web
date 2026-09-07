@@ -18,22 +18,26 @@ export function useInView<T extends HTMLElement>(opts: { once?: boolean; margin?
   return { ref, inView }
 }
 
-export function Reveal({ children, className, delay = 0, as: Tag = 'div' }: { children: React.ReactNode; className?: string; delay?: number; as?: keyof JSX.IntrinsicElements }) {
+export function Reveal({ children, className, delay = 0, as: Tag = 'div', ...rest }: { children: React.ReactNode; className?: string; delay?: number; as?: keyof JSX.IntrinsicElements } & Record<string, unknown>) {
   const { ref, inView } = useInView<HTMLDivElement>()
   const Comp = Tag as unknown as React.ElementType
+  // the stagger delay only applies to the entrance; once revealed it is cleared so hover/press stay instant
+  const [settled, setSettled] = React.useState(false)
+  React.useEffect(() => { if (!inView) return; const t = setTimeout(() => setSettled(true), delay + 300); return () => clearTimeout(t) }, [inView, delay])
   return (
     <Comp
       ref={ref}
+      {...rest}
       data-reveal={inView ? 'in' : 'out'}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={cn('transition-[opacity,transform] duration-slow ease-out', inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2', className)}
+      style={{ transitionDelay: settled ? '0ms' : `${delay}ms` }}
+      className={cn('transition-[opacity,transform,box-shadow,background-color,border-color] duration-slow ease-out', inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2', className)}
     >
       {children}
     </Comp>
   )
 }
 
-/** Hover/pointer capability — gate hover-only affordances. */
+/** Hover/pointer capability, gate hover-only affordances. */
 export function useFinePointer() {
   const [fine, setFine] = React.useState(false)
   React.useEffect(() => {

@@ -54,13 +54,13 @@ export function OrderStatusPage() {
         <Link to="/" className="inline-flex h-11 items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-ink"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Kembali ke beranda</Link>
         <p className="t-eyebrow mt-2">Status pesanan</p>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <h1 className="t-h1 font-mono text-ink">{order.id}</h1>
+          <h1 className="t-h1 t-code text-ink">{order.id}</h1>
           <Badge variant={statusVariant(order.status)} className="text-[12px]">{order.status}</Badge>
         </div>
         <p className="mt-2 text-[13px] text-ink-3">Dibuat {fmtDate(order.createdAt, true)}</p>
       </Reveal>
 
-      {/* Primary action per status — one hero per view */}
+      {/* Primary action per status, one hero per view */}
       {canPay && (
         <Reveal delay={60}>
           <Card className="mt-8 border-gold-200 bg-gold-50/60">
@@ -142,7 +142,7 @@ export function OrderStatusPage() {
               {order.note && <Item label="Catatan" className="sm:col-span-2">{order.note}</Item>}
               <Item label="Metode pembayaran">{order.payment.method}</Item>
             </dl>
-            {order.fulfil.mode === 'kirim' && <p className="mt-4 text-[12px] text-ink-4">Ongkir dikonfirmasi sales via WhatsApp — tidak termasuk dalam total di bawah.</p>}
+            {order.fulfil.mode === 'kirim' && <p className="mt-4 text-[12px] text-ink-4">Ongkir dikonfirmasi sales via WhatsApp, tidak termasuk dalam total di bawah.</p>}
           </CardContent>
         </Card>
       </Reveal>
@@ -152,13 +152,13 @@ export function OrderStatusPage() {
         <Card className="mt-6">
           <CardHeader><CardTitle>Rincian belanja</CardTitle></CardHeader>
           <CardContent>
-            {/* stacked rows — a 4-column table wraps item names letter-by-letter at 390px */}
+            {/* stacked rows, a 4-column table wraps item names letter-by-letter at 390px */}
             <ul className="divide-y divide-line-2">
               {order.lines.map(l => (
                 <li key={l.itemId} className="flex items-start justify-between gap-4 py-3">
                   <div className="min-w-0 flex-1">
                     <p className="text-[14px] font-semibold leading-snug text-ink">{l.name}</p>
-                    <p className="t-num mt-0.5 text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}{l.realPrice > l.promoPrice && <span className="strike ml-1.5 text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>} <span className="ml-1.5 font-mono text-[10px] text-ink-4">{l.code}</span></p>
+                    <p className="t-num mt-0.5 text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}{l.realPrice > l.promoPrice && <span className="strike ml-1.5 text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>} <span className="ml-1.5 t-code text-[10px] text-ink-4">{l.code}</span></p>
                   </div>
                   <p className="t-num shrink-0 text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
                 </li>

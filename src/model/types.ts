@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Domain types — mirrors PRD §5C (Skema Field per Entitas).
+   Domain types, mirrors PRD §5C (Skema Field per Entitas).
    --------------------------------------------------------------------------- */
 
 export type Kota = 'Jakarta' | 'Palembang' | 'Jambi' | 'Bandung' | 'Palu' | 'Pontianak'
@@ -97,7 +97,7 @@ export interface Account {
   email: string
   laundry: string
   pic: string
-  /** optional since 4 Sep 2026 (Lurd) — helps route the lead to the nearest outlet */
+  /** optional since 4 Sep 2026 (Lurd), helps route the lead to the nearest outlet */
   kota?: Kota
   isMitra: boolean
   hasCard: boolean

@@ -48,6 +48,12 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   if (!Array.isArray(out.tiers) || !out.tiers.length) out.tiers = DEFAULT_CONFIG.tiers
   if (!Array.isArray(out.prizeTypes) || !out.prizeTypes.length) out.prizeTypes = DEFAULT_CONFIG.prizeTypes
   out.prizes = (out.prizes || []).map(p => ({ ...p, type: p.type || out.prizeTypes[out.prizeTypes.length - 1] }))
+  // R.015: the gradient-card SVG placeholders became real photos — stored seed paths follow; uploads (data:) untouched
+  const isSeedSvg = (v?: string) => !!v && /^\/img\/(prize|product)-[\w-]+\.svg$/.test(v)
+  const jpg = (v: string) => v.replace(/\.svg$/, '.jpg')
+  out.assets = { ...out.assets, heroPrizes: (out.assets.heroPrizes || []).map(h => isSeedSvg(h.image) ? { ...h, image: jpg(h.image) } : h) }
+  out.prizes = out.prizes.map(p => isSeedSvg(p.image) ? { ...p, image: jpg(p.image) } : p)
+  out.items = (out.items || []).map(it => { if (!isSeedSvg(it.image)) return it; const seed = DEFAULT_CONFIG.items.find(d => d.id === it.id); return { ...it, image: seed ? seed.image : jpg(it.image) } })
   return out
 }
 

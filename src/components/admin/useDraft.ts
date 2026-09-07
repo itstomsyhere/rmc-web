@@ -12,7 +12,7 @@ const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
 export interface Draft<K extends keyof Config> {
   draft: Config[K]
   setDraft: React.Dispatch<React.SetStateAction<Config[K]>>
-  /** shallow patch — object sections only (copy, assets, payment, …) */
+  /** shallow patch, object sections only (copy, assets, payment, …) */
   patch: (p: Partial<Config[K]>) => void
   dirty: boolean
   /** write the draft into the store + toast */
@@ -42,7 +42,7 @@ export function useDraft<K extends keyof Config>(key: K, label = 'Pengaturan'): 
   const patch = React.useCallback((p: Partial<Config[K]>) => setDraft(d => ({ ...(d as object), ...p }) as Config[K]), [])
   const save = React.useCallback((what = label) => {
     setSection(key, clone(draft))
-    useCrm.getState().log('Konfigurasi Golden Privilege disimpan', `${what} · oleh ${actor || '—'} (${role || '—'})`)
+    useCrm.getState().log('Konfigurasi Golden Privilege disimpan', `${what} · oleh ${actor || '-'} (${role || '-'})`)
     toast.success(`${what} disimpan`)
   }, [draft, key, label, setSection, actor, role])
   const reset = React.useCallback(() => setDraft(clone(value)), [value])

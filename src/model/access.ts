@@ -1,6 +1,6 @@
 /* Actor context for the config surface (R.014).
    The passcode gate is gone: the CRM (Member Card (RMC) → Golden Privilege) embeds `#/admin?embed=1&…` and
-   passes WHO is looking and what the Role Access Matrix + capabilities say — the same two axes production UM
+   passes WHO is looking and what the Role Access Matrix + capabilities say, the same two axes production UM
    uses (module level Full/Edit/View/None per role, capability keys per role). Prototype trust: the URL is the
    contract; production reads both from the UM `/me/permissions` response instead. */
 

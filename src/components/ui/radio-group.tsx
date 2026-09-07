@@ -14,11 +14,11 @@ const RadioGroupItem = React.forwardRef<React.ElementRef<typeof RadioGroupPrimit
 ))
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
 
-/** Big tappable option card — 44px+ target, whole row clickable. */
+/** Big tappable option card, 44px+ target, whole row clickable. */
 export function RadioCard({ value, title, desc, disabled, badge, id }: { value: string; title: string; desc?: string; disabled?: boolean; badge?: React.ReactNode; id?: string }) {
   const rid = id || `rc-${value}`
   return (
-    <label htmlFor={rid} className={cn('flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 transition-colors has-[[data-state=checked]]:border-teal has-[[data-state=checked]]:bg-teal-50/60 hover:border-ink-4', disabled && 'cursor-not-allowed opacity-55')}>
+    <label htmlFor={rid} className={cn('lift flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 active:scale-[.98] has-[[data-state=checked]]:border-teal has-[[data-state=checked]]:bg-teal-50/60 hover:border-ink-4', disabled && 'cursor-not-allowed opacity-55')}>
       <RadioGroupItem value={value} id={rid} disabled={disabled} className="mt-0.5" />
       <span className="flex-1 min-w-0">
         <span className="flex items-center gap-2 text-[15px] font-semibold text-ink">{title}{badge}</span>

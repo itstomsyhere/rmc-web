@@ -51,7 +51,7 @@ export const useAccounts = create<AccountsState>()(
       register: form => {
         const phone = normalizePhone(form.phone)
         if (!phone) throw new Error('Nomor HP tidak valid')
-        if (get().accounts.some(a => a.phone === phone)) throw new Error('Nomor HP sudah terdaftar — silakan masuk')
+        if (get().accounts.some(a => a.phone === phone)) throw new Error('Nomor HP sudah terdaftar, silakan masuk')
         const crm = useCrm.getState()
         const match = matchRegistration({ phone, laundry: form.laundry, pic: form.pic, rsl: form.rsl }, crm.customers, cfg().matching.fuzzyThreshold)
 
@@ -78,7 +78,7 @@ export const useAccounts = create<AccountsState>()(
         }
         set({ accounts: [account, ...get().accounts] })
 
-        // side effects — mirrored in PRD Fitur 2 / Fitur 9
+        // side effects, mirrored in PRD Fitur 2 / Fitur 9
         if (match.link === 'LINKED' && match.customer) {
           if (match.backfillPhone) crm.backfillPhone(match.customer.id, phone, account.email)
           crm.log('Akun RMC Web terhubung ke pelanggan', `${account.id} → ${match.customer.id} (jalur ${match.path})`)

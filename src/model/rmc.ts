@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   RMC model — TypeScript port of crm-apique src/rmc.jsx (X.104/X.108), parameterized by config.
+   RMC model, TypeScript port of crm-apique src/rmc.jsx (X.104/X.108), parameterized by config.
    Tier = fixed 6-month window (H1 Jan–Jun / H2 Jul–Des) spend; points = yearly spend ÷ earnPerRp.
    Source policy: Kebijakan Program RMC v2.0 (RSQ-RMC-001).
    --------------------------------------------------------------------------- */

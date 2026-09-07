@@ -12,7 +12,7 @@ export function checkPassword(pw: string, minLength = 8): PasswordCheck {
   return { ...r, ok: Object.values(r).every(Boolean) }
 }
 
-/** Prototype-only hash (FNV-1a hex). Production uses bcrypt/argon2 server-side — never this. */
+/** Prototype-only hash (FNV-1a hex). Production uses bcrypt/argon2 server-side, never this. */
 export function hashPassword(pw: string): string {
   let h = 0x811c9dc5
   for (let i = 0; i < pw.length; i++) { h ^= pw.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0 }

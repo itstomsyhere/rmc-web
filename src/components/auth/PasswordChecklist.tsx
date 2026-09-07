@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { checkPassword } from '@/model/password'
 import { Input, type InputProps } from '@/components/ui/input'
 
-/** Live policy checklist (5 rules) — shared by Register (password step) and ChangePassword. */
+/** Live policy checklist (5 rules), shared by Register (password step) and ChangePassword. */
 export function PasswordChecklist({ password, minLength, className }: { password: string; minLength: number; className?: string }) {
   const r = checkPassword(password, minLength)
   const rules: { key: keyof typeof r; label: string }[] = [

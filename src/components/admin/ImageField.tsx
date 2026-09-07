@@ -52,7 +52,7 @@ export function ImageField({ value, onChange, defaultValue, label, hint, compact
     try {
       const url = await fileToDataUrl(f)
       const kb = Math.round(dataUrlBytes(url) / 1024)
-      if (dataUrlBytes(url) > MAX_BYTES) { toast.error(`Gambar masih ${kb} KB setelah diperkecil — maksimum 300 KB. Gunakan gambar yang lebih ringan.`); return }
+      if (dataUrlBytes(url) > MAX_BYTES) { toast.error(`Gambar masih ${kb} KB setelah diperkecil, maksimum 300 KB. Gunakan gambar yang lebih ringan.`); return }
       onChange(url)
       toast.success(`Gambar dimuat (${kb} KB)`)
     } catch (e) {
@@ -77,7 +77,7 @@ export function ImageField({ value, onChange, defaultValue, label, hint, compact
         {preview}
         <div className="min-w-0 flex-1 space-y-2">
           <Input
-            id={inputId} value={isData ? '(gambar unggahan)' : value} readOnly={isData} placeholder="/img/nama-gambar.svg atau https://…"
+            id={inputId} value={isData ? '(gambar unggahan)' : value} readOnly={isData} placeholder="/img/nama-gambar.jpg atau https://…"
             className={cn(compact ? 'h-9 text-[13px]' : 'h-10 text-[14px]', isData && 'text-ink-3')}
             onChange={e => onChange(e.target.value)}
           />

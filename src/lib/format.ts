@@ -1,4 +1,4 @@
-/** Rupiah formatter — "Rp1.250.000" (no space, id-ID grouping). */
+/** Rupiah formatter, "Rp1.250.000" (no space, id-ID grouping). */
 export function rupiah(n: number | null | undefined, opts: { short?: boolean } = {}): string {
   const v = Math.round(Number(n) || 0)
   if (opts.short) {
@@ -10,16 +10,16 @@ export function rupiah(n: number | null | undefined, opts: { short?: boolean } =
 }
 const trim = (s: string) => s.replace(/\.0$/, '').replace('.', ',')
 
-/** Points — "6.027" */
+/** Points, "6.027" */
 export function poin(n: number | null | undefined): string {
   return Math.max(0, Math.round(Number(n) || 0)).toLocaleString('id-ID')
 }
 
 /** "04 Sep 2026" */
 export function fmtDate(iso: string | Date | null | undefined, withTime = false): string {
-  if (!iso) return '—'
+  if (!iso) return '-'
   const d = typeof iso === 'string' ? new Date(iso) : iso
-  if (Number.isNaN(d.getTime())) return '—'
+  if (Number.isNaN(d.getTime())) return '-'
   const s = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
   return withTime ? `${s} ${d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : s
 }

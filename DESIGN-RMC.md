@@ -6,7 +6,7 @@ Sibling docs: `DESIGN-CRM.md` / `DESIGN-UM.md` in `crm-apique` (internal tools).
 ## 1. Identity
 - **Voice:** warm, direct, Bahasa Indonesia. Headlines short; one idea per section.
 - **Palette:** Resique teal (`teal-500 #14695E` primary, `teal-700 #0E5249` deep, `teal-50 #EAF6F3` tint) + **gold** (`#D4A04E` / `#B08800`) strictly for prize / promo / rank emphasis. Ink ramp for text. Surfaces white / `bg #F8F9FA`. Never pure black.
-- **Type:** **Plus Jakarta Sans** (400–800). Divergence from CRM (Inter) is deliberate — this is a brand-facing surface and the PRD font. Mono: JetBrains Mono for order ids / codes.
+- **Type:** **Plus Jakarta Sans** (400–800). Divergence from CRM (Inter) is deliberate — this is a brand-facing surface and the PRD font. Codes / ids / numerals: Satoshi with tabular figures (`.t-code`), never a monospace (Lurd rule, 7 Sep 2026).
 - **Icons:** lucide-react at `strokeWidth 1.5–1.75` (thin, precise) — never 2+ except inside filled buttons.
 
 ## 2. Foundations (tailwind.config.ts ← crm styles.css :root)

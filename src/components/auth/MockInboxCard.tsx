@@ -6,7 +6,7 @@ import { useInbox } from '@/store/inbox'
 import { Badge } from '@/components/ui/badge'
 import type { InboxMail } from '@/model/types'
 
-/* PROTOTYPE ONLY — stands in for the real transactional email (see DESIGN-RMC.md §6).
+/* PROTOTYPE ONLY, stands in for the real transactional email (see DESIGN-RMC.md §6).
    Shows the latest mails for one address (or all), with the temp password line highlighted. */
 
 const TEMP_PW = /^Rsq-[A-Za-z0-9!@#$%]{6,}$/
@@ -19,7 +19,7 @@ function MailBody({ body }: { body: string }) {
         if (TEMP_PW.test(t)) {
           return (
             <p key={i} className="my-2">
-              <code className="inline-block select-all rounded-lg border border-gold-200 bg-gold-50 px-3 py-1.5 font-mono text-[16px] font-bold tracking-wide text-gold-ink">{t}</code>
+              <code className="inline-block select-all rounded-lg border border-gold-200 bg-gold-50 px-3 py-1.5 t-code text-[16px] font-bold tracking-wide text-gold-ink">{t}</code>
             </p>
           )
         }

@@ -35,11 +35,17 @@ export default {
         card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        // Lurd's font rule (7 Sep 2026): Plus Jakarta Sans → Satoshi → Helvetica → Futura. Never JetBrains Mono.
+        sans: ['"Plus Jakarta Sans"', 'Satoshi', '"Helvetica Neue"', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
+        // codes / ids / numerals — Satoshi with tabular figures via .t-code (no monospace anywhere)
+        code: ['Satoshi', '"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
+        // Tailwind preflight styles <code>/<kbd> with the mono key → point it at the same humanist stack
+        mono: ['Satoshi', '"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
+        // Futura is macOS-only; Jost is the free stand-in (NOT loaded until a heading uses it)
+        display: ['Futura', 'Jost', '"Century Gothic"', '"Plus Jakarta Sans"', 'sans-serif'],
       },
       fontSize: {
-        micro: ['10px', { lineHeight: '14px', letterSpacing: '0.08em', fontWeight: '700' }],
+        micro: ['10px', { lineHeight: '14px', letterSpacing: '0.04em', fontWeight: '700' }],
         caption: ['11px', { lineHeight: '16px' }],
         body: ['13px', { lineHeight: '20px' }],
         display: ['48px', { lineHeight: '1.02', letterSpacing: '-0.02em', fontWeight: '800' }],

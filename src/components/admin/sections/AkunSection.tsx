@@ -30,12 +30,12 @@ export function AkunSection() {
             <TBody>
               {accounts.map(a => (
                 <TR key={a.id}>
-                  <TD className="pl-5"><span className="font-semibold">{a.laundry}</span>{a.rsl && <span className="block font-mono text-[11px] text-ink-3">{a.rsl}</span>}</TD>
+                  <TD className="pl-5"><span className="font-semibold">{a.laundry}</span>{a.rsl && <span className="block t-code text-[11px] text-ink-3">{a.rsl}</span>}</TD>
                   <TD>{a.pic}</TD>
                   <TD className="t-num whitespace-nowrap">{displayPhone(a.phone)}</TD>
                   <TD className="text-ink-3">{a.email}</TD>
                   <TD>{a.kota}</TD>
-                  <TD><Badge variant={LINK[a.link].variant}>{LINK[a.link].label}</Badge>{a.crmCustomerId && <span className="block font-mono text-[11px] text-ink-3">{a.crmCustomerId}</span>}</TD>
+                  <TD><Badge variant={LINK[a.link].variant}>{LINK[a.link].label}</Badge>{a.crmCustomerId && <span className="block t-code text-[11px] text-ink-3">{a.crmCustomerId}</span>}</TD>
                   <TD className="text-ink-2">{a.matchPath} · {PATH[a.matchPath]}{a.matchScore != null && a.matchPath === 3 ? ` (${Math.round(a.matchScore * 100)}%)` : ''}</TD>
                   <TD className="whitespace-nowrap pr-5 text-ink-3">{fmtDate(a.createdAt, true)}</TD>
                 </TR>

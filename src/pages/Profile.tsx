@@ -23,7 +23,7 @@ const TEAL = '#14695E'
 const GOLD = '#D4A04E'
 const SALES_WA = 'https://wa.me/6281200000000'
 
-/* Profile — PRD Fitur 4 (poin & tier), Fitur 5 (tukar hadiah), Fitur 6 (riwayat). */
+/* Profile, PRD Fitur 4 (poin & tier), Fitur 5 (tukar hadiah), Fitur 6 (riwayat). */
 export function ProfilePage() {
   const account = useCurrentAccount()
   if (!account) return <Navigate to="/login" replace />
@@ -115,8 +115,7 @@ function ProfileBody({ account }: { account: Account }) {
 function HeroShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cn('rounded-xl bg-teal-700/10 p-1.5 ring-1 ring-black/5', className)}>
-      <div className="teal-gradient relative overflow-hidden rounded-xl p-6 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,.18)] sm:p-8">
-        <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gold/25 blur-3xl" />
+      <div className="teal-gradient relative overflow-hidden rounded-xl p-6 text-white sm:p-8">
         <div className="relative">{children}</div>
       </div>
     </div>
@@ -138,7 +137,7 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
       <div className="mt-6 border-t border-white/15 pt-5">
         <p className="truncate text-[17px] font-bold">{customer?.outlet || account.laundry}</p>
         <p className="truncate text-[13px] text-white/75">{customer?.pic || account.pic} · {customer?.kota || account.kota}</p>
-        {(customer?.rsl || account.rsl) && <p className="mt-1 font-mono text-[12px] tracking-wider text-gold-200">{customer?.rsl || account.rsl}</p>}
+        {(customer?.rsl || account.rsl) && <p className="mt-1 t-code text-[12px] tracking-wider text-gold-200">{customer?.rsl || account.rsl}</p>}
       </div>
 
       <div className="mt-6">
@@ -151,7 +150,7 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
 
       <div className="mt-5 flex items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/60">Diskon aktif</p>
+          <p className="text-[12px] font-semibold text-white/70">Diskon aktif</p>
           <p className="t-num text-[24px] font-extrabold leading-tight">{rmc.discount}%</p>
         </div>
         {floorApplied ? <Badge variant="gold">Min. Mitra</Badge> : isMitra ? <Badge variant="inverse">Mitra Apique</Badge> : null}
@@ -216,7 +215,7 @@ function PointsTooltip({ active, payload, label }: TooltipProps<number, string>)
   const v = payload[0]?.value ?? 0
   return (
     <div className="rounded-lg border border-line bg-white px-3 py-2 shadow-2">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-3">{String(label)}</p>
+      <p className="text-[12px] font-semibold text-ink-3">{String(label)}</p>
       <p className="t-num text-[15px] font-extrabold text-teal-700">{poin(v)} <span className="text-[11px] font-semibold text-ink-3">poin</span></p>
     </div>
   )
@@ -294,16 +293,16 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
         <EmptyState className="mt-4" title="Belum ada hadiah aktif" desc="Daftar hadiah menyusul. Cek lagi nanti." />
       ) : (
         <ul className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          {prizes.map(p => {
+          {prizes.map((p, i) => {
             const why = reason(p)
             return (
-              <li key={p.id}>
-                <article className={cn('flex h-full flex-col rounded-xl border border-line bg-white p-3 shadow-1 sm:p-4', why ? 'opacity-80' : 'hover:-translate-y-0.5 hover:shadow-2')}>
-                  <div className="relative overflow-hidden rounded-xl bg-surface-2">
-                    <img src={p.image} alt={p.name} width={320} height={240} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+              <Reveal as="li" key={p.id} delay={i * 50}>
+                <article className={cn('group flex h-full flex-col rounded-xl border border-line bg-white p-3 sm:p-4', why ? 'opacity-80' : 'lift active:scale-[.98]')}>
+                  <div className="relative overflow-hidden rounded-lg bg-surface-2">
+                    <img src={p.image} alt={p.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading="lazy" />
                     {p.stock <= 0 ? <Badge variant="muted" className="absolute left-2 top-2">Habis</Badge> : p.stock <= 5 ? <Badge variant="warn" className="absolute left-2 top-2">Sisa {p.stock}</Badge> : null}
                   </div>
-                  <p className="mt-3 text-micro uppercase text-ink-4">{p.type}</p>
+                  <p className="mt-3 text-[11px] font-semibold text-ink-4">{p.type}</p>
                   <h3 className="mt-1 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{p.name}</h3>
                   <p className="t-num mt-1 text-[15px] font-extrabold text-gold-700">{poin(p.pointCost)} <span className="text-[11px] font-bold text-ink-3">poin</span></p>
                   <p className="t-num text-[11px] text-ink-4">Stok {p.stock}</p>
@@ -313,7 +312,7 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
                     </Button>
                   </div>
                 </article>
-              </li>
+              </Reveal>
             )
           })}
         </ul>
@@ -358,7 +357,7 @@ function RedemptionList({ rows }: { rows: Redemption[] }) {
             <li key={r.id} className="flex items-center gap-3 py-3">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[14px] font-semibold text-ink">{r.prizeName}</p>
-                <p className="text-[12px] text-ink-3"><span className="font-mono">{r.id}</span> · {fmtDate(r.at)}</p>
+                <p className="text-[12px] text-ink-3"><span className="t-code">{r.id}</span> · {fmtDate(r.at)}</p>
               </div>
               <p className="t-num shrink-0 text-[14px] font-extrabold text-gold-700">−{poin(r.points)}</p>
             </li>
@@ -379,14 +378,14 @@ function OrderList({ rows }: { rows: Order[] }) {
       </CardHeader>
       <CardContent>
         {show.length === 0 ? (
-          <EmptyState title="Belum ada pesanan Golden Sale" desc="Harga spesial selama periode Golden Privilege — stok terbatas." action={<Button asChild variant="gold" className=""><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
+          <EmptyState title="Belum ada pesanan Golden Sale" desc="Harga spesial selama periode Golden Privilege, stok terbatas." action={<Button asChild variant="gold" className=""><Link to="/#golden-sale">Lihat Golden Sale</Link></Button>} />
         ) : (
           <ul className="divide-y divide-line-2">
             {show.map(o => (
               <li key={o.id}>
                 <Link to={`/order/${o.id}`} className="flex min-h-[44px] items-center gap-3 py-3 transition-colors hover:text-teal-700">
                   <div className="min-w-0 flex-1">
-                    <p className="flex flex-wrap items-center gap-2"><span className="font-mono text-[13px] font-semibold text-ink">{o.id}</span><Badge variant={statusVariant(o.status)}>{o.status}</Badge></p>
+                    <p className="flex flex-wrap items-center gap-2"><span className="t-code text-[13px] font-semibold text-ink">{o.id}</span><Badge variant={statusVariant(o.status)}>{o.status}</Badge></p>
                     <p className="mt-0.5 text-[12px] text-ink-3">{fmtDate(o.createdAt)} · {o.lines.reduce((s, l) => s + l.qty, 0)} item · {o.fulfil.mode === 'kirim' ? 'Dikirim' : `Ambil di ${o.fulfil.outlet || 'outlet'}`}</p>
                   </div>
                   <p className="t-num shrink-0 text-[14px] font-extrabold text-ink">{rupiah(o.total)}</p>

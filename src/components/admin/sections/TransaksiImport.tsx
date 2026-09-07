@@ -23,7 +23,7 @@ export function TransaksiImport({ preview, fileName, onClose }: { preview: Impor
   const confirm = () => {
     if (!canEdit) return
     const n = importRows(rows)
-    useCrm.getState().log('Transaksi diimpor', `${n} baris · oleh ${actor || '—'}`)
+    useCrm.getState().log('Transaksi diimpor', `${n} baris · oleh ${actor || '-'}`)
     toast.success(`${n} transaksi diimpor${dupes ? ` · ${dupes} dilewati (ID sudah ada)` : ''}`)
     onClose()
   }
@@ -44,10 +44,10 @@ export function TransaksiImport({ preview, fileName, onClose }: { preview: Impor
                 const dup = existing.has(r.id)
                 return (
                   <TR key={r.id} className={dup ? 'opacity-50' : undefined}>
-                    <TD className="font-mono text-[12px]">{r.id}{dup && <span className="ml-1 text-[10px] font-bold uppercase text-ink-4">ada</span>}</TD>
+                    <TD className="t-code text-[12px]">{r.id}{dup && <span className="ml-1 text-[10px] font-bold uppercase text-ink-4">ada</span>}</TD>
                     <TD className="whitespace-nowrap">{fmtDate(r.createdAt)}</TD>
-                    <TD><span className="font-semibold">{r.buyer.laundry || '—'}</span><span className="block text-[12px] text-ink-3">{r.buyer.name}</span></TD>
-                    <TD className="text-[12px] text-ink-3">{r.lines.map(l => `${l.code}×${l.qty}`).join(', ') || '—'}</TD>
+                    <TD><span className="font-semibold">{r.buyer.laundry || '-'}</span><span className="block text-[12px] text-ink-3">{r.buyer.name}</span></TD>
+                    <TD className="text-[12px] text-ink-3">{r.lines.map(l => `${l.code}×${l.qty}`).join(', ') || '-'}</TD>
                     <TD className="t-num text-right font-semibold">{rupiah(r.total)}</TD>
                     <TD><Badge variant={statusVariant(r.status)}>{r.status}</Badge></TD>
                   </TR>

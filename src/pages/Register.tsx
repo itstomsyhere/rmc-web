@@ -28,7 +28,7 @@ import { MockInboxCard } from '@/components/auth/MockInboxCard'
 import { PasswordChecklist, PasswordInput } from '@/components/auth/PasswordChecklist'
 
 /* ---------------------------------------------------------------------------
-   Registration — PRD Fitur 2. The form never shows a password up front: the matching cascade
+   Registration, PRD Fitur 2. The form never shows a password up front: the matching cascade
    decides. LINKED (path 1/2) gets a temp password by email; PENDING/LEAD (path 3/4) choose one
    in a second step before the account is created.
    --------------------------------------------------------------------------- */
@@ -139,7 +139,7 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
     <div>
       <Reveal>
         <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
+          <Link to="/" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700 [--u-bottom:8px]"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
           <Link to="/login" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Sudah punya akun? Masuk</Link>
         </div>
         <p className="t-eyebrow mt-4">Resique Member Card</p>
@@ -196,7 +196,7 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
 
           {hasCard === 'ya' && (
             <Field label="Nomor Member Card" htmlFor="rsl" error={errors.rsl?.message} hint="Opsional. Ada di kartu, contoh RSL40001. Dipakai kalau nomor HP-mu belum ada di data Resique.">
-              <Input id="rsl" placeholder="RSL40001" className="font-mono uppercase tracking-wider" autoCapitalize="characters" {...register('rsl')} />
+              <Input id="rsl" placeholder="RSL40001" className="t-code uppercase tracking-wider" autoCapitalize="characters" {...register('rsl')} />
             </Field>
           )}
 
@@ -302,7 +302,7 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
             {match.path === 2 && (
               <div className="mt-4 flex items-start gap-2 rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-3 text-[13px] text-teal-700">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.6} />
-                <span>Nomor HP-mu dilengkapi ke data pelanggan Resique — dicocokkan lewat nomor Member Card <span className="font-mono">{account.rsl}</span> dan nama PIC.</span>
+                <span>Nomor HP-mu dilengkapi ke data pelanggan Resique, dicocokkan lewat nomor Member Card <span className="t-code">{account.rsl}</span> dan nama PIC.</span>
               </div>
             )}
           </Reveal>
@@ -321,7 +321,7 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
             <p className="t-eyebrow mt-5">Menunggu verifikasi</p>
             <h1 className="t-h1 mt-2 text-ink">Akun aktif. Data RMC dicek sales dulu</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
-              Kami menemukan data mirip: <strong className="text-ink">{match.customer.outlet}</strong> — {match.customer.pic}. Sales Resique akan memverifikasi (biasanya 1×24 jam).
+              Kami menemukan data mirip: <strong className="text-ink">{match.customer.outlet}</strong>, {match.customer.pic}. Sales Resique akan memverifikasi (biasanya 1×24 jam).
             </p>
           </Reveal>
           <Reveal delay={80}>

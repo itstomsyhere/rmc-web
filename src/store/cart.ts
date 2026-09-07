@@ -33,13 +33,13 @@ export const cartTotal = (lines: OrderLine[]) => lines.reduce((s, l) => s + l.qt
 export const cartCount = (lines: OrderLine[]) => lines.reduce((s, l) => s + l.qty, 0)
 export const cartSavings = (lines: OrderLine[]) => lines.reduce((s, l) => s + l.qty * (l.realPrice - l.promoPrice), 0)
 
-/** Units of an item already bought (Lunas / Bukti Diunggah / Menunggu) by this phone — for maxPerCustomer. */
+/** Units of an item already bought (Lunas / Bukti Diunggah / Menunggu) by this phone, for maxPerCustomer. */
 export function boughtQty(orders: { status: string; buyer: { phone: string }; lines: OrderLine[] }[], phone: string | null, itemId: string) {
   if (!phone) return 0
   return orders.filter(o => o.buyer.phone === phone && o.status !== 'Ditolak' && o.status !== 'Kedaluwarsa')
     .reduce((s, o) => s + o.lines.filter(l => l.itemId === itemId).reduce((t, l) => t + l.qty, 0), 0)
 }
-/** Units sold (not rejected/expired) across everyone — for quota. */
+/** Units sold (not rejected/expired) across everyone, for quota. */
 export function soldQty(orders: { status: string; lines: OrderLine[] }[], itemId: string) {
   return orders.filter(o => o.status !== 'Ditolak' && o.status !== 'Kedaluwarsa')
     .reduce((s, o) => s + o.lines.filter(l => l.itemId === itemId).reduce((t, l) => t + l.qty, 0), 0)

@@ -26,7 +26,7 @@ export const TR = ({ className, ...p }: React.HTMLAttributes<HTMLTableRowElement
 export const TH = ({ className, ...p }: React.ThHTMLAttributes<HTMLTableCellElement>) => <th className={cn('h-10 px-3 text-left align-middle text-micro uppercase text-ink-3', className)} {...p} />
 export const TD = ({ className, ...p }: React.TdHTMLAttributes<HTMLTableCellElement>) => <td className={cn('px-3 py-2.5 align-middle', className)} {...p} />
 
-/** Empty state — one sentence + optional action. */
+/** Empty state, one sentence + optional action. */
 export function EmptyState({ title, desc, action, className }: { title: string; desc?: string; action?: React.ReactNode; className?: string }) {
   return (
     <div className={cn('rounded-xl border border-dashed border-line px-6 py-10 text-center', className)}>

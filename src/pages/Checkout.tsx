@@ -97,7 +97,7 @@ export function CheckoutPage() {
     useCart.getState().clear()
     setPlaced(order)
     setSheetOpen(true)
-    toast.success(`Pesanan ${order.id} dibuat — selesaikan pembayaran QRIS`)
+    toast.success(`Pesanan ${order.id} dibuat, selesaikan pembayaran QRIS`)
   }
 
   /* Post-submit: cart is empty by design, so show the order handoff instead of the empty state. */
@@ -107,7 +107,7 @@ export function CheckoutPage() {
         <Reveal>
           <p className="t-eyebrow">Pesanan dibuat</p>
           <h1 className="t-h1 mt-3 text-ink">Selesaikan pembayaran</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-ink-3">Pesanan <span className="font-mono text-ink-2">{placed.id}</span> menunggu pembayaran QRIS sebesar <strong className="t-num text-ink">{rupiah(placed.total)}</strong>. QR berlaku {Math.round(cfg.payment.qrTimeoutSec / 60)} menit sejak pesanan dibuat.</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-3">Pesanan <span className="t-code text-ink-2">{placed.id}</span> menunggu pembayaran QRIS sebesar <strong className="t-num text-ink">{rupiah(placed.total)}</strong>. QR berlaku {Math.round(cfg.payment.qrTimeoutSec / 60)} menit sejak pesanan dibuat.</p>
         </Reveal>
         <Reveal delay={80}>
           <Card className="mt-8">
@@ -157,7 +157,7 @@ export function CheckoutPage() {
       </Reveal>
 
       <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-        {/* Form — left column */}
+        {/* Form, left column */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="lg:col-span-7">
           <div className="max-w-xl space-y-10">
             <Reveal delay={60} as="section">
@@ -232,7 +232,7 @@ export function CheckoutPage() {
             </Reveal>
           </div>
 
-          {/* Submit — sticky bottom bar on mobile (safe-area aware), inline on desktop */}
+          {/* Submit, sticky bottom bar on mobile (safe-area aware), inline on desktop */}
           <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:static lg:mt-10 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
             <div className="mx-auto flex max-w-xl items-center gap-3">
               <div className="min-w-0 flex-1 lg:hidden">
@@ -244,7 +244,7 @@ export function CheckoutPage() {
           </div>
         </form>
 
-        {/* Order summary — right column, sticky on desktop */}
+        {/* Order summary, right column, sticky on desktop */}
         <aside className="lg:col-span-5">
           <Reveal delay={120} className="lg:sticky lg:top-28">
             <Card>

@@ -1,7 +1,7 @@
 import type { Config, Tier, Benefit, HeroPrize, Prize } from '@/model/types'
 import { SEED_ITEMS } from './seed-products'
 
-/* Tiers per "Kebijakan Program RMC" RSQ-RMC-001 v2.0 (Drive 1g2OJQFKHG5zp1E4JKNfvllhaL3YSZ1tQ) — the canonical source.
+/* Tiers per "Kebijakan Program RMC" RSQ-RMC-001 v2.0 (Drive 1g2OJQFKHG5zp1E4JKNfvllhaL3YSZ1tQ), the canonical source.
    Gratis ongkir: belanja ≥ Rp500.000 (Starter–Intermediate) / ≥ Rp350.000 (Winner–Ultimate). Konsultasi = sesi per BULAN,
    1 sesi = 1 jam bersama trainer Apique Academy (Winner ke atas). Bands are INCLUSIVE both ends: Starter 0–8.999.999, Beginner
    starts sharp at 9.000.000 (Lurd, 4 Sep). NOT the crm-apique prototype seed (it drifted). */
@@ -14,35 +14,35 @@ export const SEED_TIERS: Tier[] = [
   { key: 'ultimate',     name: 'Ultimate',     sw: '#d4a04e', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 350_000, consult: 2, benefitCopy: 'Diskon 5%, gratis ongkir min. Rp350 rb, konsultasi bisnis 2 sesi per bulan.' },
 ]
 
-/* Five RMC privileges (Lurd, 4 Sep) — wording per RSQ-RMC-001 v2.0 §3–§6. Golden Privilege prizes are campaign-specific
+/* Five RMC privileges (Lurd, 4 Sep), wording per RSQ-RMC-001 v2.0 §3–§6. Golden Privilege prizes are campaign-specific
    (admin-defined, BR-4.11); the RMC policy itself redeems poin as voucher belanja. */
 export const SEED_BENEFITS: Benefit[] = [
   { id: 'b-diskon',     icon: 'Percent',        figure: 'Hingga 5%', figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Naik level, naik potongan: 1% sampai 5%, langsung dipotong di kasir tanpa klaim apa pun. Mitra Apique Management dapat minimal 3% sejak Starter.' },
   { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',    figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Berlaku di semua level, tiap transaksi. Belanja Rp500 rb ke atas (Starter–Intermediate) atau Rp350 rb ke atas (Winner ke atas), ongkirnya kami yang tanggung.' },
   { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1–2 sesi',  figureNote: 'per bulan',      title: 'Gratis konsultasi bisnis',        desc: 'Satu jam bersama trainer Apique Academy untuk bedah strategi laundry-mu. Winner & Champion 1 sesi per bulan, Ultimate 2 sesi per bulan.' },
-  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',   figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja jadi 1 poin, otomatis (mesin cuci tidak dihitung). Kumpulkan 500 poin, tukar jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des — tukar sebelum itu.' },
-  { id: 'b-event',      icon: 'PartyPopper',    figure: '1×',        figureNote: 'tiap Desember',  title: 'Event tahunan eksklusif Resique', desc: 'Belanja terbanyak Juli–Desember? Kamu diundang ke event apresiasi akhir tahun — RMC biasa maupun Mitra — lengkap dengan undian grandprize khusus tamu undangan.' },
+  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',   figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja jadi 1 poin, otomatis (mesin cuci tidak dihitung). Kumpulkan 500 poin, tukar jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des, tukar sebelum itu.' },
+  { id: 'b-event',      icon: 'PartyPopper',    figure: '1×',        figureNote: 'tiap Desember',  title: 'Event tahunan eksklusif Resique', desc: 'Belanja terbanyak Juli–Desember? Kamu diundang ke event apresiasi akhir tahun, RMC biasa maupun Mitra, lengkap dengan undian grandprize khusus tamu undangan.' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [
-  { id: 'h1', image: '/img/prize-phone.svg',    label: 'Smartphone' },
-  { id: 'h2', image: '/img/prize-laptop.svg',   label: 'Laptop' },
-  { id: 'h3', image: '/img/prize-voucher.svg',  label: 'Voucher Belanja' },
-  { id: 'h4', image: '/img/prize-parfum.svg',   label: 'Parfum Laundry 5L' },
-  { id: 'h5', image: '/img/prize-tablet.svg',   label: 'Tablet' },
-  { id: 'h6', image: '/img/prize-dinner.svg',   label: 'Gala Dinner' },
+  { id: 'h1', image: '/img/prize-phone.jpg',    label: 'Smartphone' },
+  { id: 'h2', image: '/img/prize-laptop.jpg',   label: 'Laptop' },
+  { id: 'h3', image: '/img/prize-voucher.jpg',  label: 'Voucher Belanja' },
+  { id: 'h4', image: '/img/prize-parfum.jpg',   label: 'Parfum Laundry 5L' },
+  { id: 'h5', image: '/img/prize-tablet.jpg',   label: 'Tablet' },
+  { id: 'h6', image: '/img/prize-dinner.jpg',   label: 'Gala Dinner' },
 ]
 
 export const SEED_PRIZE_TYPES = ['Voucher', 'Produk Resique', 'Elektronik', 'Layanan', 'Lainnya']
 
-/* Demo catalog only — production starts empty; name/type/point cost/stock are all admin-defined (🟣). */
+/* Demo catalog only, production starts empty; name/type/point cost/stock are all admin-defined (🟣). */
 export const SEED_PRIZES: Prize[] = [
-  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', type: 'Voucher', image: '/img/prize-voucher.svg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan Rp100.000 di belanja berikutnya.' },
-  { id: 'p2', name: 'Parfum Laundry Premium 5L',         type: 'Produk Resique', image: '/img/prize-parfum.svg',  pointCost: 9_000,   stock: 40,  active: true, desc: 'Whiff Fresh Elegant / Greendome Downy Black.' },
-  { id: 'p3', name: 'Paket Chemical 1 Bulan',            type: 'Produk Resique', image: '/img/prize-chemical.svg', pointCost: 25_000, stock: 20,  active: true, desc: 'Deterjen matic 5L ×4 + parfum 5L ×2.' },
-  { id: 'p4', name: 'Tablet 10"',                        type: 'Elektronik', image: '/img/prize-tablet.svg',  pointCost: 60_000,  stock: 5,   active: true, desc: 'Untuk kasir & pencatatan outlet.' },
-  { id: 'p5', name: 'Smartphone Flagship',               type: 'Elektronik', image: '/img/prize-phone.svg',   pointCost: 150_000, stock: 3,   active: true, desc: 'Samsung Galaxy S-series / setara.' },
-  { id: 'p6', name: 'Laptop Bisnis',                     type: 'Elektronik', image: '/img/prize-laptop.svg',  pointCost: 250_000, stock: 2,   active: true, desc: 'Apple MacBook Air M-series / setara.' },
+  { id: 'p1', name: 'Voucher Belanja Resique Rp100.000', type: 'Voucher', image: '/img/prize-voucher.jpg', pointCost: 5_000,   stock: 100, active: true, desc: 'Potongan Rp100.000 di belanja berikutnya.' },
+  { id: 'p2', name: 'Parfum Laundry Premium 5L',         type: 'Produk Resique', image: '/img/prize-parfum.jpg',  pointCost: 9_000,   stock: 40,  active: true, desc: 'Whiff Fresh Elegant / Greendome Downy Black.' },
+  { id: 'p3', name: 'Paket Chemical 1 Bulan',            type: 'Produk Resique', image: '/img/prize-chemical.jpg', pointCost: 25_000, stock: 20,  active: true, desc: 'Deterjen matic 5L ×4 + parfum 5L ×2.' },
+  { id: 'p4', name: 'Tablet 10"',                        type: 'Elektronik', image: '/img/prize-tablet.jpg',  pointCost: 60_000,  stock: 5,   active: true, desc: 'Untuk kasir & pencatatan outlet.' },
+  { id: 'p5', name: 'Smartphone Flagship',               type: 'Elektronik', image: '/img/prize-phone.jpg',   pointCost: 150_000, stock: 3,   active: true, desc: 'Samsung Galaxy S-series / setara.' },
+  { id: 'p6', name: 'Laptop Bisnis',                     type: 'Elektronik', image: '/img/prize-laptop.jpg',  pointCost: 250_000, stock: 2,   active: true, desc: 'Apple MacBook Air M-series / setara.' },
 ]
 
 export const DEFAULT_CONFIG: Config = {

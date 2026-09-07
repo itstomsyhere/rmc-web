@@ -56,7 +56,7 @@ export function TransaksiSection() {
   return (
     <div data-admin-section="transaksi" className="space-y-4">
       <PageHead
-        title="Transaksi" sub="Pesanan Golden Sale. Verifikasi bukti pembayaran di sini — status Lunas masuk ke klasemen."
+        title="Transaksi" sub="Pesanan Golden Sale. Verifikasi bukti pembayaran di sini, status Lunas masuk ke klasemen."
         actions={
           <>
             <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="sr-only" tabIndex={-1} aria-hidden onChange={e => onImport(e.target.files?.[0])} />
@@ -113,11 +113,11 @@ export function TransaksiSection() {
 function Row({ o, onOpen }: { o: Order; onOpen: () => void }) {
   return (
     <TR className="cursor-pointer" onClick={onOpen}>
-      <TD className="pl-5 font-mono text-[12px] text-ink">{o.id}</TD>
+      <TD className="pl-5 t-code text-[12px] text-ink">{o.id}</TD>
       <TD className="whitespace-nowrap text-ink-3">{fmtDate(o.createdAt, true)}</TD>
-      <TD><span className="font-semibold text-ink">{o.buyer.laundry || '—'}</span><span className="block text-[12px] text-ink-3">{o.buyer.name}</span></TD>
+      <TD><span className="font-semibold text-ink">{o.buyer.laundry || '-'}</span><span className="block text-[12px] text-ink-3">{o.buyer.name}</span></TD>
       <TD className="t-num whitespace-nowrap">{displayPhone(o.buyer.phone)}</TD>
-      <TD className="text-ink-2">{o.fulfil.mode === 'kirim' ? 'Kirim' : `Ambil · ${o.fulfil.outlet || '—'}`}</TD>
+      <TD className="text-ink-2">{o.fulfil.mode === 'kirim' ? 'Kirim' : `Ambil · ${o.fulfil.outlet || '-'}`}</TD>
       <TD className="t-num text-right font-semibold">{rupiah(o.total)}</TD>
       <TD><Badge variant={statusVariant(o.status)}>{o.status}</Badge></TD>
       <TD className="pr-5 text-right"><Button type="button" variant="ghost" size="sm" onClick={e => { e.stopPropagation(); onOpen() }}>Detail</Button></TD>
