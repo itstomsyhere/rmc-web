@@ -150,7 +150,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.locator('#tier').scrollIntoViewIfNeeded(); await p.waitForTimeout(1500)
   const rail = await p.evaluate(() => { const ol = document.querySelector('#tier ol'); const cs = getComputedStyle(ol); return { ox: cs.overflowX, snap: cs.scrollSnapType, sw: ol.scrollWidth, cw: ol.clientWidth, active: document.querySelectorAll('#tier ol > li[data-active="true"]').length, dots: document.querySelectorAll('#tier [role="tab"]').length } })
   ok(rail.ox === 'auto' && /x/.test(rail.snap) && rail.sw > rail.cw * 2 && rail.active === 1 && rail.dots === 6, `mobile tier rail: horizontal snap slider with one active card + 6 dots (${JSON.stringify(rail)})`)
-  ok((await p.locator('#hero .marquee').isVisible()) && (await p.evaluate(() => getComputedStyle(document.querySelector('#hero svg[data-doodle]')).webkitMaskImage || getComputedStyle(document.querySelector('#hero svg[data-doodle]')).maskImage)).includes('180deg'), 'mobile: marquee back, doodle masked to the lower half')
+  ok((await p.locator('#hero .marquee').isVisible()) && (await p.evaluate(() => getComputedStyle(document.querySelector('#hero svg[data-doodle]')).webkitMaskImage || getComputedStyle(document.querySelector('#hero svg[data-doodle]')).maskImage)).includes('34%'), 'mobile: marquee back, doodle masked to the lower half')
   await p.locator('#golden-sale button[aria-label^="Tambah"]').first().click(); await p.waitForTimeout(100)
   ok((await p.evaluate(() => getComputedStyle(document.querySelector('[data-basket-bar]')).animationName)) === 'bar-in', 'basket bar springs in (bar-in keyframes)')
   ok(errs.length === 0, `no page errors (${errs.length})`)

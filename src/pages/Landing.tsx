@@ -150,7 +150,7 @@ function HookSection() {
                       <span className="min-w-0">
                         <span className="block truncate text-[13px] font-semibold text-ink">{d.name}</span>
                         <span className="t-fig mt-0.5 block text-[16px] leading-tight text-green-700">{rupiah(d.promoPrice)}</span>
-                        <span className="mt-0.5 flex items-center gap-1.5"><span className="t-num strike text-[12px] font-semibold text-ink-3">{rupiah(d.realPrice)}</span><span className="t-num inline-block rounded-md bg-gold-100 px-1.5 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span></span>
+                        <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1"><span className="t-num strike text-[12px] font-semibold text-ink-3">{rupiah(d.realPrice)}</span><span className="t-num inline-block rounded-md bg-gold-100 px-1.5 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span></span>
                       </span>
                     </a>
                   </li>
