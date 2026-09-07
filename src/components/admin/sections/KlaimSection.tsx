@@ -30,7 +30,7 @@ export function KlaimSection() {
         )}
         {resolved.length > 0 && (
           <div className="mt-4 border-t border-line-2 pt-3">
-            <button type="button" className="text-[13px] font-semibold text-teal-600 underline-offset-2 hover:underline" aria-expanded={showResolved} onClick={() => setShowResolved(v => !v)}>
+            <button type="button" className="text-[13px] font-semibold text-navy-600 underline-offset-2 hover:underline" aria-expanded={showResolved} onClick={() => setShowResolved(v => !v)}>
               {showResolved ? 'Sembunyikan' : 'Tampilkan'} {resolved.length} klaim selesai
             </button>
             {showResolved && (

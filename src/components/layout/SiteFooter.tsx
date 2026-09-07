@@ -1,24 +1,76 @@
+import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { Clock, ExternalLink, Facebook, Instagram, Mail, MapPin, MessageCircle, Store, Youtube } from 'lucide-react'
 import { useConfig } from '@/store/config'
+import { srcSet2x } from '@/lib/logo'
+import { Reveal } from '@/lib/reveal'
+import { CONTACTS, EXT, SOCIALS } from '@/data/contacts'
 
+const SOCIAL_ICON = { instagram: Instagram, youtube: Youtube, facebook: Facebook } as const
+
+/* Footer (R.017): navy-900 with the white lockup, three columns — brand + socials · Hubungi kami (real contacts) ·
+   Golden Privilege links. Single scroll-in reveal for the block, per-link underline + press. */
 export function SiteFooter() {
   const cfg = useConfig(s => s.config)
+  const link = 'u-slide inline-flex min-h-[32px] items-center gap-2 text-[14px] text-white/85 transition-colors duration-base hover:text-white [--u-bottom:2px]'
+  const contact = [
+    { icon: MessageCircle, label: `WhatsApp ${CONTACTS.waDisplay}`, href: CONTACTS.wa, ext: true },
+    { icon: Clock, label: `Jam buka ${CONTACTS.hours}` },
+    { icon: MapPin, label: CONTACTS.location },
+    { icon: Mail, label: CONTACTS.email, href: `mailto:${CONTACTS.email}`, ext: false },
+    { icon: Store, label: 'Katalog produk', href: CONTACTS.catalog, ext: true },
+    { icon: ExternalLink, label: 'Semua outlet & hotline', href: CONTACTS.outlets, ext: true },
+  ]
+  const site = [
+    { label: 'Benefit RMC', to: '/#benefit' },
+    { label: 'Tier RMC', to: '/#tier' },
+    { label: 'Golden Sale', to: '/#golden-sale' },
+    { label: 'Klasemen', to: '/#klasemen' },
+  ]
+  const jump = (to: string) => (e: React.MouseEvent) => { if (to.startsWith('/#') && location.hash.replace(/\?.*$/, '') === '#/') { e.preventDefault(); document.getElementById(to.slice(2))?.scrollIntoView({ behavior: 'smooth' }) } }
   return (
-    <footer className="mt-auto border-t border-line-2 bg-white">
-      <div className="container flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <img src={cfg.assets.logo} alt="" width={36} height={36} className="h-9 w-9 rounded-lg" />
-          <div>
-            <p className="text-[14px] font-extrabold tracking-tight text-teal-700">Resique Supermarket Laundry</p>
-            <p className="text-[12px] text-ink-3">Apique Group · {cfg.campaign.label}</p>
-          </div>
+    <footer className="tex tex-grain mt-auto bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]">
+      <Reveal className="container grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:py-16">
+        <div>
+          <img src={cfg.assets.logoWhite} srcSet={srcSet2x(cfg.assets.logoWhite)} alt="Resique Supermarket Laundry" width={180} height={39} className="h-9 w-auto" loading="lazy" decoding="async" />
+          <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-pretty text-white/75">Supermarket laundry terlengkap di Indonesia. Chemical, perlengkapan, mesin, dan paket usaha laundry di satu tempat.</p>
+          <p className="mt-2 text-[13px] text-white/60">Apique Group · {cfg.campaign.label}</p>
+          <ul className="mt-5 flex items-center gap-2" aria-label="Media sosial Resique">
+            {SOCIALS.map(s => { const Icon = SOCIAL_ICON[s.id]; return (
+              <li key={s.id}>
+                <a href={s.href} {...EXT} aria-label={s.label} className="grid h-10 w-10 place-items-center rounded-md bg-white/10 text-white transition-[transform,background-color] duration-base hover:-translate-y-0.5 hover:bg-white/15"><Icon className="h-5 w-5" strokeWidth={1.7} /></a>
+              </li>
+            ) })}
+          </ul>
         </div>
-        <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] font-semibold text-ink-2" aria-label="Tautan kaki">
-          <a href="https://wa.me/6281200000000" target="_blank" rel="noreferrer" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">WhatsApp sales</a>
-          <Link to="/login" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Masuk</Link>
-          <Link to="/register" className="u-slide transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Daftar RMC</Link>
-          <Link to="/admin" className="u-slide text-ink-4 transition-colors duration-base hover:text-teal-700 [--u-bottom:-3px]">Admin</Link>
-        </nav>
+        <div>
+          <p className="text-[13px] font-bold text-green-200">Hubungi kami</p>
+          <ul className="mt-3 space-y-1.5">
+            {contact.map(c => (
+              <li key={c.label}>
+                {c.href ? (
+                  <a href={c.href} {...(c.ext ? EXT : {})} className={link}><c.icon className="h-4 w-4 shrink-0 text-green-200" strokeWidth={1.7} aria-hidden />{c.label}</a>
+                ) : (
+                  <span className="inline-flex min-h-[32px] items-center gap-2 text-[14px] text-white/85"><c.icon className="h-4 w-4 shrink-0 text-green-200" strokeWidth={1.7} aria-hidden />{c.label}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="text-[13px] font-bold text-green-200">Golden Privilege</p>
+          <ul className="mt-3 space-y-1.5" aria-label="Tautan kaki">
+            {site.map(s => <li key={s.to}><a href={s.to} onClick={jump(s.to)} className={link}>{s.label}</a></li>)}
+            <li><Link to="/login" className={link}>Masuk / cek poin</Link></li>
+            <li><Link to="/register" className={link}>Daftar RMC</Link></li>
+          </ul>
+        </div>
+      </Reveal>
+      <div className="border-t border-white/10">
+        <div className="container flex flex-col gap-2 py-5 text-[13px] text-white/60 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 Resique Supermarket Laundry · Apique Group</p>
+          <a href={CONTACTS.site} {...EXT} className="u-slide inline-flex min-h-[32px] items-center gap-1.5 font-semibold text-white/85 transition-colors duration-base hover:text-white [--u-bottom:2px]">Situs resmi {CONTACTS.siteLabel} <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden /></a>
+        </div>
       </div>
     </footer>
   )

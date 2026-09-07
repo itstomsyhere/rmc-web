@@ -62,7 +62,7 @@ export function AdminPage() {
             <p className="min-w-0 truncate text-ink-2">
               <span className="font-semibold text-ink">{access.actor}</span>
               <span className="text-ink-3"> · {access.role || '-'} · level </span>
-              <span className={access.canEdit ? 'font-semibold text-teal-700' : 'font-semibold text-warn'}>{access.level}</span>
+              <span className={access.canEdit ? 'font-semibold text-navy-700' : 'font-semibold text-warn'}>{access.level}</span>
               {access.caps.includes('super_admin') && <span className="text-ink-3"> · super_admin</span>}
             </p>
             <p className="text-[12px] text-ink-3">Hak akses: Role Access Matrix (sub-modul Golden Privilege) + capability {EDIT_CAPABILITY}, User Management</p>
@@ -92,7 +92,7 @@ function Denied({ logo, reason }: { logo: string; reason: 'outside' | 'anonymous
     <div className="grid min-h-dvh place-items-center bg-bg px-4 py-10">
       <Card className="w-full max-w-md" data-admin-denied>
         <CardHeader className="items-center text-center">
-          <img src={logo} alt="" className="mb-2 h-12 w-12 rounded-xl" />
+          <img src={logo} alt="Resique" className="mb-3 h-10 w-auto" />
           <CardTitle className="flex items-center gap-2"><ShieldAlert className="h-5 w-5 text-warn" strokeWidth={1.6} />Konfigurasi Golden Privilege</CardTitle>
           <CardDescription className="text-pretty">{text}</CardDescription>
         </CardHeader>

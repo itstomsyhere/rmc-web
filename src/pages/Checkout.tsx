@@ -107,13 +107,13 @@ export function CheckoutPage() {
         <Reveal>
           <p className="t-eyebrow">Pesanan dibuat</p>
           <h1 className="t-h1 mt-3 text-ink">Selesaikan pembayaran</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-ink-3">Pesanan <span className="t-code text-ink-2">{placed.id}</span> menunggu pembayaran QRIS sebesar <strong className="t-num text-ink">{rupiah(placed.total)}</strong>. QR berlaku {Math.round(cfg.payment.qrTimeoutSec / 60)} menit sejak pesanan dibuat.</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-3">Pesanan <span className="t-code text-ink-2">{placed.id}</span> menunggu pembayaran QRIS sebesar <strong className="t-code text-ink">{rupiah(placed.total)}</strong>. QR berlaku {Math.round(cfg.payment.qrTimeoutSec / 60)} menit sejak pesanan dibuat.</p>
         </Reveal>
         <Reveal delay={80}>
           <Card className="mt-8">
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-700"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy-50 text-navy-700"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
                 <div className="min-w-0">
                   <p className="text-[15px] font-bold text-ink">QRIS · {cfg.payment.qrisMerchant}</p>
                   <p className="text-[13px] text-ink-3">Scan, bayar, lalu unggah bukti pembayaran.</p>
@@ -228,7 +228,7 @@ export function CheckoutPage() {
                   )} />
                 </Field>
               )}
-              <p className="mt-4 inline-flex items-center gap-1.5 text-[12px] text-ink-3"><ShieldCheck className="h-3.5 w-3.5 text-teal-600" strokeWidth={1.6} /> Pembayaran diverifikasi admin Resique setelah bukti diunggah.</p>
+              <p className="mt-4 inline-flex items-center gap-1.5 text-[12px] text-ink-3"><ShieldCheck className="h-3.5 w-3.5 text-navy-600" strokeWidth={1.6} /> Pembayaran diverifikasi admin Resique setelah bukti diunggah.</p>
             </Reveal>
           </div>
 
@@ -236,8 +236,8 @@ export function CheckoutPage() {
           <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:static lg:mt-10 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
             <div className="mx-auto flex max-w-xl items-center gap-3">
               <div className="min-w-0 flex-1 lg:hidden">
-                <p className="text-[11px] font-semibold text-ink-3"><span className="t-num">{count}</span> item · hemat <span className="t-num gold-text font-bold">{rupiah(savings)}</span></p>
-                <p className="t-num truncate text-[17px] font-extrabold leading-tight text-ink">{rupiah(total)}</p>
+                <p className="text-[11px] font-semibold text-ink-3"><span className="t-code">{count}</span> item · hemat <span className="t-code gold-text font-bold">{rupiah(savings)}</span></p>
+                <p className="t-code truncate text-[17px] font-extrabold leading-tight text-ink">{rupiah(total)}</p>
               </div>
               <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="shrink-0 lg:w-full">Bayar {rupiah(total)}</Button>
             </div>
@@ -250,7 +250,7 @@ export function CheckoutPage() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle>Ringkasan pesanan</CardTitle>
-                <CardDescription><span className="t-num">{count}</span> item · {cfg.campaign.label}</CardDescription>
+                <CardDescription><span className="t-code">{count}</span> item · {cfg.campaign.label}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="divide-y divide-line-2">
@@ -267,8 +267,8 @@ export function CheckoutPage() {
                             onInc={() => { if (Number.isFinite(max) && l.qty >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(l.itemId, Number.isFinite(max) ? max : undefined) }}
                             onDec={() => dec(l.itemId)} />
                           <div className="text-right">
-                            <p className="t-num text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
-                            <p className="t-num text-[11px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}</p>
+                            <p className="t-code text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
+                            <p className="t-code text-[11px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}</p>
                           </div>
                         </div>
                       </li>
@@ -277,9 +277,9 @@ export function CheckoutPage() {
                 </ul>
                 <Separator className="my-4" />
                 <div className="space-y-2 text-[14px]">
-                  <div className="flex items-center justify-between text-ink-3"><span>Harga normal</span><span className="t-num strike">{rupiah(total + savings)}</span></div>
-                  <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-num gold-text">{rupiah(savings)}</span></div>
-                  <div className={cn('flex items-baseline justify-between pt-2 text-ink')}><span className="text-[15px] font-bold">Total</span><span className="t-num text-[24px] font-extrabold tracking-tight">{rupiah(total)}</span></div>
+                  <div className="flex items-center justify-between text-ink-3"><span>Harga normal</span><span className="t-code strike">{rupiah(total + savings)}</span></div>
+                  <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-code gold-text">{rupiah(savings)}</span></div>
+                  <div className={cn('flex items-baseline justify-between pt-2 text-ink')}><span className="text-[15px] font-bold">Total</span><span className="t-code text-[24px] font-extrabold tracking-tight">{rupiah(total)}</span></div>
                 </div>
                 <p className="mt-4 text-[12px] leading-relaxed text-ink-4">Total belum termasuk ongkir untuk pengiriman ke alamat. Harga promo berlaku selama periode {cfg.campaign.label}.</p>
               </CardContent>

@@ -139,8 +139,8 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
     <div>
       <Reveal>
         <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700 [--u-bottom:8px]"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
-          <Link to="/login" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[13px] font-semibold text-teal-700 transition-colors hover:bg-teal-50">Sudah punya akun? Masuk</Link>
+          <Link to="/" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-semibold text-ink-3 transition-colors hover:text-navy-700 [--u-bottom:8px]"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Beranda</Link>
+          <Link to="/login" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[13px] font-semibold text-navy-700 transition-colors hover:bg-navy-50">Sudah punya akun? Masuk</Link>
         </div>
         <p className="t-eyebrow mt-4">Resique Member Card</p>
         <h1 className="t-h1 mt-2 text-ink">Daftar RMC</h1>
@@ -206,7 +206,7 @@ function RegisterFormStep({ onValid, submitError }: { onValid: (v: FormValues) =
 
           <div className="space-y-1.5">
             <Controller name="consent" control={control} render={({ field }) => (
-              <label htmlFor="consent" className={cn('flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border bg-white p-4 transition-colors has-[[data-state=checked]]:border-teal has-[[data-state=checked]]:bg-teal-50/60 hover:border-ink-4', errors.consent ? 'border-danger' : 'border-line')}>
+              <label htmlFor="consent" className={cn('flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border bg-white p-4 transition-colors has-[[data-state=checked]]:border-navy has-[[data-state=checked]]:bg-navy-50/60 hover:border-ink-4', errors.consent ? 'border-danger' : 'border-line')}>
                 <Checkbox id="consent" checked={field.value} onCheckedChange={v => field.onChange(v === true)} aria-invalid={!!errors.consent} className="mt-0.5" />
                 <span className="text-[14px] leading-relaxed text-ink-2">Saya setuju dihubungi via WhatsApp dan menyetujui syarat program Golden Privilege<span className="ml-0.5 text-danger" aria-hidden>*</span></span>
               </label>
@@ -251,7 +251,7 @@ function PasswordStep({ match, minLength, onBack, onSubmit, error }: { match: Ma
   return (
     <div>
       <Reveal>
-        <button type="button" onClick={onBack} className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full pr-3 text-[13px] font-semibold text-ink-3 transition-colors hover:text-teal-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Ubah data pendaftaran</button>
+        <button type="button" onClick={onBack} className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full pr-3 text-[13px] font-semibold text-ink-3 transition-colors hover:text-navy-700"><ArrowLeft className="h-4 w-4" strokeWidth={1.6} /> Ubah data pendaftaran</button>
         <p className="t-eyebrow mt-4">Langkah 2 dari 2</p>
         <h1 className="t-h1 mt-2 text-ink">Buat kata sandi</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
@@ -293,14 +293,14 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
       {linked ? (
         <>
           <Reveal>
-            <span className="grid h-14 w-14 place-items-center rounded-xl bg-teal-50 text-teal-700"><CheckCircle2 className="h-7 w-7" strokeWidth={1.6} /></span>
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-navy-50 text-navy-700"><CheckCircle2 className="h-7 w-7" strokeWidth={1.6} /></span>
             <p className="t-eyebrow mt-5">Pendaftaran berhasil</p>
             <h1 className="t-h1 mt-2 text-ink">Akun terhubung ke {match.customer?.outlet}</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
               Kata sandi sementara sudah dikirim ke <strong className="text-ink">{account.email}</strong>. Masuk dengan nomor HP <span className="t-num font-semibold text-ink">{displayPhone(account.phone)}</span>, lalu kamu akan diminta membuat kata sandi baru.
             </p>
             {match.path === 2 && (
-              <div className="mt-4 flex items-start gap-2 rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-3 text-[13px] text-teal-700">
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-navy-100 bg-navy-50/70 px-4 py-3 text-[13px] text-navy-700">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.6} />
                 <span>Nomor HP-mu dilengkapi ke data pelanggan Resique, dicocokkan lewat nomor Member Card <span className="t-code">{account.rsl}</span> dan nama PIC.</span>
               </div>
@@ -338,7 +338,7 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
       ) : (
         <>
           <Reveal>
-            <span className="grid h-14 w-14 place-items-center rounded-xl bg-teal-50 text-teal-700"><MessageCircle className="h-7 w-7" strokeWidth={1.6} /></span>
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-navy-50 text-navy-700"><MessageCircle className="h-7 w-7" strokeWidth={1.6} /></span>
             <p className="t-eyebrow mt-5">Pendaftaran diterima</p>
             <h1 className="t-h1 mt-2 text-ink">Akun sudah aktif, {account.pic.split(' ')[0]}</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3 sm:text-base">
@@ -364,7 +364,7 @@ function ResultScreen({ outcome }: { outcome: RegisterOutcome }) {
 function Row({ ok, label, desc, badge }: { ok?: boolean; label: string; desc: string; badge?: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <span className={cn('mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full', ok ? 'bg-teal-50 text-teal-700' : 'bg-surface-2 text-ink-4')}>
+      <span className={cn('mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full', ok ? 'bg-navy-50 text-navy-700' : 'bg-surface-2 text-ink-4')}>
         {ok ? <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} /> : <Clock className="h-4 w-4" strokeWidth={1.8} />}
       </span>
       <div className="min-w-0 flex-1">

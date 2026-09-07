@@ -22,7 +22,9 @@ export function AsetSection() {
 
       <SettingsCard title="Identitas & pembayaran" desc="Dipakai di header situs dan lembar pembayaran QRIS.">
         <div className="grid gap-5 md:grid-cols-2">
-          <ImageField label="Logo" value={d.draft.logo} onChange={v => d.patch({ logo: v })} defaultValue={d.defaults.logo} hint="Rasio 1:1, tampil 32 px di header." />
+          <ImageField label="Logo (warna)" value={d.draft.logo} onChange={v => d.patch({ logo: v })} defaultValue={d.defaults.logo} hint="Lockup lengkap, latar transparan, tampil 32 px tinggi di header." />
+          <ImageField label="Logo (putih)" value={d.draft.logoWhite} onChange={v => d.patch({ logoWhite: v })} defaultValue={d.defaults.logoWhite} hint="Versi putih untuk footer dan bidang navy." />
+          <ImageField label="Ikon (mark)" value={d.draft.mark} onChange={v => d.patch({ mark: v })} defaultValue={d.defaults.mark} hint="Rasio 1:1, dipakai di kartu RMC dan slot kecil." />
           <ImageField label="Gambar QRIS (demo)" value={d.draft.qrisImage} onChange={v => d.patch({ qrisImage: v })} defaultValue={d.defaults.qrisImage} hint="Prototype: QR statis. Produksi memakai QRIS dinamis per pesanan." />
         </div>
       </SettingsCard>

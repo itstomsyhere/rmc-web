@@ -68,8 +68,8 @@ export function TransaksiSection() {
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <StatTile label="Lunas" value={lunas.length} hint={`dari ${orders.length} pesanan`} tone="teal" />
-        <StatTile label="Omzet Lunas" value={rupiah(lunas.reduce((s, o) => s + o.total, 0))} tone="teal" />
+        <StatTile label="Lunas" value={lunas.length} hint={`dari ${orders.length} pesanan`} tone="navy" />
+        <StatTile label="Omzet Lunas" value={rupiah(lunas.reduce((s, o) => s + o.total, 0))} tone="navy" />
         <StatTile label="Menunggu verifikasi" value={pending} hint="bukti sudah diunggah" tone={pending ? 'warn' : 'ink'} />
       </div>
 
@@ -80,7 +80,7 @@ export function TransaksiSection() {
               const on = filter === s
               const n = s === 'Semua' ? orders.length : counts[s]
               return (
-                <button key={s} type="button" aria-pressed={on} onClick={() => setFilter(s)} className={cn('flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-[12px] font-semibold transition-colors', on ? 'border-teal-500 bg-teal-500 text-white' : 'border-line bg-white text-ink-2 hover:border-ink-4')}>
+                <button key={s} type="button" aria-pressed={on} onClick={() => setFilter(s)} className={cn('flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-[12px] font-semibold transition-colors', on ? 'border-navy-500 bg-navy-500 text-white' : 'border-line bg-white text-ink-2 hover:border-ink-4')}>
                   {s}<span className={cn('t-num rounded-full px-1.5 text-[11px]', on ? 'bg-white/20' : 'bg-surface-2 text-ink-3')}>{n}</span>
                 </button>
               )

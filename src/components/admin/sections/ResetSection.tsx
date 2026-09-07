@@ -46,7 +46,7 @@ export function ResetSection() {
 function ResetCard({ icon: Icon, title, desc, action, onClick, danger, disabled }: { icon: typeof Database; title: string; desc: string; action: string; onClick: () => void; danger?: boolean; disabled?: boolean }) {
   return (
     <SettingsCard title={title} desc={desc} className="flex flex-col" bodyClassName="mt-auto flex items-center justify-between gap-3">
-      <Icon className={danger ? 'h-5 w-5 text-danger' : 'h-5 w-5 text-teal-600'} strokeWidth={1.6} />
+      <Icon className={danger ? 'h-5 w-5 text-danger' : 'h-5 w-5 text-navy-600'} strokeWidth={1.6} />
       <Button type="button" variant={danger ? 'destructive' : 'outline'} size="sm" disabled={disabled} title={disabled ? 'Hanya lihat' : undefined} onClick={onClick}>{action}</Button>
     </SettingsCard>
   )

@@ -69,7 +69,7 @@ export function OrderStatusPage() {
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-gold-700 shadow-1"><QrCode className="h-5 w-5" strokeWidth={1.6} /></span>
                 <div>
                   <p className="text-[15px] font-bold text-ink">Selesaikan pembayaran {rupiah(order.total)}</p>
-                  <p className="t-num text-[13px] text-ink-3">QR berlaku ±{remainingMin} menit lagi.</p>
+                  <p className="t-code text-[13px] text-ink-3">QR berlaku ±{remainingMin} menit lagi.</p>
                 </div>
               </div>
               <Button size="lg" variant="gold" className="" onClick={() => setSheetOpen(true)}>Buka QR & unggah bukti</Button>
@@ -131,7 +131,7 @@ export function OrderStatusPage() {
             <dl className="grid gap-4 sm:grid-cols-2">
               <Item label="Nama">{order.buyer.name}</Item>
               <Item label="Nama laundry">{order.buyer.laundry}</Item>
-              <Item label="No. HP"><span className="t-num">{displayPhone(order.buyer.phone)}</span></Item>
+              <Item label="No. HP"><span className="t-code">{displayPhone(order.buyer.phone)}</span></Item>
               <Item label="Pengambilan">
                 <span className="inline-flex items-center gap-1.5">
                   {order.fulfil.mode === 'ambil' ? <Store className="h-4 w-4 text-ink-4" strokeWidth={1.6} /> : <Truck className="h-4 w-4 text-ink-4" strokeWidth={1.6} />}
@@ -158,16 +158,16 @@ export function OrderStatusPage() {
                 <li key={l.itemId} className="flex items-start justify-between gap-4 py-3">
                   <div className="min-w-0 flex-1">
                     <p className="text-[14px] font-semibold leading-snug text-ink">{l.name}</p>
-                    <p className="t-num mt-0.5 text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}{l.realPrice > l.promoPrice && <span className="strike ml-1.5 text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>} <span className="ml-1.5 t-code text-[10px] text-ink-4">{l.code}</span></p>
+                    <p className="t-code mt-0.5 text-[12px] text-ink-3">{l.qty} × {rupiah(l.promoPrice)}{l.realPrice > l.promoPrice && <span className="strike ml-1.5 text-[11px] text-ink-4">{rupiah(l.realPrice)}</span>} <span className="ml-1.5 t-code text-[10px] text-ink-4">{l.code}</span></p>
                   </div>
-                  <p className="t-num shrink-0 text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
+                  <p className="t-code shrink-0 text-[14px] font-bold text-ink">{rupiah(l.qty * l.promoPrice)}</p>
                 </li>
               ))}
             </ul>
             <Separator className="my-4" />
             <div className="space-y-2 text-[14px]">
-              <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-num gold-text">{rupiah(order.savings)}</span></div>
-              <div className="flex items-baseline justify-between text-ink"><span className="text-[15px] font-bold">Total</span><span className="t-num text-[24px] font-extrabold tracking-tight">{rupiah(order.total)}</span></div>
+              <div className="flex items-center justify-between font-bold"><span className="gold-text">Hemat</span><span className="t-code gold-text">{rupiah(order.savings)}</span></div>
+              <div className="flex items-baseline justify-between text-ink"><span className="text-[15px] font-bold">Total</span><span className="t-code text-[24px] font-extrabold tracking-tight">{rupiah(order.total)}</span></div>
             </div>
           </CardContent>
         </Card>
@@ -215,15 +215,15 @@ function Timeline({ order }: { order: Order }) {
         const at = n.state !== 'todo' ? stamp(n.key) : undefined
         return (
           <li key={n.key} className="relative flex gap-4" aria-current={n.state === 'current' ? 'step' : undefined}>
-            {!last && <span aria-hidden className={cn('absolute left-[15px] top-8 h-[calc(100%+8px)] w-0.5 rounded-full', n.state === 'done' ? 'bg-teal-200' : 'bg-line')} />}
+            {!last && <span aria-hidden className={cn('absolute left-[15px] top-8 h-[calc(100%+8px)] w-0.5 rounded-full', n.state === 'done' ? 'bg-navy-200' : 'bg-line')} />}
             <span className={cn('relative z-[1] grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 transition-colors',
-              n.state === 'done' && 'border-teal-500 bg-teal-500 text-white',
-              n.state === 'current' && 'border-teal-500 bg-white text-teal-700 ring-4 ring-teal-50',
+              n.state === 'done' && 'border-navy-500 bg-navy-500 text-white',
+              n.state === 'current' && 'border-navy-500 bg-white text-navy-700 ring-4 ring-navy-50',
               n.state === 'todo' && 'border-line bg-white text-ink-4',
               n.state === 'terminal' && (order.status === 'Ditolak' ? 'border-danger bg-danger-50 text-danger' : 'border-ink-4 bg-surface-2 text-ink-3'))}>
               {n.state === 'done' ? <Check className="h-4 w-4" strokeWidth={2.2} />
                 : n.state === 'terminal' ? (order.status === 'Ditolak' ? <XCircle className="h-4 w-4" strokeWidth={1.6} /> : <Clock className="h-4 w-4" strokeWidth={1.6} />)
-                : <span className="t-num text-[12px] font-extrabold">{i + 1}</span>}
+                : <span className="t-code text-[12px] font-extrabold">{i + 1}</span>}
             </span>
             <div className="min-w-0 flex-1 pt-1">
               <p className={cn('text-[15px] font-bold leading-tight', n.state === 'todo' ? 'text-ink-4' : n.state === 'terminal' && order.status === 'Ditolak' ? 'text-danger' : 'text-ink')}>

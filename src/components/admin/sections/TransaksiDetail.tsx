@@ -64,7 +64,7 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
                 {o.lines.map(l => (
                   <TR key={l.itemId}><TD className="t-code text-ink-3">{l.code}</TD><TD>{l.name}</TD><TD className="t-num text-right">{l.qty}</TD><TD className="t-num text-right">{rupiah(l.promoPrice)}</TD><TD className="t-num text-right font-semibold">{rupiah(l.qty * l.promoPrice)}</TD></TR>
                 ))}
-                <TR className="hover:bg-transparent"><TD colSpan={4} className="text-right text-ink-3">Hemat {rupiah(o.savings)}</TD><TD className="t-num text-right text-[15px] font-extrabold text-teal-700">{rupiah(o.total)}</TD></TR>
+                <TR className="hover:bg-transparent"><TD colSpan={4} className="text-right text-ink-3">Hemat {rupiah(o.savings)}</TD><TD className="t-num text-right text-[15px] font-extrabold text-navy-700">{rupiah(o.total)}</TD></TR>
               </TBody>
             </Table>
 
@@ -78,7 +78,7 @@ export function TransaksiDetail({ order, onClose }: { order: Order | null; onClo
                   <div className="text-[13px]">
                     <p className="font-semibold text-ink">{proof.proofName}</p>
                     <p className="text-ink-3">{proof.proofType || 'berkas'}{proof.uploadedAt ? ` · diunggah ${fmtDate(proof.uploadedAt, true)}` : ''}</p>
-                    {!isImg && proof.proofDataUrl && <a href={proof.proofDataUrl} download={proof.proofName} className="mt-1 inline-block text-teal-600 underline-offset-2 hover:underline">Unduh berkas</a>}
+                    {!isImg && proof.proofDataUrl && <a href={proof.proofDataUrl} download={proof.proofName} className="mt-1 inline-block text-navy-600 underline-offset-2 hover:underline">Unduh berkas</a>}
                   </div>
                 </div>
               ) : <p className="text-[13px] text-ink-3">Belum ada bukti diunggah.</p>}

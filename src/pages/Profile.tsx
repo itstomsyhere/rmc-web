@@ -9,6 +9,7 @@ import { Reveal } from '@/lib/reveal'
 import { rmcFor, type RmcSummary } from '@/model/rmc'
 import type { Account, CrmCustomer, Order, Prize, Redemption } from '@/model/types'
 import { useConfig } from '@/store/config'
+import { CONTACTS } from '@/data/contacts'
 import { useCrm } from '@/store/crm'
 import { useOrders } from '@/store/orders'
 import { useAccounts } from '@/store/accounts'
@@ -19,9 +20,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Progress, EmptyState } from '@/components/ui/misc'
 
-const TEAL = '#14695E'
+const TEAL = '#3E8A1E'
 const GOLD = '#D4A04E'
-const SALES_WA = 'https://wa.me/6281200000000'
+const SALES_WA = CONTACTS.wa
 
 /* Profile, PRD Fitur 4 (poin & tier), Fitur 5 (tukar hadiah), Fitur 6 (riwayat). */
 export function ProfilePage() {
@@ -114,8 +115,8 @@ function ProfileBody({ account }: { account: Account }) {
 
 function HeroShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl bg-teal-700/10 p-1.5 ring-1 ring-black/5', className)}>
-      <div className="teal-gradient relative overflow-hidden rounded-xl p-6 text-white sm:p-8">
+    <div className={cn('rounded-xl bg-navy-700/10 p-1.5 ring-1 ring-black/5', className)}>
+      <div className="navy-gradient relative overflow-hidden rounded-xl p-6 text-white sm:p-8">
         <div className="relative">{children}</div>
       </div>
     </div>
@@ -131,7 +132,7 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
         <p className="t-eyebrow text-gold-200">Poin RMC</p>
         <Badge variant="inverse"><span className="h-2 w-2 rounded-full ring-1 ring-white/60" style={{ background: rmc.tier.sw }} aria-hidden />{rmc.tier.name}</Badge>
       </div>
-      <p data-points={rmc.points} className="t-num mt-3 text-[56px] font-extrabold leading-none tracking-[-0.03em] sm:text-[64px]">{poin(rmc.points)}</p>
+      <p data-points={rmc.points} className="t-fig t-fig-black mt-3 text-[56px] leading-none sm:text-[64px]">{poin(rmc.points)}</p>
       <p className="mt-2 text-[13px] text-white/80">Berlaku sampai {cfg.rules.expiry} · 1 poin = {rupiah(cfg.rules.poinToRp)}</p>
 
       <div className="mt-6 border-t border-white/15 pt-5">
@@ -142,8 +143,8 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
 
       <div className="mt-6">
         <div className="flex items-end justify-between gap-3 text-[12px]">
-          <span className="text-white/75">Belanja {rmc.win.label}: <strong className="t-num text-white">{rupiah(rmc.spend6)}</strong></span>
-          <span className="t-num shrink-0 font-semibold text-gold-200">{rmc.next ? `${rupiah(rmc.toNext, { short: true })} lagi ke ${rmc.next.name}` : 'Tier tertinggi'}</span>
+          <span className="text-white/75">Belanja {rmc.win.label}: <strong className="t-code text-white">{rupiah(rmc.spend6)}</strong></span>
+          <span className="t-code shrink-0 font-semibold text-gold-200">{rmc.next ? `${rupiah(rmc.toNext, { short: true })} lagi ke ${rmc.next.name}` : 'Tier tertinggi'}</span>
         </div>
         <Progress value={rmc.progress * 100} tone="gold" className="mt-2 bg-white/15" aria-label="Progres ke tier berikutnya" />
       </div>
@@ -151,7 +152,7 @@ function PointsHero({ account, customer, rmc, isMitra }: { account: Account; cus
       <div className="mt-5 flex items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
         <div>
           <p className="text-[12px] font-semibold text-white/70">Diskon aktif</p>
-          <p className="t-num text-[24px] font-extrabold leading-tight">{rmc.discount}%</p>
+          <p className="t-fig t-fig-black text-[24px] leading-tight">{rmc.discount}%</p>
         </div>
         {floorApplied ? <Badge variant="gold">Min. Mitra</Badge> : isMitra ? <Badge variant="inverse">Mitra Apique</Badge> : null}
       </div>
@@ -167,7 +168,7 @@ function PendingHero({ account, rmc }: { account: Account; rmc: RmcSummary }) {
       <div aria-hidden className="pointer-events-none select-none blur-[6px]">
         <HeroShell>
           <p className="t-eyebrow text-gold-200">Poin RMC</p>
-          <p data-points={rmc.points} className="t-num mt-3 text-[56px] font-extrabold leading-none tracking-[-0.03em] sm:text-[64px]">{poin(rmc.points)}</p>
+          <p data-points={rmc.points} className="t-fig t-fig-black mt-3 text-[56px] leading-none sm:text-[64px]">{poin(rmc.points)}</p>
           <p className="mt-2 text-[13px] text-white/80">Berlaku sampai {cfg.rules.expiry}</p>
           <div className="mt-6 border-t border-white/15 pt-5"><p className="text-[17px] font-bold">{account.laundry}</p><p className="text-[13px] text-white/75">{account.pic} · {account.kota}</p></div>
           <Progress value={35} tone="gold" className="mt-8 bg-white/15" />
@@ -197,7 +198,7 @@ function LeadCard() {
   return (
     <Card className="rounded-xl">
       <CardContent className="pt-5 sm:pt-6">
-        <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-50 text-teal-700"><MessageCircle className="h-5 w-5" strokeWidth={1.6} /></span>
+        <span className="grid h-11 w-11 place-items-center rounded-xl bg-navy-50 text-navy-700"><MessageCircle className="h-5 w-5" strokeWidth={1.6} /></span>
         <p className="mt-4 text-[17px] font-bold text-ink">Belum terdaftar sebagai pelanggan Resique</p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-ink-3">Tim sales akan menghubungi via WhatsApp untuk mendaftarkan laundry-mu. Setelah itu poin RMC mulai terhitung dari setiap belanja.</p>
         <Button asChild size="lg" variant="gold" className="mt-5 w-full">
@@ -216,7 +217,7 @@ function PointsTooltip({ active, payload, label }: TooltipProps<number, string>)
   return (
     <div className="rounded-lg border border-line bg-white px-3 py-2 shadow-2">
       <p className="text-[12px] font-semibold text-ink-3">{String(label)}</p>
-      <p className="t-num text-[15px] font-extrabold text-teal-700">{poin(v)} <span className="text-[11px] font-semibold text-ink-3">poin</span></p>
+      <p className="t-fig text-[15px] text-navy-700">{poin(v)} <span className="text-[11px] font-semibold text-ink-3">poin</span></p>
     </div>
   )
 }
@@ -228,7 +229,7 @@ function PointsChart({ rmc, earnPerRp }: { rmc: RmcSummary; earnPerRp: number })
     <Card>
       <CardHeader>
         <CardTitle>Poin per bulan</CardTitle>
-        <CardDescription>12 bulan terakhir · <span className="t-num">{poin(rmc.pointsEarned)}</span> poin terkumpul tahun ini</CardDescription>
+        <CardDescription>12 bulan terakhir · <span className="t-code">{poin(rmc.pointsEarned)}</span> poin terkumpul tahun ini</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-56 w-full">
@@ -243,7 +244,7 @@ function PointsChart({ rmc, earnPerRp }: { rmc: RmcSummary; earnPerRp: number })
               <CartesianGrid vertical={false} stroke="#EEF0F2" />
               <XAxis dataKey="label" axisLine={false} tickLine={false} interval="preserveStartEnd" minTickGap={24} />
               <YAxis axisLine={false} tickLine={false} width={48} tickFormatter={(v: number) => (v >= 1000 ? `${Math.round(v / 1000)}rb` : String(v))} />
-              <Tooltip content={<PointsTooltip />} cursor={{ stroke: '#7EC5BB', strokeDasharray: '3 3' }} />
+              <Tooltip content={<PointsTooltip />} cursor={{ stroke: '#B7E094', strokeDasharray: '3 3' }} />
               <Area type="monotone" dataKey="points" stroke={TEAL} strokeWidth={2.25} fill="url(#rmcPoints)" dot={false} activeDot={{ r: 5, fill: TEAL, stroke: '#fff', strokeWidth: 2 }} isAnimationActive />
               {last && <ReferenceDot x={last.label} y={last.points} r={5.5} fill={GOLD} stroke="#fff" strokeWidth={2} isFront />}
             </AreaChart>
@@ -287,7 +288,7 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
           <p className="t-eyebrow">Tukar poin</p>
           <h2 id="prizes-title" className="t-h2 mt-1 text-ink">Pilihan hadiah</h2>
         </div>
-        <p className="t-num shrink-0 text-[13px] text-ink-3">Min. tukar <strong className="text-ink">{poin(cfg.rules.minRedeem)}</strong> poin</p>
+        <p className="t-code shrink-0 text-[13px] text-ink-3">Min. tukar <strong className="text-ink">{poin(cfg.rules.minRedeem)}</strong> poin</p>
       </div>
       {prizes.length === 0 ? (
         <EmptyState className="mt-4" title="Belum ada hadiah aktif" desc="Daftar hadiah menyusul. Cek lagi nanti." />
@@ -304,8 +305,8 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
                   </div>
                   <p className="mt-3 text-[11px] font-semibold text-ink-4">{p.type}</p>
                   <h3 className="mt-1 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{p.name}</h3>
-                  <p className="t-num mt-1 text-[15px] font-extrabold text-gold-700">{poin(p.pointCost)} <span className="text-[11px] font-bold text-ink-3">poin</span></p>
-                  <p className="t-num text-[11px] text-ink-4">Stok {p.stock}</p>
+                  <p className="t-fig mt-1 text-[15px] text-gold-700">{poin(p.pointCost)} <span className="text-[11px] font-bold text-ink-3">poin</span></p>
+                  <p className="t-code text-[11px] text-ink-4">Stok {p.stock}</p>
                   <div className="mt-auto pt-3">
                     <Button size="sm" variant={why ? 'outline' : 'gold'} className="h-11 w-full sm:h-10" disabled={!!why} onClick={() => setSel(p)} aria-label={why ? `${p.name}: ${why}` : `Tukar ${p.name}`}>
                       {why || 'Tukar'}
@@ -323,7 +324,7 @@ function PrizeGrid({ account, points }: { account: Account; points: number }) {
           <DialogHeader>
             <DialogTitle>Tukar {sel?.name}?</DialogTitle>
             <DialogDescription>
-              Tukar <strong className="t-num text-ink">{sel?.name}</strong> dengan <strong className="t-num text-ink">{poin(sel?.pointCost)} poin</strong>? Sisa poin setelah penukaran: <strong className="t-num text-teal-700">{poin(points - (sel?.pointCost || 0))}</strong>.
+              Tukar <strong className="text-ink">{sel?.name}</strong> dengan <strong className="t-code text-ink">{poin(sel?.pointCost)} poin</strong>? Sisa poin setelah penukaran: <strong className="t-code text-navy-700">{poin(points - (sel?.pointCost || 0))}</strong>.
             </DialogDescription>
           </DialogHeader>
           {sel && (
@@ -359,7 +360,7 @@ function RedemptionList({ rows }: { rows: Redemption[] }) {
                 <p className="truncate text-[14px] font-semibold text-ink">{r.prizeName}</p>
                 <p className="text-[12px] text-ink-3"><span className="t-code">{r.id}</span> · {fmtDate(r.at)}</p>
               </div>
-              <p className="t-num shrink-0 text-[14px] font-extrabold text-gold-700">−{poin(r.points)}</p>
+              <p className="t-fig shrink-0 text-[14px] text-gold-700">−{poin(r.points)}</p>
             </li>
           ))}
         </ul>
@@ -373,7 +374,7 @@ function OrderList({ rows }: { rows: Order[] }) {
   return (
     <Card>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-700"><ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} /></span>
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-navy-50 text-navy-700"><ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} /></span>
         <div><CardTitle>Pesanan Golden Sale kamu</CardTitle><CardDescription className="mt-1">{rows.length === 0 ? 'Belum ada pesanan' : `${rows.length} pesanan · hanya Lunas yang menambah poin`}</CardDescription></div>
       </CardHeader>
       <CardContent>
@@ -383,12 +384,12 @@ function OrderList({ rows }: { rows: Order[] }) {
           <ul className="divide-y divide-line-2">
             {show.map(o => (
               <li key={o.id}>
-                <Link to={`/order/${o.id}`} className="flex min-h-[44px] items-center gap-3 py-3 transition-colors hover:text-teal-700">
+                <Link to={`/order/${o.id}`} className="flex min-h-[44px] items-center gap-3 py-3 transition-colors hover:text-navy-700">
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-center gap-2"><span className="t-code text-[13px] font-semibold text-ink">{o.id}</span><Badge variant={statusVariant(o.status)}>{o.status}</Badge></p>
                     <p className="mt-0.5 text-[12px] text-ink-3">{fmtDate(o.createdAt)} · {o.lines.reduce((s, l) => s + l.qty, 0)} item · {o.fulfil.mode === 'kirim' ? 'Dikirim' : `Ambil di ${o.fulfil.outlet || 'outlet'}`}</p>
                   </div>
-                  <p className="t-num shrink-0 text-[14px] font-extrabold text-ink">{rupiah(o.total)}</p>
+                  <p className="t-fig shrink-0 text-[14px] text-ink">{rupiah(o.total)}</p>
                   <ArrowRight className="h-4 w-4 shrink-0 text-ink-4" strokeWidth={1.6} />
                 </Link>
               </li>

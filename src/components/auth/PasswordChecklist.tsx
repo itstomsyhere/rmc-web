@@ -19,8 +19,8 @@ export function PasswordChecklist({ password, minLength, className }: { password
       {rules.map(rule => {
         const ok = r[rule.key]
         return (
-          <li key={rule.key} className={cn('flex items-center gap-2 text-[13px] transition-colors', ok ? 'text-teal-700' : 'text-ink-3')}>
-            <span className={cn('grid h-5 w-5 shrink-0 place-items-center rounded-full', ok ? 'bg-teal-50 text-teal-700' : 'bg-surface-2 text-ink-4')}>
+          <li key={rule.key} className={cn('flex items-center gap-2 text-[13px] transition-colors', ok ? 'text-navy-700' : 'text-ink-3')}>
+            <span className={cn('grid h-5 w-5 shrink-0 place-items-center rounded-full', ok ? 'bg-navy-50 text-navy-700' : 'bg-surface-2 text-ink-4')}>
               {ok ? <Check className="h-3 w-3" strokeWidth={2.5} /> : <Minus className="h-3 w-3" strokeWidth={2} />}
             </span>
             {rule.label}
@@ -42,7 +42,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, Omit<InputProps,
         onClick={() => setShow(s => !s)}
         aria-label={show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
         aria-pressed={show}
-        className="absolute right-0 top-0 grid h-11 w-11 place-items-center rounded-lg text-ink-3 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/25"
+        className="absolute right-0 top-0 grid h-11 w-11 place-items-center rounded-lg text-ink-3 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/25"
       >
         {show ? <EyeOff className="h-[18px] w-[18px]" strokeWidth={1.6} /> : <Eye className="h-[18px] w-[18px]" strokeWidth={1.6} />}
       </button>

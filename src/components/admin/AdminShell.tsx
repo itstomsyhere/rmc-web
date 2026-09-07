@@ -70,7 +70,7 @@ function Rail({ active, onChange, badges, embed }: Omit<ShellProps, 'children'>)
                   key={it.id} type="button" data-admin-nav={it.id} aria-current={on ? 'page' : undefined} onClick={() => onChange(it.id)}
                   className={cn(
                     'flex items-center gap-2.5 border-l-[3px] px-3 py-2 text-left text-[13px] transition-[transform,background-color,color,border-color] duration-fast ease-out hover:translate-x-0.5',
-                    on ? 'rounded-r-md border-teal-500 bg-teal-50 font-bold text-teal-700' : 'rounded-md border-transparent font-medium text-ink-2 hover:bg-surface-2',
+                    on ? 'rounded-r-md border-navy-500 bg-navy-50 font-bold text-navy-700' : 'rounded-md border-transparent font-medium text-ink-2 hover:bg-surface-2',
                   )}
                 >
                   <it.icon className="h-4 w-4 shrink-0" strokeWidth={1.6} />
@@ -101,7 +101,7 @@ function PillStrip({ active, onChange, badges }: Omit<ShellProps, 'children' | '
               return (
                 <button
                   key={it.id} type="button" role="tab" aria-selected={on} data-admin-nav={it.id} onClick={() => onChange(it.id)}
-                  className={cn('flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-[13px] transition-[transform,background-color,border-color,color] duration-fast ease-out hover:-translate-y-px', on ? 'border-teal-500 bg-teal-500 font-bold text-white' : 'border-line bg-white font-medium text-ink-2 hover:border-ink-4')}
+                  className={cn('flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-[13px] transition-[transform,background-color,border-color,color] duration-fast ease-out hover:-translate-y-px', on ? 'border-navy-500 bg-navy-500 font-bold text-white' : 'border-line bg-white font-medium text-ink-2 hover:border-ink-4')}
                 >
                   <it.icon className="h-3.5 w-3.5" strokeWidth={1.6} />
                   {it.label}

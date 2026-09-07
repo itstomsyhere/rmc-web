@@ -41,7 +41,7 @@ function MailItem({ mail, defaultOpen }: { mail: InboxMail; defaultOpen: boolean
         aria-expanded={open}
         className="flex min-h-[44px] w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-2/70 sm:px-5"
       >
-        <span className={cn('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full', mail.read ? 'bg-surface-2 text-ink-4' : 'bg-teal-50 text-teal-700')}>
+        <span className={cn('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full', mail.read ? 'bg-surface-2 text-ink-4' : 'bg-navy-50 text-navy-700')}>
           <MailOpen className="h-4 w-4" strokeWidth={1.6} />
         </span>
         <span className="min-w-0 flex-1">

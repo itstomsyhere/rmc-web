@@ -4,17 +4,23 @@
 
 /* ---------------------------------------------------------------------------
    Resique Golden Privilege — design tokens
-   Ported from crm-apique styles.css :root (teal + gold ramps, ink, radius, motion).
-   shadcn HSL vars below point at those brand values so every ui/* component is on-brand.
+   Palette = the Resique brand (R.017, sampled from the official lockup): navy #211A5A carries the colour bands and
+   headings, green #71BD41 is the brand accent (decorative; green-700 #3E8A1E is the text/fill-safe step), gold is
+   reward-only. Ink / radius / motion scale inherited from crm-apique styles.css :root. shadcn HSL vars below point at
+   these values so every ui/* component is on-brand.
    --------------------------------------------------------------------------- */
 :root {
-  --teal: #2E8577; --teal-700: #0E5249; --teal-600: #256B61; --teal-500: #14695E;
-  --teal-200: #7EC5BB; --teal-100: #D6EDE8; --teal-050: #EAF6F3;
+  --navy: #211A5A; --navy-700: #211A5A; --navy-600: #262167; --navy-500: #2E2A7A; --navy-800: #15113F; --navy-900: #0D0A29;
+  --navy-200: #9FA6D6; --navy-100: #DCDFF0; --navy-050: #EEF0F8;
+  --green: #71BD41; --green-700: #3E8A1E; --green-600: #56A02A; --green-200: #B7E094; --green-100: #DFF2CF; --green-050: #F1F9EA; --green-ink: #17330A;
   --gold: #D4A04E; --gold-100: #F6E8CC; --gold-600: #C8941B; --gold-deep: #B08800; --gold-ink: #3A2A0A;
   --ink: #1E2A2A; --ink-2: #445050; --ink-3: #6F7878; --ink-4: #9AA0A0;
   --line: #E2E5E8; --line-2: #EEF0F2; --bg: #F8F9FA; --surface: #FFFFFF; --surface-2: #F4F6F8;
   --radius-sm: 4px; --radius: 6px; --radius-lg: 10px;
   --ease-out: cubic-bezier(.23, 1, .32, 1); --dur-fast: 140ms; --dur-base: 180ms; --dur-slow: 220ms;
+  /* paper grain + dot / plus tiles for the section backgrounds (data URIs, no network) */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M48 42v12M42 48h12' stroke='%231E2A2A' stroke-opacity='.10' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
 
   /* shadcn semantic (HSL triplets) */
   --background: 210 17% 98%;          /* #F8F9FA */
@@ -23,10 +29,10 @@
   --card-foreground: 180 17% 14%;
   --popover: 0 0% 100%;
   --popover-foreground: 180 17% 14%;
-  --primary: 168 68% 24%;             /* #14695E */
+  --primary: 102 64% 33%;             /* #3E8A1E green-700 */
   --primary-foreground: 0 0% 100%;
-  --secondary: 162 35% 94%;           /* #EAF6F3 */
-  --secondary-foreground: 172 71% 19%;
+  --secondary: 92 56% 95%;            /* #F1F9EA green-50 */
+  --secondary-foreground: 102 64% 33%;
   --muted: 210 17% 96%;               /* #F4F6F8 */
   --muted-foreground: 180 4% 45%;     /* #6F7878 */
   --accent: 40 62% 88%;               /* #F6E8CC */
@@ -35,7 +41,7 @@
   --destructive-foreground: 0 0% 100%;
   --border: 210 12% 90%;              /* #E2E5E8 */
   --input: 210 12% 90%;
-  --ring: 172 49% 35%;                /* #2E8577 */
+  --ring: 247 55% 23%;                /* #211A5A navy */
   --radius: 0.5rem;
 }
 
@@ -52,6 +58,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   html { scroll-behavior: auto; }
+  /* nothing stays hidden or posed when motion is off */
+  [data-reveal="out"] { opacity: 1 !important; transform: none !important; }
+  .deck-slot { animation: none !important; }
 }
 
 /* Press feedback on EVERY interactive element (Lurd rule 2, 7 Sep 2026): zero-specificity `:where` so component
@@ -64,12 +73,16 @@ body {
 /* Component-layer classes so page-level utilities (e.g. pt-36 on the hook section) still win. */
 @layer components {
   .t-code { @apply font-code tabular-nums tracking-[0.02em]; }
+  /* Display figures (tier %, poin, prices ≥ 20px): Satoshi, tabular + lining, tight (Lurd, 7 Sep: "numbers in the card on tier section"). */
+  .t-fig { font-family: Satoshi, "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.02em; }
+  .t-fig-black { font-weight: 900; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
      .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
-  .t-eyebrow { @apply text-[13px] font-semibold text-teal-700; }
+  .t-eyebrow { @apply text-[13px] font-semibold text-navy-700; }
   .t-display { @apply font-extrabold tracking-[-0.03em] leading-[1.04]; font-size: clamp(36px, 7vw, 64px); }
   .t-h1 { @apply font-extrabold tracking-[-0.02em] leading-[1.1]; font-size: clamp(26px, 4vw, 40px); }
   .t-h2 { @apply font-extrabold tracking-[-0.02em] leading-tight; font-size: clamp(24px, 3vw, 32px); }
+  /* numbers inside prose keep the body face, tabular so columns line up */
   .t-num { font-variant-numeric: tabular-nums; }
 
   /* Sections: full-viewport storytelling on desktop (pitch-deck mode), natural flow on mobile. */
@@ -77,11 +90,21 @@ body {
   .section { @apply py-14 sm:py-20 lg:py-24 scroll-mt-20 sm:scroll-mt-24; }
   .section-deck { @apply lg:min-h-[92vh] lg:flex lg:flex-col lg:justify-center; }
 
+  /* Section textures (Lurd, 7 Sep: "not too clean but not crowded"): one texture per section, on a pseudo-element
+     behind the content. Grain on paper, a dot field on the tier section, plus marks on the klasemen. No gradients. */
+  .tex { position: relative; isolation: isolate; }
+  .tex::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .tex-grain::before { background-image: var(--grain); background-size: 160px 160px; opacity: .05; }
+  .tex-dots::before { background-image: radial-gradient(circle, rgba(33, 26, 90, .09) 1px, transparent 1.3px); background-size: 24px 24px; mask-image: linear-gradient(90deg, transparent 40%, #000 100%); -webkit-mask-image: linear-gradient(90deg, transparent 40%, #000 100%); }
+  .tex-plus::before { background-image: var(--plus); background-size: 96px 96px; mask-image: linear-gradient(225deg, #000 0, #000 30%, transparent 62%); -webkit-mask-image: linear-gradient(225deg, #000 0, #000 30%, transparent 62%); }
+  /* solid skewed colour band behind one object of the section (hook price card, sale title, hero deck) */
+  .band { position: absolute; z-index: -1; pointer-events: none; transform: skewY(-8deg); }
+
   /* Hover motion (Lurd, 4 Sep): pointer devices only; transform/opacity/shadow only — never layout. */
   .lift { transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out), background-color var(--dur-slow) var(--ease-out); }
   .slide { transition: transform var(--dur-slow) var(--ease-out), background-color var(--dur-slow) var(--ease-out); }
   @media (hover: hover) {
-    .lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(14, 82, 73, .10), 0 1px 3px rgba(20, 30, 30, .05); }
+    .lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(33, 26, 90, .12), 0 1px 3px rgba(20, 30, 30, .05); }
     .slide:hover { transform: translateX(4px); }
   }
   /* underline grows from the left (nav links, text CTAs) */
@@ -89,34 +112,97 @@ body {
   .u-slide::after { content: ''; position: absolute; left: var(--u-inset, 0); right: var(--u-inset, 0); bottom: var(--u-bottom, 0); height: 2px; border-radius: 2px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--dur-base) var(--ease-out); }
   .u-slide:hover::after, .u-slide:focus-visible::after { transform: scaleX(1); }
   /* Title highlighter: the last word gets a marker band that draws in from the left once the title is in view.
-     Gold on paper/white, translucent white on the teal band; hook h1 keeps its teal word on top. */
+     Gold on paper/white, brand green (translucent) on the navy bands; hook h1 keeps its navy word on top. */
   .mark { position: relative; display: inline-block; isolation: isolate; }
   .mark::before { content: ''; position: absolute; z-index: -1; left: -0.1em; right: -0.12em; top: 0.52em; bottom: -0.02em; border-radius: 3px; background: var(--mark, #F6E8CC); transform: scaleX(0) rotate(-1.5deg); transform-origin: left center; transition: transform 560ms var(--ease-out) 160ms; }
-  .mark-light { --mark: rgba(255, 255, 255, .22); }
+  .mark-light { --mark: rgba(113, 189, 65, .42); }
+  .mark-green { --mark: #DFF2CF; }
   [data-reveal="in"] .mark::before { transform: scaleX(1) rotate(-1.5deg); }
+
+  /* Entrance with scale for card lists (privilege blocks, tier cards): attribute selector beats the Reveal utilities. */
+  .reveal-pop[data-reveal="out"] { transform: translateY(14px) scale(.96); }
+  .reveal-pop[data-reveal="in"] { transform: none; }
+  .reveal-pop[data-reveal="out"] .chip { transform: rotate(-14deg) scale(.7); opacity: 0; }
+  .reveal-pop[data-reveal="in"] .chip { transform: none; opacity: 1; transition: transform 480ms cubic-bezier(.34, 1.56, .64, 1) 120ms, opacity 200ms; }
+
+  /* Card effects: a tint that fades in and a light sweep, both on pseudo-elements so the surface itself stays static. */
+  .card-fx { position: relative; isolation: isolate; overflow: hidden; }
+  .card-fx::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--tint, var(--green-050)); opacity: 0; transition: opacity 260ms var(--ease-out); }
+  .card-fx::after { content: ''; position: absolute; top: -40%; bottom: -40%; left: -30%; width: 35%; background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .28), transparent); transform: translateX(-120%) rotate(12deg); opacity: 0; pointer-events: none; }
+  @keyframes sweep { 0% { transform: translateX(-120%) rotate(12deg); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateX(480%) rotate(12deg); opacity: 0; } }
+  @media (hover: hover) {
+    .card-fx:hover::before { opacity: 1; }
+    .card-fx.sweep:hover::after { animation: sweep 700ms var(--ease-out) 1; }
+  }
+  /* touch gets the sweep on scroll-in instead */
+  .card-fx.sweep[data-reveal="in"]::after { animation: sweep 900ms var(--ease-out) 320ms 1; }
 
   /* Privilege blocks: bolder lift; the icon chip springs, the figure nudges. */
   .lift-lg { transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out), border-color 260ms var(--ease-out); }
   .lift-lg .chip { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1); }
   .lift-lg .fig { transition: transform 260ms var(--ease-out); }
   @media (hover: hover) {
-    .lift-lg:hover { transform: translateY(-6px) scale(1.015); box-shadow: 0 18px 36px rgba(14, 82, 73, .16), 0 2px 6px rgba(20, 30, 30, .06); }
+    .lift-lg:hover { transform: translateY(-6px) scale(1.015); box-shadow: 0 18px 36px rgba(33, 26, 90, .16), 0 2px 6px rgba(20, 30, 30, .06); }
     .lift-lg:hover .chip { transform: rotate(-8deg) scale(1.12); }
     .lift-lg:hover .fig { transform: translateX(3px); }
   }
+
+  /* Tier cards: accent bar draws in, badge springs, tint from the tier colour; Ultimate's badge idles. */
+  .tier-card { --tint: color-mix(in srgb, var(--tier) 8%, #fff); }
+  .tier-card .bar { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--tier); transform: scaleX(0); transform-origin: left; transition: transform 260ms var(--ease-out); }
+  .tier-card .badge { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1); }
+  @media (hover: hover) {
+    .tier-card:hover .bar { transform: scaleX(1); }
+    .tier-card:hover .badge { transform: rotate(-6deg) scale(1.12); }
+    .tier-card:hover { border-color: var(--tier); }
+  }
+  @media (hover: none) {
+    .tier-card:active .bar, .tier-card[data-reveal="in"] .bar { transform: scaleX(1); }
+  }
+  @keyframes float-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .float-6 { animation: float-6 5s ease-in-out infinite; }
+
+  /* Hero prize deck: 4 photo cards fanned. The slot floats (translateY only), the card holds the pose + hover, so
+     the idle animation never fights the pose transform. Cards deal in from a stack once the deck is in view. */
+  .deck { position: relative; }
+  .deck-slot { position: absolute; left: 0; bottom: 0; width: 52%; animation: deck-float 6s ease-in-out infinite; animation-delay: var(--dd, 0s); will-change: transform; }
+  .deck-card { transform: translate(var(--dx, 0), var(--dy, 0)) rotate(var(--dr, 0)) scale(var(--ds, 1)); transition: transform 520ms var(--ease-out), opacity 420ms var(--ease-out); }
+  .deck[data-deal="out"] .deck-card { transform: translate(40%, 28px) rotate(0) scale(.92); opacity: 0; }
+  .deck[data-deal="out"] .deck-slot { animation: none; }
+  @keyframes deck-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @media (hover: hover) {
+    .deck:hover .deck-slot { animation-play-state: paused; }
+    .deck:hover .deck-card[data-front] { transform: translate(var(--dx, 0), calc(var(--dy, 0) - 8px)) rotate(0) scale(var(--ds, 1)); }
+    .deck:hover .deck-card:not([data-front]) { transform: translate(calc(var(--dx, 0) + 4%), var(--dy, 0)) rotate(calc(var(--dr, 0) * 1.4)) scale(var(--ds, 1)); }
+  }
+  .deck:active .deck-card[data-front] { transform: translate(var(--dx, 0), calc(var(--dy, 0) - 8px)) rotate(0) scale(var(--ds, 1)); }
+  /* doodle drifts very slowly behind the band */
+  @keyframes doodle-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-10px, 6px); } }
+  .doodle-drift { animation: doodle-drift 28s ease-in-out infinite; }
 
   /* CTA band: step chips fill white on hover; the RMC card preview rests tilted and straightens on hover. */
   .step-chip { transition: background-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
   .tilt { transform: rotate(-3deg); transition: transform 420ms var(--ease-out); will-change: transform; }
   .tilt-back { transform: rotate(4deg) translate(10px, 8px); transition: transform 420ms var(--ease-out); }
   @media (hover: hover) {
-    .step-chip:hover { background: #fff; color: var(--teal-700); transform: translateY(-2px); }
+    .step-chip:hover { background: #fff; color: var(--navy-700); transform: translateY(-2px); }
     .tilt-wrap:hover .tilt { transform: rotate(0deg) translateY(-6px); }
     .tilt-wrap:hover .tilt-back { transform: rotate(7deg) translate(18px, 14px); }
   }
   /* trailing arrow nudges with the hover */
   .arrow-nudge svg:last-child { transition: transform var(--dur-base) var(--ease-out); }
   .arrow-nudge:hover svg:last-child { transform: translateX(3px); }
+
+  /* Header: the utility row slides away once the page scrolls (transform only, no height animation). */
+  .site-header { transition: transform 220ms var(--ease-out); }
+  .site-header [data-utility] { transition: opacity 180ms var(--ease-out); }
+  @media (min-width: 1024px) {
+    .site-header[data-scrolled] { transform: translateY(-40px); }
+    .site-header[data-scrolled] [data-utility] { opacity: 0; pointer-events: none; }
+  }
+  /* mobile drawer: panel slides down a touch, links stagger in from the left */
+  .drawer-link { transition: transform 260ms var(--ease-out), opacity 260ms var(--ease-out), background-color var(--dur-slow) var(--ease-out); transition-delay: var(--i, 0ms); }
+  [data-open="false"] .drawer-link { transform: translateX(-6px); opacity: 0; transition-delay: 0ms; }
 
   /* Press states for the motion helpers (after the hover blocks so press beats hover on desktop, and the only
      motion on touch devices). Mobile gets a smaller lift on press instead of the hover lift. */
@@ -126,16 +212,17 @@ body {
     .lift-lg:active { transform: translateY(-3px) scale(.99); }
     .lift-lg:active .chip { transform: rotate(-8deg) scale(1.1); }
     .slide:active { transform: translateX(3px); }
-    .step-chip:active { background: #fff; color: var(--teal-700); }
+    .step-chip:active { background: #fff; color: var(--navy-700); }
     .u-slide:active::after { transform: scaleX(1); }
     .arrow-nudge:active svg:last-child { transform: translateX(3px); }
+    .card-fx:active::before { opacity: 1; }
   }
   /* image zoom inside a hovered/pressed card */
   .zoom-img { transition: transform 420ms var(--ease-out); }
   .group:hover .zoom-img, .group:active .zoom-img { transform: scale(1.05); }
 }
 
-/* Marquee (prize strip) */
+/* Marquee (prize ticker) */
 .marquee { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
 .marquee-track { @apply flex w-max animate-marquee gap-4 will-change-transform; }
@@ -143,11 +230,11 @@ body {
 /* Gold = reward only. Solid colours; gradient text / radial "orb" gradients were AI tells. */
 .gold-gradient { background: #D4A04E; }
 .gold-text { color: #8A6A00; }
-.teal-gradient { background: #0E5249; }
+.navy-gradient { background: #211A5A; }
 .strike { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgb(155 44 44 / .75); }
 
 /* Focus ring — visible, on-brand */
-:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; border-radius: 4px; }
 
 /* Utility: hide scrollbar for chip rails */
 .no-scrollbar::-webkit-scrollbar { display: none; }

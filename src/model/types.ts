@@ -10,7 +10,10 @@ export const KOTA_DIGIT: Record<Kota, number> = { Jakarta: 1, Palembang: 2, Jamb
 export interface Tier {
   key: string
   name: string
+  /** swatch: badge fill, accent bar */
   sw: string
+  /** text-safe colour on white for the tier's figure (≥ 3:1 at 36px bold); falls back to sw */
+  fg?: string
   /** 6-month spend band (Rp), min inclusive; max null = no ceiling */
   min: number
   max: number | null
@@ -62,7 +65,8 @@ export interface Config {
     klasemenSub: string
     snapDesktop: boolean
   }
-  assets: { heroPrizes: HeroPrize[]; logo: string; qrisImage: string }
+  /** logo = colour lockup on light surfaces, logoWhite = all-white lockup on navy, mark = the cart alone (small slots) */
+  assets: { heroPrizes: HeroPrize[]; logo: string; logoWhite: string; mark: string; qrisImage: string }
   benefits: Benefit[]
   tiers: Tier[]
   mitraFloorDiscount: number

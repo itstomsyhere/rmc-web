@@ -57,7 +57,7 @@ export function KampanyeSection() {
                   {kl.draft.showPic && <TD>{r.pic}</TD>}
                   <TD className="t-num text-ink-3">{displayPhone(r.phone)}</TD>
                   <TD className="t-num text-right">{r.orders}</TD>
-                  <TD className="t-num text-right font-bold text-teal-700">{rupiah(r.spend)}</TD>
+                  <TD className="t-num text-right font-bold text-navy-700">{rupiah(r.spend)}</TD>
                 </TR>
               ))}
             </TBody>
@@ -70,7 +70,7 @@ export function KampanyeSection() {
         <SettingsCard title="Pencocokan akun" desc="Ambang kemiripan nama laundry/PIC saat pendaftaran tanpa RSL (jalur 3).">
           <Field label="Ambang fuzzy" htmlFor="match-th" hint={`${Math.round(match.draft.fuzzyThreshold * 100)}%, di bawah ini akun jadi lead, di atasnya masuk antrean Klaim Akun.`}>
             <div className="flex items-center gap-3">
-              <input id="match-th" type="range" min={0.5} max={0.95} step={0.05} value={match.draft.fuzzyThreshold} className="h-2 flex-1 cursor-pointer accent-teal-500" onChange={e => match.patch({ fuzzyThreshold: Number(e.target.value) })} />
+              <input id="match-th" type="range" min={0.5} max={0.95} step={0.05} value={match.draft.fuzzyThreshold} className="h-2 flex-1 cursor-pointer accent-navy-500" onChange={e => match.patch({ fuzzyThreshold: Number(e.target.value) })} />
               <NumInput value={match.draft.fuzzyThreshold} step={0.05} min={0.5} max={0.95} aria-label="Ambang fuzzy" className="h-10 w-24" onChange={n => match.patch({ fuzzyThreshold: Math.min(0.95, Math.max(0.5, n)) })} />
             </div>
           </Field>

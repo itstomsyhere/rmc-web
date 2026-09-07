@@ -40,7 +40,7 @@ function BenefitsCard() {
             <li key={b.id} className="grid gap-3 py-4 first:pt-0 last:pb-0 md:grid-cols-[150px_1fr_auto] md:items-start">
               <Field label="Ikon" htmlFor={`bn-icon-${b.id}`}>
                 <Select value={b.icon} onValueChange={v => update(b.id, { icon: v })}>
-                  <SelectTrigger id={`bn-icon-${b.id}`} className="h-9 text-[13px]"><span className="flex items-center gap-2"><Icon className="h-4 w-4 text-teal-600" strokeWidth={1.6} /><SelectValue /></span></SelectTrigger>
+                  <SelectTrigger id={`bn-icon-${b.id}`} className="h-9 text-[13px]"><span className="flex items-center gap-2"><Icon className="h-4 w-4 text-navy-600" strokeWidth={1.6} /><SelectValue /></span></SelectTrigger>
                   <SelectContent>{ICON_NAMES.map(n => { const I = BENEFIT_ICONS[n]; return <SelectItem key={n} value={n}><span className="flex items-center gap-2"><I className="h-4 w-4" strokeWidth={1.6} />{n}</span></SelectItem> })}</SelectContent>
                 </Select>
               </Field>
@@ -68,7 +68,7 @@ function TiersCard() {
   const set = d.setDraft
   const update = (key: string, p: Partial<Tier>) => set(tiers.map(t => (t.key === key ? { ...t, ...p } : t)))
   const gaps = tiers.map((t, i) => (i > 0 && (tiers[i - 1].max ?? -1) + 1 !== t.min ? i : -1)).filter(i => i >= 0)
-  const add = () => { const last = tiers[tiers.length - 1]; set([...tiers, { key: `tier-${uid()}`, name: 'Tier baru', sw: '#2E8577', min: last?.max != null ? last.max + 1 : 0, max: null, perMonth: '', discount: 0, freeDelivMin: null, consult: 0, benefitCopy: '' }]) }
+  const add = () => { const last = tiers[tiers.length - 1]; set([...tiers, { key: `tier-${uid()}`, name: 'Tier baru', sw: '#3E8A1E', min: last?.max != null ? last.max + 1 : 0, max: null, perMonth: '', discount: 0, freeDelivMin: null, consult: 0, benefitCopy: '' }]) }
   return (
     <SettingsCard title="Tier RMC" desc="Band belanja 6 bulan (Rp). Batas atas tier harus sama dengan batas bawah tier berikutnya." actions={<Button type="button" variant="outline" size="sm" onClick={add}><Plus strokeWidth={1.6} />Tambah tier</Button>}>
       {gaps.length > 0 && (
@@ -87,7 +87,7 @@ function TiersCard() {
                 <TD><Input value={t.name} aria-label="Nama tier" className={`${cell} w-32`} onChange={e => update(t.key, { name: e.target.value })} /></TD>
                 <TD>
                   <label className="flex items-center gap-1.5">
-                    <input type="color" value={/^#[0-9a-f]{6}$/i.test(t.sw) ? t.sw : '#2E8577'} aria-label="Warna tier" className="h-9 w-9 cursor-pointer rounded-md border border-line bg-white p-0.5" onChange={e => update(t.key, { sw: e.target.value })} />
+                    <input type="color" value={/^#[0-9a-f]{6}$/i.test(t.sw) ? t.sw : '#3E8A1E'} aria-label="Warna tier" className="h-9 w-9 cursor-pointer rounded-md border border-line bg-white p-0.5" onChange={e => update(t.key, { sw: e.target.value })} />
                     <Input value={t.sw} aria-label="Kode warna" className={`${cell} w-24 t-code`} onChange={e => update(t.key, { sw: e.target.value })} />
                   </label>
                 </TD>

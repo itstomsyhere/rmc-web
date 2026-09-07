@@ -185,7 +185,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
 
           <div className="mt-5 text-center">
             <p className="t-eyebrow">Total pembayaran</p>
-            <p className="t-num mt-1 text-[34px] font-extrabold leading-none tracking-tight text-ink">{rupiah(live.total)}</p>
+            <p className="t-code mt-1 text-[34px] font-extrabold leading-none tracking-tight text-ink">{rupiah(live.total)}</p>
             {expired ? (
               <p data-qr-countdown className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-danger-50 px-3 py-1 text-[13px] font-bold text-danger">
                 <Clock className="h-3.5 w-3.5" strokeWidth={1.6} /> QR kedaluwarsa
@@ -195,7 +195,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
                 <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.6} /> Bukti sudah diunggah
               </p>
             ) : (
-              <p data-qr-countdown className={cn('t-num mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-bold', remainingSec <= 60 ? 'bg-danger-50 text-danger' : 'bg-teal-50 text-teal-700')}>
+              <p data-qr-countdown className={cn('t-code mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-bold', remainingSec <= 60 ? 'bg-danger-50 text-danger' : 'bg-navy-50 text-navy-700')}>
                 <Clock className="h-3.5 w-3.5" strokeWidth={1.6} /> QR berlaku {mmss(remainingSec)}
               </p>
             )}
@@ -220,7 +220,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
                 <p className="mb-2 text-center text-[13px] font-semibold text-ink-2">Setelah bayar, unggah bukti</p>
                 <Button data-upload-btn size="xl" variant="gold" className="w-full" disabled={!canUpload} onClick={() => fileRef.current?.click()} aria-describedby="upload-hint">
                   <Upload className="h-4 w-4" strokeWidth={1.6} />
-                  {busy ? 'Memproses…' : waitLeft > 0 ? <>Unggah bukti pembayaran <span className="t-num text-[12px] font-bold opacity-70">· Aktif dalam {waitLeft} dtk</span></> : 'Unggah bukti pembayaran'}
+                  {busy ? 'Memproses…' : waitLeft > 0 ? <>Unggah bukti pembayaran <span className="t-code text-[12px] font-bold opacity-70">· Aktif dalam {waitLeft} dtk</span></> : 'Unggah bukti pembayaran'}
                 </Button>
                 <input ref={fileRef} type="file" accept="image/*,.pdf" className="sr-only" tabIndex={-1} onChange={onFile} aria-hidden />
                 <p id="upload-hint" className="mt-2 text-center text-[12px] text-ink-4">JPG, PNG, atau PDF, maks. 2 MB. Admin Resique cek buktinya setelah diunggah.</p>

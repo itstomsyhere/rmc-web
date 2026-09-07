@@ -54,6 +54,14 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   out.assets = { ...out.assets, heroPrizes: (out.assets.heroPrizes || []).map(h => isSeedSvg(h.image) ? { ...h, image: jpg(h.image) } : h) }
   out.prizes = out.prizes.map(p => isSeedSvg(p.image) ? { ...p, image: jpg(p.image) } : p)
   out.items = (out.items || []).map(it => { if (!isSeedSvg(it.image)) return it; const seed = DEFAULT_CONFIG.items.find(d => d.id === it.id); return { ...it, image: seed ? seed.image : jpg(it.image) } })
+  // R.017: the placeholder "R" monogram became the real Resique lockup (colour / white / mark); uploads (data:) untouched
+  const OLD_LOGO = '/img/resique-logo.svg'
+  if (!out.assets.logo || out.assets.logo === OLD_LOGO) out.assets = { ...out.assets, logo: DEFAULT_CONFIG.assets.logo }
+  if (!out.assets.logoWhite) out.assets = { ...out.assets, logoWhite: DEFAULT_CONFIG.assets.logoWhite }
+  if (!out.assets.mark) out.assets = { ...out.assets, mark: DEFAULT_CONFIG.assets.mark }
+  // R.017: tier swatches left the teal ramp; a stored seed swatch follows, and every tier gets its text-safe `fg`
+  const OLD_SW: Record<string, string> = { beginner: '#5fb4a2', intermediate: '#2e8577' }
+  out.tiers = out.tiers.map(t => { const seed = DEFAULT_CONFIG.tiers.find(d => d.key === t.key); const sw = seed && OLD_SW[t.key] === t.sw ? seed.sw : t.sw; return { ...t, sw, fg: t.fg || (seed && sw === seed.sw ? seed.fg : undefined) } })
   return out
 }
 
