@@ -115,7 +115,7 @@ export function QrisSheet({ order, open, onOpenChange }: { order: Order; open: b
       ctx.font = '600 22px "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif'
       ctx.fillText(cfg.payment.qrisMerchant, size / 2, size + 100)
       ctx.fillStyle = '#6F7878'
-      ctx.font = '500 24px "Plus Jakarta Sans", Satoshi, "Helvetica Neue", Helvetica, sans-serif'
+      ctx.font = '600 24px "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif'
       ctx.fillText(live.id, size / 2, size + 150)
       const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'))
       if (!blob) throw new Error('Gagal membuat gambar QR')

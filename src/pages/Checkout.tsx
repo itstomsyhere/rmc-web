@@ -233,13 +233,13 @@ export function CheckoutPage() {
           </div>
 
           {/* Submit: fixed bottom bar on mobile (safe-area aware), sticky at the bottom of the form column on desktop (Lurd, 7 Sep) */}
-          <div data-pay-bar className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:sticky lg:inset-x-auto lg:bottom-4 lg:mt-10 lg:rounded-xl lg:border lg:bg-white/95 lg:p-4 lg:shadow-3">
+          <div data-pay-bar className="bar-in fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/90 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:sticky lg:inset-x-auto lg:bottom-4 lg:mt-10 lg:rounded-xl lg:border lg:bg-white/95 lg:p-4 lg:shadow-3">
             <div className="mx-auto flex max-w-xl items-center gap-3">
               <div className="min-w-0 flex-1 lg:hidden">
                 <p className="text-[11px] font-semibold text-ink-3"><span className="t-code">{count}</span> item · hemat <span className="t-code gold-text font-bold">{rupiah(savings)}</span></p>
                 <p className="t-code truncate text-[17px] font-extrabold leading-tight text-ink">{rupiah(total)}</p>
               </div>
-              <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="shrink-0 lg:w-full">Bayar {rupiah(total)}</Button>
+              <Button type="submit" size="xl" variant="gold" disabled={isSubmitting} className="bar-pop shrink-0 lg:w-full">Bayar {rupiah(total)}</Button>
             </div>
           </div>
         </form>

@@ -38,12 +38,13 @@ export default {
         card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
       },
       fontFamily: {
-        // Lurd's font rule (7 Sep 2026): Plus Jakarta Sans → Satoshi → Helvetica → Futura. Never JetBrains Mono.
-        sans: ['"Plus Jakarta Sans"', 'Satoshi', '"Helvetica Neue"', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
-        // codes / ids / numerals — Satoshi with tabular figures via .t-code (no monospace anywhere)
-        code: ['Satoshi', '"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
+        // Lurd's font rule (7–8 Sep 2026): Plus Jakarta Sans everywhere, Helvetica → Futura fallbacks. Never JetBrains Mono;
+        // Satoshi was dropped on 8 Sep (its tabular figures read as a mono to Lurd).
+        sans: ['"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
+        // codes / ids / numerals — the brand face with tabular figures via .t-code (no monospace anywhere)
+        code: ['"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
         // Tailwind preflight styles <code>/<kbd> with the mono key → point it at the same humanist stack
-        mono: ['Satoshi', '"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
+        mono: ['"Plus Jakarta Sans"', '"Helvetica Neue"', 'Helvetica', 'sans-serif'],
         // Futura is macOS-only; Jost is the free stand-in (NOT loaded until a heading uses it)
         display: ['Futura', 'Jost', '"Century Gothic"', '"Plus Jakarta Sans"', 'sans-serif'],
       },

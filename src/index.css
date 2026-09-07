@@ -72,12 +72,11 @@ body {
 
 /* Component-layer classes so page-level utilities (e.g. pt-36 on the hook section) still win. */
 @layer components {
-  .t-code { @apply font-code tabular-nums tracking-[0.02em]; }
-  /* Display figures (tier %, poin, prices ≥ 20px): Satoshi, tabular + lining, tight (Lurd, 7 Sep: "numbers in the card on tier section"). */
-  .t-fig { font-family: Satoshi, "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.02em; }
-  .t-fig-black { font-weight: 900; }
-  /* Lurd (7 Sep, night): the tier / privilege card figures go back to the brand face, extra-bold tabular */
-  .t-fig-sans { font-family: "Plus Jakarta Sans", Satoshi, "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+  .t-code { @apply font-code font-semibold tabular-nums; }
+  /* Display figures (tier %, poin, prices ≥ 20px): the brand face, extra-bold, tabular + lining, tight. Satoshi dropped 8 Sep. */
+  .t-fig { font-family: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.03em; }
+  .t-fig-black { font-weight: 800; }
+  .t-fig-sans { font-weight: 800; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
      .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
   .t-eyebrow { @apply text-[13px] font-semibold text-navy-700; }
@@ -116,9 +115,10 @@ body {
   /* Title highlighter: the last word gets a marker band that draws in from the left once the title is in view.
      Gold on paper/white, brand green (translucent) on the navy bands; hook h1 keeps its navy word on top. */
   .mark { position: relative; display: inline-block; isolation: isolate; }
-  .mark::before { content: ''; position: absolute; z-index: -1; left: -0.1em; right: -0.12em; top: 0.52em; bottom: -0.02em; border-radius: 3px; background: var(--mark, #F6E8CC); transform: scaleX(0) rotate(-1.5deg); transform-origin: left center; transition: transform 560ms var(--ease-out) 160ms; }
-  .mark-light { --mark: rgba(113, 189, 65, .42); }
-  .mark-green { --mark: #DFF2CF; }
+  .mark::before { content: ''; position: absolute; z-index: -1; left: -0.1em; right: -0.12em; top: 0.52em; bottom: -0.02em; border-radius: 3px; background: var(--mark, #EDD39A); transform: scaleX(0) rotate(-1.5deg); transform-origin: left center; transition: transform 560ms var(--ease-out) 160ms; }
+  /* on the navy bands: solid brand green under white text; on paper: gold-200 (gold-100 vanished on the gold band) */
+  .mark-light { --mark: rgba(113, 189, 65, .7); }
+  .mark-green { --mark: #B7E094; }
   [data-reveal="in"] .mark::before { transform: scaleX(1) rotate(-1.5deg); }
 
   /* Entrance with scale for card lists (privilege blocks, tier cards): attribute selector beats the Reveal utilities. */
@@ -166,6 +166,21 @@ body {
   @keyframes float-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   .float-6 { animation: float-6 5s ease-in-out infinite; }
 
+  /* Basket / pay bar: springs up from the edge, the checkout button pops once after it (Lurd, 8 Sep: "fun when appears") */
+  @keyframes bar-in { 0% { transform: translateY(130%) scale(.96); opacity: 0; } 55% { transform: translateY(-10px) scale(1.01); opacity: 1; } 75% { transform: translateY(4px) scale(1); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+  @keyframes bar-pop { 0%, 60% { transform: scale(1); } 75% { transform: scale(1.08) rotate(-2deg); } 90% { transform: scale(.98) rotate(1deg); } 100% { transform: scale(1); } }
+  .bar-in { animation: bar-in 640ms cubic-bezier(.22, 1, .36, 1) both; }
+  .bar-in .bar-pop { animation: bar-pop 900ms var(--ease-out) 200ms both; }
+
+  /* Tier rail on small screens: horizontal snap slider, the centred card scales up, the rest sit back */
+  @media (max-width: 1023px) {
+    .tier-rail { scroll-padding-inline: 1.25rem; -webkit-overflow-scrolling: touch; }
+    .tier-rail > li { transition: transform 360ms var(--ease-out), opacity 360ms var(--ease-out); transform: scale(.94); opacity: .78; }
+    .tier-rail > li[data-active="true"] { transform: scale(1); opacity: 1; }
+    .tier-rail > li[data-reveal="out"] { transform: translateY(14px) scale(.94); }
+  }
+  .tier-dot { transition: transform 260ms var(--ease-out), background-color 260ms var(--ease-out), width 260ms var(--ease-out); }
+
   /* Hook (Resique Turun Harga): words rise in on load, the price card rests tilted and floats, the sticker spins in. */
   @keyframes rise-in { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: translateY(0); } }
   .hook-word { animation: rise-in 520ms var(--ease-out) both; animation-delay: var(--i, 0ms); }
@@ -200,6 +215,8 @@ body {
     .deck:hover .deck-card:not([data-front]) { transform: translate(calc(var(--dx, 0) + 4%), var(--dy, 0)) rotate(calc(var(--dr, 0) * 1.4)) scale(var(--ds, 1)); }
   }
   .deck:active .deck-card[data-front] { transform: translate(var(--dx, 0), calc(var(--dy, 0) - 8px)) rotate(0) scale(var(--ds, 1)); }
+  /* doodles on small screens sit in the lower half (the headline reads clean), full mask only from md up */
+  @media (max-width: 767px) { svg[data-doodle] { mask-image: linear-gradient(180deg, transparent 0, transparent 34%, #000 58%, #000 100%) !important; -webkit-mask-image: linear-gradient(180deg, transparent 0, transparent 34%, #000 58%, #000 100%) !important; } }
   /* doodle drifts very slowly behind the band */
   @keyframes doodle-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-10px, 6px); } }
   .doodle-drift { animation: doodle-drift 28s ease-in-out infinite; }

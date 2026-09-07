@@ -7,7 +7,7 @@ Sibling docs: `DESIGN-CRM.md` / `DESIGN-UM.md` in `crm-apique` (internal tools).
 - **Voice:** warm, direct, Bahasa Indonesia. Headlines short; one idea per section.
 - **Palette (R.017, 7 Sep 2026, Lurd's call):** the Resique brand, sampled from the official lockup. **Navy** `#211A5A` (`navy-700`) carries the colour bands, headings and links; **green** `#71BD41` (`green`, the logo green) is the accent for marks, chips, icons, doodles — decorative only, it is 2.3:1 on white — and `green-700 #3E8A1E` (4.6:1 with white) is the action colour for primary buttons and green text; **gold** (`#D4A04E` / `#B08800`) strictly for prize / promo / rank emphasis. Ink ramp for text. Surfaces white / `bg #F8F9FA`. Footer `navy-900 #0D0A29`, never pure black. Tier figures use each tier's `fg` (text-safe ≥ 3:1 at 36px bold), not its swatch. The teal ramp is gone; there is no `teal` token.
 - **Logo:** the real Resique lockup (`public/img/resique-logo.png` colour, `resique-logo-white.png` on navy, `resique-mark.png` the cart alone, each with an `@2x`), transparent PNG cut from the files Resique shared on Drive. Exception to "logos stay SVG": no vector was supplied and auto-tracing a raster mark with a face would distort it. `srcSet2x()` in `lib/logo.ts` adds the 2x candidate; uploads (data URLs) get none.
-- **Type:** **Plus Jakarta Sans** (400–800). Divergence from CRM (Inter) is deliberate — this is a brand-facing surface and the PRD font. Codes / ids / numerals: Satoshi with tabular figures (`.t-code`), never a monospace (Lurd rule, 7 Sep 2026).
+- **Type:** **Plus Jakarta Sans** (400–800). Divergence from CRM (Inter) is deliberate — this is a brand-facing surface and the PRD font. Codes / ids / numerals: the same face with tabular figures (`.t-code` / `.t-fig`), never a monospace (Lurd rule, 7 Sep 2026); Satoshi was tried and dropped on 8 Sep (it read as a mono).
 - **Icons:** lucide-react at `strokeWidth 1.5–1.75` (thin, precise) — never 2+ except inside filled buttons.
 
 ## 2. Foundations (tailwind.config.ts ← crm styles.css :root)
@@ -28,7 +28,7 @@ Sibling docs: `DESIGN-CRM.md` / `DESIGN-UM.md` in `crm-apique` (internal tools).
 - `RadioCard` — big tappable option rows (registration yes/no, delivery mode, payment method).
 - `QtyStepper` — collapses to a "Tambah" pill at 0 (marketplace idiom).
 - `Price` — promo bold navy (`.t-fig`) + struck list price + gold `-NN%`.
-- Numerals: `.t-fig` (Satoshi 700/900, tabular + lining) for display figures ≥ 20px, `.t-code` (Satoshi 500/700) for codes / ids / small numbers in data rows, `.t-num` (PJS tabular) only for numbers inside prose.
+- Numerals: `.t-fig` (PJS 800, tabular + lining, tight) for display figures ≥ 20px, `.t-code` (PJS 600 tabular) for codes / ids / small numbers in data rows, `.t-num` (PJS tabular) for numbers inside prose.
 - `Reveal` / `useInView` / `useIsMobile` / `useFinePointer` in `lib/reveal.tsx`.
 - `SectionHead`, `EmptyState`, `Table*`, `Progress`, `Separator` in `ui/misc.tsx`.
 

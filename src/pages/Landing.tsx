@@ -126,19 +126,19 @@ function HookSection() {
             <div className="hook-card overflow-hidden rounded-xl bg-white shadow-3">
               <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
                 <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
-                <p className="t-code text-[13px] font-bold text-gold-700">sampai -{maxPct}%</p>
+                <p className="t-num text-[13px] font-extrabold text-gold-700">sampai -{maxPct}%</p>
               </div>
               {drops.slice(0, 1).map(d => (
                 <a key={d.id} href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="group relative block overflow-hidden" data-no-press>
                   <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[16/9] w-full object-cover" />
                   <span className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" aria-hidden />
                   <span className="absolute left-4 top-4 rounded-md bg-gold px-2.5 py-1 t-code text-[13px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
-                  <span className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
-                    <span className="min-w-0">
-                      <span className="block truncate text-[15px] font-bold">{d.name}</span>
-                      <span className="t-code block text-[13px] text-white/75"><span className="strike">{rupiah(d.realPrice)}</span></span>
+                  <span className="absolute inset-x-4 bottom-4 flex flex-col text-white">
+                    <span className="block truncate text-[15px] font-bold">{d.name}</span>
+                    <span className="mt-1 flex items-baseline gap-2">
+                      <span className="t-fig text-[24px] leading-none">{rupiah(d.promoPrice)}</span>
+                      <span className="t-num text-[13px] font-semibold text-white/75"><span className="strike">{rupiah(d.realPrice)}</span></span>
                     </span>
-                    <span className="t-code shrink-0 text-[20px] font-extrabold leading-none">{rupiah(d.promoPrice)}</span>
                   </span>
                 </a>
               ))}
@@ -149,8 +149,8 @@ function HookSection() {
                       <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-md bg-surface-2"><img src={d.image} alt="" width={800} height={600} className="zoom-img h-full w-full object-cover" /></span>
                       <span className="min-w-0">
                         <span className="block truncate text-[13px] font-semibold text-ink">{d.name}</span>
-                        <span className="t-code block text-[13px] text-ink-2"><span className="strike text-ink-3">{rupiah(d.realPrice)}</span> <strong className="text-green-700">{rupiah(d.promoPrice)}</strong></span>
-                        <span className="t-code mt-1 inline-block rounded-md bg-gold-100 px-1.5 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span>
+                        <span className="t-fig mt-0.5 block text-[16px] leading-tight text-green-700">{rupiah(d.promoPrice)}</span>
+                        <span className="mt-0.5 flex items-center gap-1.5"><span className="t-num strike text-[12px] font-semibold text-ink-3">{rupiah(d.realPrice)}</span><span className="t-num inline-block rounded-md bg-gold-100 px-1.5 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span></span>
                       </span>
                     </a>
                   </li>
@@ -195,7 +195,20 @@ function HeroSection() {
         </div>
       </div>
       {assets.heroPrizes.length > 0 && (
-        <div className="marquee relative z-10 mt-10 border-t border-white/10 pt-4 lg:mt-12" role="region" aria-label="Hadiah yang bisa ditukar">
+        <div className="container relative z-10 mt-12 hidden lg:block">
+          {/* desktop: a still rail of every prize (the running strip looked awkward at full width) */}
+          <ul className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-5" aria-label="Semua hadiah yang bisa ditukar">
+            {assets.heroPrizes.map((p, i) => (
+              <Reveal as="li" key={p.id} delay={i * 50} className="inline-flex items-center gap-2.5 rounded-lg bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[13px] font-semibold text-white transition-[transform,background-color] duration-base ease-out hover:-translate-y-0.5 hover:bg-white/15">
+                <img src={p.image} alt="" width={800} height={600} className="h-9 w-9 rounded-md object-cover" loading="eager" decoding="async" />
+                {p.label}
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      )}
+      {assets.heroPrizes.length > 0 && (
+        <div className="marquee relative z-10 mt-10 border-t border-white/10 pt-4 lg:hidden" role="region" aria-label="Hadiah yang bisa ditukar">
           <ul className="marquee-track px-5" style={{ animationDuration: `${Math.max(30, assets.heroPrizes.length * 6)}s` }}>
             {strip.map((p, i) => (
               <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="inline-flex shrink-0 items-center gap-2 rounded-md bg-white/10 py-1.5 pl-1.5 pr-3 text-[13px] font-semibold text-white transition-transform duration-base ease-out hover:-translate-y-0.5">
@@ -297,6 +310,31 @@ function BenefitSection() {
 /* 4, Tier ladder: one markup for every width. */
 function TierSection() {
   const cfg = useConfig(s => s.config)
+  const rail = React.useRef<HTMLOListElement>(null)
+  const [active, setActive] = React.useState(0)
+  // small screens: the card crossing the centre of the rail is the active one (scale + dot); once on reveal, nudge
+  // the rail so the slider affordance is obvious
+  React.useEffect(() => {
+    const el = rail.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const mq = window.matchMedia('(max-width: 1023px)')
+    if (!mq.matches) return
+    const items = [...el.querySelectorAll<HTMLElement>(':scope > li')]
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio >= 0.6) setActive(items.indexOf(e.target as HTMLElement)) })
+    }, { root: el, threshold: [0.6] })
+    items.forEach(li => io.observe(li))
+    let nudged = false
+    const hint = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || nudged) return
+      nudged = true
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      setTimeout(() => { el.scrollTo({ left: 40, behavior: 'smooth' }); setTimeout(() => el.scrollTo({ left: 0, behavior: 'smooth' }), 520) }, 700)
+    }, { threshold: 0.4 })
+    hint.observe(el)
+    return () => { io.disconnect(); hint.disconnect() }
+  }, [cfg.tiers.length])
+  const goTo = (i: number) => { const li = rail.current?.querySelectorAll<HTMLElement>(':scope > li')[i]; li?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }) }
   return (
     <section id="tier" className="tex tex-dots scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
       {/* a gold band leans behind the Ultimate column, a navy one behind the title */}
@@ -304,9 +342,14 @@ function TierSection() {
       <span aria-hidden className="band bg-navy-50" style={{ left: '-12%', top: '-10%', width: '38%', height: '42%' }} />
       <div className="container">
         <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} />
-        <ol className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 lg:gap-3" aria-label="Daftar tier RMC">
-          {cfg.tiers.map((t, i) => <TierCardV key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} />)}
+        <ol ref={rail} className="tier-rail no-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 lg:mx-0 lg:grid lg:grid-cols-6 lg:gap-3 lg:overflow-visible lg:px-0 lg:pb-0" aria-label="Daftar tier RMC">
+          {cfg.tiers.map((t, i) => <TierCardV key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} active={i === active} />)}
         </ol>
+        <div className="mt-2 flex items-center justify-center gap-1.5 lg:hidden" role="tablist" aria-label="Geser tier">
+          {cfg.tiers.map((t, i) => (
+            <button key={t.key} type="button" role="tab" aria-selected={i === active} aria-label={t.name} onClick={() => goTo(i)} className={cn('tier-dot h-2 rounded-full', i === active ? 'w-6' : 'w-2 bg-line')} style={i === active ? { background: t.sw } : undefined} />
+          ))}
+        </div>
         <div className="mt-6 flex max-w-2xl items-start gap-3 rounded-lg bg-green-50 p-4">
           <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md bg-white text-[13px] font-extrabold text-green-700">M</span>
           <p className="text-[15px] leading-relaxed text-ink-2">
@@ -321,13 +364,13 @@ function TierSection() {
    (crown on Ultimate), name + per-month, then four rows — diskon (big %), gratis ongkir, konsultasi, belanja 6 bulan —
    each with a check / cross mark and a hairline divider. A big faint tier number sits in the corner. Hover: lift,
    white tint, emblem springs, the bottom bar draws in; the % counts up on scroll-in. */
-function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }) {
+function TierCardV({ tier, idx, top, active }: { tier: Tier; idx: number; top: boolean; active?: boolean }) {
   const rows: { label: string; value: React.ReactNode; on: boolean }[] = [
     { label: 'Gratis ongkir', value: tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`, on: tier.freeDelivMin !== null },
     { label: 'Konsultasi bisnis', value: tier.consult ? `${tier.consult} sesi/bln` : '-', on: tier.consult > 0 },
   ]
   return (
-    <Reveal as="li" delay={idx * 60} className={cn('lift tier-card card-fx reveal-pop group relative flex flex-col overflow-hidden rounded-xl p-4 text-white', top && 'sweep ring-2 ring-gold ring-offset-2 ring-offset-white hover:shadow-gold')}
+    <Reveal as="li" delay={idx * 60} data-active={active ? 'true' : 'false'} className={cn('lift tier-card card-fx reveal-pop group relative flex w-[76%] shrink-0 snap-center flex-col overflow-hidden rounded-xl p-4 text-white sm:w-[44%] lg:w-auto', top && 'sweep ring-2 ring-gold ring-offset-2 ring-offset-white hover:shadow-gold')}
       style={{ '--tier': tier.sw, '--tint': 'rgba(255,255,255,.10)', background: tier.sw } as React.CSSProperties}>
       <span aria-hidden className="t-fig t-fig-black pointer-events-none absolute -bottom-3 -right-1 select-none text-[96px] leading-none text-white/10">{idx + 1}</span>
       <div className="tier-head relative flex items-start justify-between gap-2">
@@ -343,14 +386,14 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
         <CountPct value={tier.discount} className={cn('t-fig-sans', top ? 'text-gold' : 'text-white')} />
       </div>
       {rows.map(r => (
-        <div key={r.label} className="mt-3 flex items-start gap-2 border-t border-white/20 pt-3">
-          <span className={cn('mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full', r.on ? 'bg-white/20' : 'bg-white/10 text-white/50')} aria-hidden>
-            {r.on ? <Check className="h-3 w-3" strokeWidth={3} /> : <X className="h-3 w-3" strokeWidth={2.5} />}
-          </span>
+        <div key={r.label} className="mt-3 flex items-start justify-between gap-2 border-t border-white/20 pt-3">
           <div className="min-w-0">
             <p className="text-[11px] font-semibold text-white/75">{r.label}</p>
             <p className={cn('t-num text-[13px] font-bold', !r.on && 'text-white/60')}>{r.value}</p>
           </div>
+          <span className={cn('mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full', r.on ? 'bg-white/20' : 'bg-white/10 text-white/50')} aria-hidden>
+            {r.on ? <Check className="h-3 w-3" strokeWidth={3} /> : <X className="h-3 w-3" strokeWidth={2.5} />}
+          </span>
         </div>
       ))}
       {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
@@ -471,8 +514,8 @@ function GoldenSaleSection() {
   const items = cfg.items.filter(i => i.active)
   return (
     <section id="golden-sale" className="tex tex-grain scroll-mt-20 overflow-hidden py-14 lg:py-24">
-      <span aria-hidden className="band bg-gold-50" style={{ top: '-6%', left: '-14%', width: '48%', height: '48%' }} />
-      <span aria-hidden className="band bg-green-50" style={{ right: '-12%', bottom: '-20%', width: '36%', height: '50%' }} />
+      <span aria-hidden className="band bg-gold-50" style={{ top: '-6%', right: '-14%', width: '44%', height: '48%' }} />
+      <span aria-hidden className="band bg-green-50" style={{ left: '-12%', bottom: '-20%', width: '36%', height: '50%' }} />
       <Rings className="right-[6%] top-[40px] h-[260px] w-[260px] text-gold-200" />
       <div className="container">
         <SectionTitle title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
@@ -530,13 +573,13 @@ function BasketBar() {
   const show = count > 0
   return (
     <>
-      <div data-basket-bar aria-hidden={!show} className={cn('fixed inset-x-0 bottom-0 z-30 px-3 pb-[max(12px,env(safe-area-inset-bottom))] transition-[transform,opacity] duration-slow ease-out', show ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-6 opacity-0')}>
+      <div data-basket-bar aria-hidden={!show} className={cn('fixed inset-x-0 bottom-0 z-30 px-3 pb-[max(12px,env(safe-area-inset-bottom))]', show ? 'bar-in' : 'pointer-events-none translate-y-6 opacity-0')}>
         <div className="mx-auto flex max-w-2xl items-center gap-3 rounded-xl bg-ink p-2 pl-4 text-white shadow-3">
           <button type="button" onClick={() => setOpen(true)} className="slide flex min-h-11 min-w-0 flex-1 flex-col justify-center rounded-md text-left" aria-label="Lihat keranjang">
             <span className="t-code text-[13px] text-white/80">{count} item · hemat {rupiah(savings)}</span>
             <span className="t-fig truncate text-[17px] leading-tight">{rupiah(total)}</span>
           </button>
-          <Button asChild variant="gold" size="lg" className="rounded-lg"><Link to="/checkout">Checkout <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link></Button>
+          <Button asChild variant="gold" size="lg" className="bar-pop rounded-lg"><Link to="/checkout">Checkout <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link></Button>
         </div>
       </div>
       <Sheet open={open} onOpenChange={setOpen}>
