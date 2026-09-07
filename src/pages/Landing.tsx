@@ -110,7 +110,7 @@ function HookSection() {
             {/* three biggest drops (Rp saved) among active Golden Sale items, same config the grid below reads.
                 Photo-led: the biggest drop is the featured tile, the other two sit compact beneath it. The card rests
                 slightly tilted and floats; a gold sticker with the biggest cut sits on its corner. */}
-            <span aria-hidden className="sticker t-fig t-fig-black absolute -left-3 -top-4 z-10 grid h-[76px] w-[76px] place-items-center rounded-full bg-gold text-center text-[13px] leading-[1.05] text-gold-ink shadow-2 sm:-left-5 sm:-top-5 sm:h-[88px] sm:w-[88px] sm:text-[14px]">hemat<br /><span className="text-[22px] sm:text-[26px]">-{maxPct}%</span></span>
+            <span aria-hidden className="sticker t-fig t-fig-black absolute -right-3 top-9 z-10 grid h-[76px] w-[76px] place-items-center rounded-full bg-gold text-center text-[13px] leading-[1.05] text-gold-ink shadow-2 sm:-right-5 sm:top-8 sm:h-[88px] sm:w-[88px] sm:text-[14px]">hemat<br /><span className="text-[22px] sm:text-[26px]">-{maxPct}%</span></span>
             <div className="hook-card overflow-hidden rounded-xl bg-white shadow-3">
               <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
                 <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
