@@ -673,7 +673,7 @@ function KlasemenSection() {
                       </span>
                     )}
                     {/* spend relative to the leader */}
-                    <div className={cn('relative h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-auto sm:pt-0', first ? 'bg-white/15' : 'bg-navy-900/10')} style={{ marginTop: undefined }} aria-hidden>
+                    <div className={cn('relative h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-4 sm:basis-auto', first ? 'bg-white/15' : 'bg-navy-900/10')} aria-hidden>
                       <div className="bar-fill h-full rounded-full" style={{ width: `${share}%`, background: first ? '#D4A04E' : 'var(--pod)' }} />
                     </div>
                   </Reveal>
