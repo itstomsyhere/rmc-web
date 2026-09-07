@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss'
 import animate from 'tailwindcss-animate'
 
-/* Tokens ported from crm-apique styles.css :root (teal/gold/ink ramps, radius, shadow, motion).
+/* Tokens: Resique brand palette (navy + green from the logo, gold for rewards) on the crm-apique ink/radius/shadow/motion scale.
    DESIGN-RMC.md documents every divergence from the CRM design system. */
 export default {
   darkMode: ['class'],
@@ -10,7 +10,10 @@ export default {
     container: { center: true, padding: '1.25rem', screens: { '2xl': '1200px' } },
     extend: {
       colors: {
-        teal: { DEFAULT: '#2E8577', 50: '#EAF6F3', 100: '#D6EDE8', 200: '#7EC5BB', 500: '#14695E', 600: '#256B61', 700: '#0E5249', 800: '#0A3D36', 900: '#062A25' },
+        // Resique brand (R.017, sampled from the official lockup): navy carries the bands + headings, green is the action colour,
+        // gold stays reward-only. green.DEFAULT is the logo green — decorative only (2.3:1 on white); green-700 is the text/fill-safe step.
+        navy: { DEFAULT: '#211A5A', 50: '#EEF0F8', 100: '#DCDFF0', 200: '#9FA6D6', 500: '#2E2A7A', 600: '#262167', 700: '#211A5A', 800: '#15113F', 900: '#0D0A29' },
+        green: { DEFAULT: '#71BD41', 50: '#F1F9EA', 100: '#DFF2CF', 200: '#B7E094', 600: '#56A02A', 700: '#3E8A1E', ink: '#17330A' },
         gold: { DEFAULT: '#D4A04E', 50: '#FBF5E8', 100: '#F6E8CC', 200: '#EDD39A', 600: '#C8941B', 700: '#B08800', ink: '#3A2A0A' },
         ink: { DEFAULT: '#1E2A2A', 2: '#445050', 3: '#6F7878', 4: '#9AA0A0' },
         line: { DEFAULT: '#E2E5E8', 2: '#EEF0F2' },
@@ -54,7 +57,7 @@ export default {
       boxShadow: {
         1: '0 1px 2px rgba(20,30,30,.04), 0 1px 3px rgba(20,30,30,.06)',
         2: '0 4px 12px rgba(20,30,30,.08), 0 1px 3px rgba(20,30,30,.04)',
-        3: '0 12px 32px rgba(14,82,73,.14), 0 2px 6px rgba(20,30,30,.06)',
+        3: '0 12px 32px rgba(33,26,90,.14), 0 2px 6px rgba(20,30,30,.06)',
         gold: '0 12px 32px rgba(176,136,0,.22)',
       },
       transitionTimingFunction: {
