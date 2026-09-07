@@ -67,8 +67,8 @@ function TiersCard() {
   const tiers = d.draft
   const set = d.setDraft
   const update = (key: string, p: Partial<Tier>) => set(tiers.map(t => (t.key === key ? { ...t, ...p } : t)))
-  const gaps = tiers.map((t, i) => (i > 0 && tiers[i - 1].max !== t.min ? i : -1)).filter(i => i >= 0)
-  const add = () => { const last = tiers[tiers.length - 1]; set([...tiers, { key: `tier-${uid()}`, name: 'Tier baru', sw: '#2E8577', min: last?.max ?? 0, max: null, perMonth: '', discount: 0, freeDelivMin: null, consult: 0, benefitCopy: '' }]) }
+  const gaps = tiers.map((t, i) => (i > 0 && (tiers[i - 1].max ?? -1) + 1 !== t.min ? i : -1)).filter(i => i >= 0)
+  const add = () => { const last = tiers[tiers.length - 1]; set([...tiers, { key: `tier-${uid()}`, name: 'Tier baru', sw: '#2E8577', min: last?.max != null ? last.max + 1 : 0, max: null, perMonth: '', discount: 0, freeDelivMin: null, consult: 0, benefitCopy: '' }]) }
   return (
     <SettingsCard title="Tier RMC" desc="Band belanja 6 bulan (Rp). Batas atas tier harus sama dengan batas bawah tier berikutnya." actions={<Button type="button" variant="outline" size="sm" onClick={add}><Plus strokeWidth={1.6} />Tambah tier</Button>}>
       {gaps.length > 0 && (
@@ -104,7 +104,7 @@ function TiersCard() {
           })}
         </TBody>
       </Table>
-      <p className="mt-2 text-[12px] text-ink-3">Maks kosong = tanpa batas (tier tertinggi). Gratis ongkir 0 = tanpa minimum; kosong = tidak ada gratis ongkir. Konsul = sesi per bulan (1 sesi = 1 jam trainer Apique Academy). Sumber: Kebijakan Program RMC RSQ-RMC-001 v2.0.</p>
+      <p className="mt-2 text-[12px] text-ink-3">Min dan Maks INKLUSIF: Starter 0–8.999.999, Beginner mulai tepat 9.000.000 (Maks = Min tier berikut − 1). Maks kosong = tanpa batas (tier tertinggi). Gratis ongkir 0 = tanpa minimum; kosong = tidak ada gratis ongkir. Konsul = sesi per bulan (1 sesi = 1 jam trainer Apique Academy). Sumber: Kebijakan Program RMC RSQ-RMC-001 v2.0.</p>
       <SaveBar dirty={d.dirty} onSave={() => d.save()} onReset={d.reset} />
     </SettingsCard>
   )

@@ -3,13 +3,14 @@ import { SEED_ITEMS } from './seed-products'
 
 /* Tiers per "Kebijakan Program RMC" RSQ-RMC-001 v2.0 (Drive 1g2OJQFKHG5zp1E4JKNfvllhaL3YSZ1tQ) — the canonical source.
    Gratis ongkir: belanja ≥ Rp500.000 (Starter–Intermediate) / ≥ Rp350.000 (Winner–Ultimate). Konsultasi = sesi per BULAN,
-   1 sesi = 1 jam bersama trainer Apique Academy (Winner ke atas). NOT the crm-apique prototype seed (it drifted). */
+   1 sesi = 1 jam bersama trainer Apique Academy (Winner ke atas). Bands are INCLUSIVE both ends: Starter 0–8.999.999, Beginner
+   starts sharp at 9.000.000 (Lurd, 4 Sep). NOT the crm-apique prototype seed (it drifted). */
 export const SEED_TIERS: Tier[] = [
-  { key: 'starter',      name: 'Starter',      sw: '#9ca3af', min: 0,           max: 9_000_000,   perMonth: '< Rp1,5 jt', discount: 0, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Belum ada diskon. Gratis ongkir untuk belanja min. Rp500 rb. Poin tetap dapat: Rp1.000 = 1 poin.' },
-  { key: 'beginner',     name: 'Beginner',     sw: '#5fb4a2', min: 9_000_000,   max: 18_000_000,  perMonth: 'Rp1,5–3 jt', discount: 1, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 1% langsung saat transaksi. Gratis ongkir untuk belanja min. Rp500 rb.' },
-  { key: 'intermediate', name: 'Intermediate', sw: '#2e8577', min: 18_000_000,  max: 30_000_000,  perMonth: 'Rp3–5 jt',   discount: 2, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 2% langsung saat transaksi. Gratis ongkir untuk belanja min. Rp500 rb.' },
-  { key: 'winner',       name: 'Winner',       sw: '#2c5282', min: 30_000_000,  max: 60_000_000,  perMonth: 'Rp5–10 jt',  discount: 3, freeDelivMin: 350_000, consult: 1, benefitCopy: 'Diskon 3%, gratis ongkir min. Rp350 rb, konsultasi bisnis 1 sesi per bulan.' },
-  { key: 'champion',     name: 'Champion',     sw: '#7c6ae8', min: 60_000_000,  max: 120_000_000, perMonth: 'Rp10–20 jt', discount: 4, freeDelivMin: 350_000, consult: 1, benefitCopy: 'Diskon 4%, gratis ongkir min. Rp350 rb, konsultasi bisnis 1 sesi per bulan.' },
+  { key: 'starter',      name: 'Starter',      sw: '#9ca3af', min: 0,           max: 8_999_999,   perMonth: '< Rp1,5 jt', discount: 0, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Belum ada diskon. Gratis ongkir untuk belanja min. Rp500 rb. Poin tetap dapat: Rp1.000 = 1 poin.' },
+  { key: 'beginner',     name: 'Beginner',     sw: '#5fb4a2', min: 9_000_000,   max: 17_999_999,  perMonth: 'Rp1,5–3 jt', discount: 1, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 1% langsung saat transaksi. Gratis ongkir untuk belanja min. Rp500 rb.' },
+  { key: 'intermediate', name: 'Intermediate', sw: '#2e8577', min: 18_000_000,  max: 29_999_999,  perMonth: 'Rp3–5 jt',   discount: 2, freeDelivMin: 500_000, consult: 0, benefitCopy: 'Diskon 2% langsung saat transaksi. Gratis ongkir untuk belanja min. Rp500 rb.' },
+  { key: 'winner',       name: 'Winner',       sw: '#2c5282', min: 30_000_000,  max: 59_999_999,  perMonth: 'Rp5–10 jt',  discount: 3, freeDelivMin: 350_000, consult: 1, benefitCopy: 'Diskon 3%, gratis ongkir min. Rp350 rb, konsultasi bisnis 1 sesi per bulan.' },
+  { key: 'champion',     name: 'Champion',     sw: '#7c6ae8', min: 60_000_000,  max: 119_999_999, perMonth: 'Rp10–20 jt', discount: 4, freeDelivMin: 350_000, consult: 1, benefitCopy: 'Diskon 4%, gratis ongkir min. Rp350 rb, konsultasi bisnis 1 sesi per bulan.' },
   { key: 'ultimate',     name: 'Ultimate',     sw: '#d4a04e', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 350_000, consult: 2, benefitCopy: 'Diskon 5%, gratis ongkir min. Rp350 rb, konsultasi bisnis 2 sesi per bulan.' },
 ]
 

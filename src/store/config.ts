@@ -30,6 +30,8 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   // R.011: tiers/benefits that still carry the drifted crm-prototype values follow the RSQ-RMC-001 v2.0 seed
   const OLD_TIER_SIG: Record<string, [number | null, number]> = { starter: [null, 0], beginner: [500_000, 0], intermediate: [300_000, 0], winner: [150_000, 1], champion: [75_000, 2], ultimate: [0, 3] }
   if (out.tiers.every(t => { const o = OLD_TIER_SIG[t.key]; return o && t.freeDelivMin === o[0] && t.consult === o[1] })) out.tiers = DEFAULT_CONFIG.tiers
+  // R.012: bands became inclusive (x.999.999) — a stored max that still equals the next tier's min moves down by 1
+  out.tiers = out.tiers.map(t => { const seed = DEFAULT_CONFIG.tiers.find(d => d.key === t.key); return seed && seed.max !== null && t.max === seed.max + 1 ? { ...t, max: seed.max } : t })
   const OLD_BENEFIT_DESC: Record<string, string[]> = {
     'b-diskon': ['Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.'],
     'b-ongkir': ['Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.'],

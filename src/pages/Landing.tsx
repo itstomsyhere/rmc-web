@@ -223,8 +223,9 @@ function TierCardV({ tier, idx, top }: { tier: Tier; idx: number; top: boolean }
         <p className="t-num origin-right text-[34px] font-extrabold leading-none tracking-tight transition-transform duration-slow ease-out group-hover:scale-110" style={{ color: top ? '#8A6A00' : tier.sw }}>{tier.discount}%</p>
       </div>
       <p className="mt-4 text-[14px] leading-relaxed text-pretty text-ink-2">{tier.benefitCopy}</p>
-      <dl className="t-num mt-4 grid grid-cols-3 gap-2 border-t border-line-2 pt-3 text-[12px]">
-        <div><dt className="text-ink-3">Belanja 6 bln</dt><dd className="font-semibold text-ink">{tier.max ? `${rupiah(tier.min, { short: true }).replace('Rp', '')}–${rupiah(tier.max, { short: true })}` : `≥ ${rupiah(tier.min, { short: true })}`}</dd></div>
+      {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000) — show the exact rupiah */}
+      <dl className="t-num mt-4 grid grid-cols-[1.35fr_1fr_1fr] gap-2 border-t border-line-2 pt-3 text-[12px]">
+        <div><dt className="text-ink-3">Belanja 6 bln (Rp)</dt><dd className="font-semibold text-ink">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</dd></div>
         <div><dt className="text-ink-3">Gratis ongkir</dt><dd className="font-semibold text-ink">{tier.freeDelivMin === null ? '—' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`}</dd></div>
         <div><dt className="text-ink-3">Konsultasi</dt><dd className="font-semibold text-ink">{tier.consult ? `${tier.consult} sesi/bln` : '—'}</dd></div>
       </dl>
