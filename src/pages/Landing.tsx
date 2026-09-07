@@ -399,14 +399,12 @@ function TierCardV({ tier, idx, top, active }: { tier: Tier; idx: number; top: b
         <CountPct value={tier.discount} className={cn('t-fig-sans', top ? 'text-gold' : 'text-white')} />
       </div>
       {rows.map(r => (
-        <div key={r.label} className="mt-3 flex items-start justify-between gap-2 border-t border-white/20 pt-3">
-          <div className="min-w-0">
-            <p className="text-[11px] font-semibold text-white/75">{r.label}</p>
-            <p className={cn('t-num text-[13px] font-bold', !r.on && 'text-white/60')}>{r.value}</p>
-          </div>
-          <span className={cn('mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full', r.on ? 'bg-white/20' : 'bg-white/10 text-white/50')} aria-hidden>
-            {r.on ? <Check className="h-3 w-3" strokeWidth={3} /> : <X className="h-3 w-3" strokeWidth={2.5} />}
-          </span>
+        <div key={r.label} className="mt-3 border-t border-white/20 pt-3">
+          <p className="text-[11px] font-semibold text-white/75">{r.label}</p>
+          <p className={cn('t-num mt-0.5 flex items-center gap-1.5 text-[13px] font-bold', !r.on && 'text-white/55')}>
+            {r.on ? <Check className="h-3.5 w-3.5 shrink-0 text-green-200" strokeWidth={3} aria-hidden /> : <X className="h-3.5 w-3.5 shrink-0 text-white/45" strokeWidth={2.5} aria-hidden />}
+            <span>{r.on ? r.value : 'Belum termasuk'}</span>
+          </p>
         </div>
       ))}
       {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
@@ -636,7 +634,7 @@ function KlasemenSection() {
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
-          <ol className="mt-10 grid grid-cols-3 items-end gap-2 sm:gap-4" aria-label="Peringkat belanja Golden Sale">
+          <ol className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-3 sm:items-end sm:gap-4" aria-label="Peringkat belanja Golden Sale">
             {top.map((r, i) => {
               const me = !!mine && r.key === mine.key
               const share = Math.max(4, Math.round((r.spend / leadSpend) * 100))
@@ -644,33 +642,35 @@ function KlasemenSection() {
                 const first = i === 0
                 return (
                   <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 0 : 120 + i * 60}
-                    className={cn('lift reveal-pop relative flex min-w-0 flex-col items-center rounded-xl px-2 pb-4 pt-5 text-center sm:px-4', `podium-${i + 1}`,
-                      first ? 'order-2 bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:pb-6 sm:pt-7' : 'order-1 border border-line bg-white',
-                      i === 2 && 'order-3')}>
+                    className={cn('lift reveal-pop relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', `podium-${i + 1}`,
+                      first ? 'bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:order-2 sm:pb-6 sm:pt-7' : 'border border-line bg-white sm:order-1',
+                      i === 2 && 'sm:order-3')}>
                     {/* medal: trophy for rank 1 (the only svg in that li, the gate counts it), a numbered disc for 2 / 3 */}
-                    <span className={cn('grid place-items-center rounded-full', first ? 'h-14 w-14 bg-gold text-gold-ink sm:h-16 sm:w-16' : 'h-10 w-10 text-[15px] font-extrabold text-navy-900 sm:h-12 sm:w-12')} style={first ? undefined : { background: 'var(--pod)' }} aria-hidden>
+                    <span className={cn('grid shrink-0 place-items-center rounded-full', first ? 'h-14 w-14 bg-gold text-gold-ink sm:h-16 sm:w-16' : 'h-11 w-11 text-[15px] font-extrabold text-navy-900 sm:h-12 sm:w-12')} style={first ? undefined : { background: 'var(--pod)' }} aria-hidden>
                       {first ? <Trophy className="h-7 w-7" strokeWidth={1.6} /> : <span className="t-fig">{r.rank}</span>}
                     </span>
-                    <span className={cn('mt-3 grid h-11 w-11 place-items-center rounded-full text-[14px] font-extrabold', first ? 'bg-white/15 text-white' : 'bg-surface-2 text-navy-700')} aria-hidden>{initials(r.laundry)}</span>
-                    <p className={cn('t-num mt-2 text-[11px] font-bold', first ? 'text-gold' : 'text-ink-3')}>Peringkat {r.rank}{first && <span className="hidden sm:inline"> · kandidat hadiah utama</span>}</p>
-                    <p className={cn('mt-1 line-clamp-2 w-full break-words text-[13px] font-extrabold leading-tight text-balance sm:text-[16px]', first ? 'text-white' : 'text-ink')}>{r.laundry}{me && <Badge className="ml-1 align-middle">Kamu</Badge>}</p>
-                    {cfg.klasemen.showPic && <p className={cn('t-num mt-0.5 hidden w-full truncate text-[12px] sm:block', first ? 'text-white/75' : 'text-ink-2')}>{r.pic} · {r.orders} transaksi</p>}
-                    <p className={cn('t-fig mt-2 w-full truncate text-[15px] leading-none sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')}>{rupiah(r.spend)}</p>
+                    <span className={cn('hidden h-11 w-11 place-items-center rounded-full text-[14px] font-extrabold sm:mt-3 sm:grid', first ? 'bg-white/15 text-white' : 'bg-surface-2 text-navy-700')} aria-hidden>{initials(r.laundry)}</span>
+                    <div className="min-w-0 flex-1 sm:w-full sm:flex-none">
+                      <p className={cn('t-num text-[11px] font-bold sm:mt-2', first ? 'text-gold' : 'text-ink-3')}>Peringkat {r.rank}{first && <span> · kandidat hadiah utama</span>}</p>
+                      <p className={cn('mt-0.5 break-words text-[16px] font-extrabold leading-tight sm:mt-1 sm:line-clamp-2 sm:text-balance', first ? 'text-white' : 'text-ink')}>{r.laundry}{me && <Badge className="ml-1 align-middle">Kamu</Badge>}</p>
+                      {cfg.klasemen.showPic && <p className={cn('t-num mt-0.5 truncate text-[12px]', first ? 'text-white/75' : 'text-ink-2')}>{r.pic} · {r.orders} transaksi</p>}
+                    </div>
+                    <p className={cn('t-fig shrink-0 text-[17px] leading-none sm:mt-2 sm:w-full sm:truncate sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')}>{rupiah(r.spend)}</p>
                     {first && grand && (
-                      <span className="mt-3 inline-flex max-w-full items-center gap-2 rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[11px] font-semibold text-white sm:text-[12px]">
+                      <span className="inline-flex max-w-full basis-full items-center gap-2 self-start rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[12px] font-semibold text-white sm:mt-3 sm:basis-auto">
                         <img src={grand.image} alt="" width={800} height={600} className="h-6 w-6 shrink-0 rounded-[4px] object-cover" loading="lazy" />
-                        <span className="hidden truncate sm:inline">Hadiah utama: {grand.label}</span><span className="truncate sm:hidden">{grand.label}</span>
+                        <span className="truncate">Hadiah utama: {grand.label}</span>
                       </span>
                     )}
                     {/* spend relative to the leader */}
-                    <div className={cn('mt-3 h-1.5 w-full overflow-hidden rounded-full', first ? 'bg-white/15' : 'bg-line-2')} aria-hidden>
+                    <div className={cn('h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-3', first ? 'bg-white/15' : 'bg-line-2')} aria-hidden>
                       <div className="bar-fill h-full rounded-full" style={{ width: `${share}%`, background: first ? '#D4A04E' : 'var(--pod)' }} />
                     </div>
                   </Reveal>
                 )
               }
               return (
-                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide order-4 col-span-3 -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:-mx-4 sm:px-4', i === 3 && 'mt-4', me && 'bg-green-50 hover:bg-green-50')}>
+                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:order-4 sm:col-span-3 sm:-mx-4 sm:px-4', i === 3 && 'mt-2 sm:mt-4', me && 'bg-green-50 hover:bg-green-50')}>
                   <div className="flex items-center gap-4">
                     <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-[15px] text-ink-3">{r.rank}</span>
                     <div className="min-w-0 flex-1">
@@ -686,7 +686,7 @@ function KlasemenSection() {
               )
             })}
             {mine && mine.rank > cfg.klasemen.topN && (
-              <li className="order-5 col-span-3 -mx-3 mt-2 flex items-center gap-4 rounded-md bg-green-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
+              <li className="-mx-3 mt-2 flex items-center gap-4 rounded-md bg-green-50 px-3 py-3.5 sm:order-5 sm:col-span-3 sm:-mx-4 sm:px-4">
                 <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white text-[15px] text-navy-700">{mine.rank}</span>
                 <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-ink-2">Peringkatmu saat ini</p></div>
                 <p className="t-fig text-[15px] text-navy-700">{rupiah(mine.spend)}</p>

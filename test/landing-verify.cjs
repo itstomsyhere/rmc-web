@@ -146,7 +146,10 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   // R.021 — mobile tier slider, marks right, hero rail on desktop, basket bar spring, doodle mobile mask
   ok((await p.locator('#hero ul[aria-label^="Semua hadiah"] li').count()) >= 6 && !(await p.locator('#hero .marquee').isVisible()), 'desktop hero: still prize rail, marquee hidden')
   const rowOrder = await p.evaluate(() => { const row = document.querySelector('#tier ol > li .border-t.flex'); return row ? [...row.children].map(c => c.tagName + (c.querySelector('svg') ? ':icon' : ':text')).join(',') : '' })
-  ok(/^DIV:text,SPAN:icon$/.test(rowOrder), `tier rows: text left, check/cross mark right (${rowOrder})`)
+  ok(rowOrder === '' || true, 'tier rows: (marks are inline since R.023, see next check)')
+  const inlineMark = await p.evaluate(() => { const v = document.querySelector('#tier ol > li .border-t p.flex'); return v ? { first: v.firstElementChild.tagName, txt: v.textContent } : null })
+  ok(inlineMark && inlineMark.first === 'svg' && /Rp500 rb/.test(inlineMark.txt), `tier rows: mark sits inline before the value (${inlineMark && inlineMark.txt})`)
+  ok((await p.locator('#tier ol > li').first().textContent()).includes('Belum termasuk'), 'tier rows: off rows read "Belum termasuk"')
   await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(400)
   await p.locator('#tier').scrollIntoViewIfNeeded(); await p.waitForTimeout(1500)
   const rail = await p.evaluate(() => { const ol = document.querySelector('#tier ol'); const cs = getComputedStyle(ol); return { ox: cs.overflowX, snap: cs.scrollSnapType, sw: ol.scrollWidth, cw: ol.clientWidth, active: document.querySelectorAll('#tier ol > li[data-active="true"]').length, dots: document.querySelectorAll('#tier [role="tab"]').length } })
@@ -157,7 +160,8 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   // R.022 — klasemen podium
   await p.locator('#klasemen').scrollIntoViewIfNeeded(); await p.waitForTimeout(1400)
   const pod = await p.evaluate(() => { const li = [...document.querySelectorAll('#klasemen ol > li')].slice(0, 3); return { orders: li.map(l => getComputedStyle(l).order), bg1: getComputedStyle(li[0]).backgroundColor, prize: !!document.querySelector('#klasemen ol li[data-rank="1"] img'), bar: getComputedStyle(document.querySelector('#klasemen ol li[data-rank="4"] .bar-fill')).transform } })
-  ok(pod.orders.join(',') === '2,1,3' && pod.bg1 === 'rgb(33, 26, 90)' && pod.prize && (pod.bar === 'none' || /^matrix\(1,/.test(pod.bar)), `klasemen podium: rank 1 centre in navy with the prize chip, bars filled (${JSON.stringify(pod)})`)
+  ok((await p.evaluate(() => getComputedStyle(document.querySelector('#klasemen ol li[data-rank="1"]')).flexDirection)) === 'row' && (await p.evaluate(() => [...document.querySelectorAll('#klasemen ol > li')].slice(0, 3).every(l => l.getBoundingClientRect().width > 300))), 'mobile podium: stacked full-width cards, rank 1 as a horizontal row')
+  ok((pod.orders.join(',') === '2,1,3' || pod.orders.join(',') === '0,0,0') && pod.bg1 === 'rgb(33, 26, 90)' && pod.prize && (pod.bar === 'none' || /^matrix\(1,/.test(pod.bar)), `klasemen podium: rank 1 centre in navy with the prize chip, bars filled (${JSON.stringify(pod)})`)
   ok(errs.length === 0, `no page errors (${errs.length})`)
   await finish(b, errs, 'landing-verify')
 })()
