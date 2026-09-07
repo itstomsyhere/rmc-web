@@ -130,7 +130,8 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   // R.018 — hook: no campaign period chip, staggered headline, tilted floating price card + sticker; ticket / membership cards
   ok(!/01 Sep 2026|31 Okt 2026|Sep–Okt 2026 -/.test(await text(p, '#hook')), 'hook: campaign period chip removed')
   ok((await p.locator('#hook h1 .hook-word').count()) >= 3 && /^matrix\(/.test(await tf('#hook .hook-card')) && (await tf('#hook .hook-card')) !== 'matrix(1, 0, 0, 1, 0, 0)', 'hook: staggered headline words + tilted price card')
-  ok((await p.locator('#hook svg.sticker polygon').count()) === 1 && /HEMAT/.test(await text(p, '#hook svg.sticker')) && /\d+%/.test(await text(p, '#hook svg.sticker')), 'hook: scalloped gold seal shows HEMAT + the biggest cut')
+  const sealTxt = await p.evaluate(() => (document.querySelector('#hook svg.sticker') || {}).textContent || '')
+  ok((await p.locator('#hook svg.sticker polygon').count()) === 1 && /HEMAT/.test(sealTxt) && /\d+%/.test(sealTxt), `hook: scalloped gold seal shows HEMAT + the biggest cut (${sealTxt})`)
   ok((await p.locator('#benefit .ticket').count()) === 5 && (await p.locator('#benefit .ticket-cut').count()) === 5 && (await p.evaluate(() => getComputedStyle(document.querySelector('#benefit .ticket')).maskImage || getComputedStyle(document.querySelector('#benefit .ticket')).webkitMaskImage)).includes('radial-gradient'), 'privilege blocks are tickets (head + perforation + notches)')
   const heads = await p.evaluate(() => [...document.querySelectorAll('#tier ol > li')].map(h => getComputedStyle(h).backgroundColor))
   ok(heads.length === 6 && new Set(heads).size === 6, `tier columns are six distinct full-colour cards (${heads.length})`)

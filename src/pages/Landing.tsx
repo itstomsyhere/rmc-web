@@ -659,7 +659,7 @@ function KlasemenSection() {
                     {first && grand && (
                       <span className="mt-3 inline-flex max-w-full items-center gap-2 rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[11px] font-semibold text-white sm:text-[12px]">
                         <img src={grand.image} alt="" width={800} height={600} className="h-6 w-6 shrink-0 rounded-[4px] object-cover" loading="lazy" />
-                        <span className="truncate">Hadiah utama: {grand.label}</span>
+                        <span className="hidden truncate sm:inline">Hadiah utama: {grand.label}</span><span className="truncate sm:hidden">{grand.label}</span>
                       </span>
                     )}
                     {/* spend relative to the leader */}
