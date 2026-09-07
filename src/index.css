@@ -120,10 +120,11 @@ body {
   [data-reveal="in"] .mark::before { transform: scaleX(1) rotate(-1.5deg); }
 
   /* Entrance with scale for card lists (privilege blocks, tier cards): attribute selector beats the Reveal utilities. */
+  /* only the "out" pose is written; once in view the element falls back to the Reveal utilities (identity), so the
+     .lift / .lift-lg hover and press rules (same specificity, earlier in the sheet) are never overridden */
   .reveal-pop[data-reveal="out"] { transform: translateY(14px) scale(.96); }
-  .reveal-pop[data-reveal="in"] { transform: none; }
   .reveal-pop[data-reveal="out"] .chip { transform: rotate(-14deg) scale(.7); opacity: 0; }
-  .reveal-pop[data-reveal="in"] .chip { transform: none; opacity: 1; transition: transform 480ms cubic-bezier(.34, 1.56, .64, 1) 120ms, opacity 200ms; }
+  .reveal-pop .chip { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1), opacity 200ms var(--ease-out); }
 
   /* Card effects: a tint that fades in and a light sweep, both on pseudo-elements so the surface itself stays static. */
   .card-fx { position: relative; isolation: isolate; overflow: hidden; }

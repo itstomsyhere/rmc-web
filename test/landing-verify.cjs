@@ -120,7 +120,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.locator('#tier ol > li').last().scrollIntoViewIfNeeded(); await p.waitForTimeout(900)
   const fig = await p.evaluate(() => { const el = document.querySelector('#tier ol > li .t-fig'); return { fam: getComputedStyle(el).fontFamily, w: getComputedStyle(el).fontWeight, black: [...document.fonts].some(f => f.family === 'Satoshi' && String(f.weight) === '900' && f.status === 'loaded') } })
   ok(/^Satoshi/.test(fig.fam) && fig.black, `tier figures set in Satoshi (${fig.fam.slice(0, 30)}, Satoshi 900 loaded=${fig.black})`)
-  ok((await p.evaluate(() => [...document.querySelectorAll('#tier [data-pct]')].every(el => el.textContent === el.dataset.pct + '%')), 'tier % count-up settled at the real value')
+  ok(await p.evaluate(() => [...document.querySelectorAll('#tier [data-pct]')].every(el => el.textContent === el.dataset.pct + '%')), 'tier % count-up settled at the real value')
   await p.locator('#tier ol > li').first().hover(); await p.waitForTimeout(400)
   const bar = await p.evaluate(() => getComputedStyle(document.querySelector('#tier ol > li .bar')).transform)
   ok(/^matrix\(1, 0, 0, 1/.test(bar) || /^matrix\(0\.9/.test(bar), `tier accent bar draws in on hover (${bar.slice(0, 18)})`)
