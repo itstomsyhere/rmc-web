@@ -667,13 +667,13 @@ function KlasemenSection() {
                     </div>
                     <CountRupiah value={r.spend} className={cn('relative shrink-0 text-[17px] leading-none sm:mt-2 sm:w-full sm:truncate sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')} />
                     {first && grand && (
-                      <span className="relative inline-flex max-w-full basis-full items-center gap-2 self-start rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[12px] font-semibold text-white sm:mt-3 sm:basis-auto">
+                      <span className="relative inline-flex min-w-full shrink-0 items-center gap-2 self-start rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[12px] font-semibold text-white sm:mt-3 sm:min-w-0">
                         <img src={grand.image} alt="" width={800} height={600} className="h-6 w-6 shrink-0 rounded-[4px] object-cover" loading="lazy" />
                         <span className="truncate">Hadiah utama: {grand.label}</span>
                       </span>
                     )}
                     {/* spend relative to the leader */}
-                    <div className={cn('relative h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-4 sm:basis-auto', first ? 'bg-white/15' : 'bg-navy-900/10')} aria-hidden>
+                    <div className={cn('relative h-1.5 min-w-full shrink-0 overflow-hidden rounded-full sm:mt-4', first ? 'bg-white/15' : 'bg-navy-900/10')} aria-hidden>
                       <div className="bar-fill h-full rounded-full" style={{ width: `${share}%`, background: first ? '#D4A04E' : 'var(--pod)' }} />
                     </div>
                   </Reveal>
