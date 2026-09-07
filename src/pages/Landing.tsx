@@ -649,7 +649,7 @@ function KlasemenSection() {
                 const medal = ['Emas', 'Perak', 'Perunggu'][i]
                 return (
                   <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 320 : i === 1 ? 160 : 0}
-                    className={cn('lift podium-rise relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:justify-start sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', `podium-${i + 1}`,
+                    className={cn('lift podium-rise relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:justify-start sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', ['podium-1', 'podium-2', 'podium-3'][i],
                       first ? 'ring-pulse bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:order-2 sm:min-h-[340px] sm:pb-6 sm:pt-7' : 'border sm:order-1',
                       i === 1 && 'border-[#C0C6CE] bg-[#F3F5F8] sm:min-h-[292px]',
                       i === 2 && 'border-[#E3C3A8] bg-[#FBF3EC] sm:order-3 sm:min-h-[256px]')}>
