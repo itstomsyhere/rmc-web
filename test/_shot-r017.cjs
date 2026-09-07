@@ -9,7 +9,7 @@ fs.mkdirSync(out, { recursive: true })
 const shot = async (p, name, opts = {}) => { await p.screenshot({ path: path.join(out, `r017-${name}.png`), ...opts }); console.log('shot', name) }
 const section = async (p, id, name, w) => {
   await p.evaluate(id => document.getElementById(id).scrollIntoView({ block: 'start' }), id)
-  await p.waitForTimeout(1200)
+  await p.waitForTimeout(2800)
   const box = await p.evaluate(id => { const r = document.getElementById(id).getBoundingClientRect(); return { x: 0, y: Math.max(0, r.top + window.scrollY), width: r.width, height: Math.min(r.height, 2200) } }, id)
   await shot(p, `${name}-${w}`, { clip: { ...box, width: w }, fullPage: true })
 }
