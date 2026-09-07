@@ -27,6 +27,17 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
     benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
     tierTitle: ['Diskon tier 0% sampai 5%'],
   }
+  // R.011: tiers/benefits that still carry the drifted crm-prototype values follow the RSQ-RMC-001 v2.0 seed
+  const OLD_TIER_SIG: Record<string, [number | null, number]> = { starter: [null, 0], beginner: [500_000, 0], intermediate: [300_000, 0], winner: [150_000, 1], champion: [75_000, 2], ultimate: [0, 3] }
+  if (out.tiers.every(t => { const o = OLD_TIER_SIG[t.key]; return o && t.freeDelivMin === o[0] && t.consult === o[1] })) out.tiers = DEFAULT_CONFIG.tiers
+  const OLD_BENEFIT_DESC: Record<string, string[]> = {
+    'b-diskon': ['Diskon 1–5% sesuai tier, langsung dipotong dari tiap belanja chemical & perlengkapan. Mitra Apique Management minimal 3%.'],
+    'b-ongkir': ['Mulai tier Beginner untuk belanja di atas minimum tier. Tier Ultimate gratis ongkir tanpa minimum.'],
+    'b-konsultasi': ['Sesi konsultasi operasional laundry bersama tim Resique, mulai tier Winner.'],
+    'b-poin': ['Tiap Rp1.000 belanja Lunas jadi 1 poin. Tukar mulai 500 poin: voucher, parfum 5L, tablet, sampai laptop. Poin berlaku sampai 20 Des.'],
+    'b-event': ['Undangan Gala Dinner dan gathering member Resique, mulai tier Champion.'],
+  }
+  out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && (OLD_BENEFIT_DESC[b.id] || []).includes(b.desc) ? seed : b })
   // R.010: "0–5%" → "Hingga 5%" on the seed diskon block (only if the admin has not changed it)
   out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && b.figure === '0–5%' ? { ...b, figure: seed.figure } : b })
   ;(Object.keys(COPY_UPGRADES) as (keyof Config['copy'])[]).forEach(k => {

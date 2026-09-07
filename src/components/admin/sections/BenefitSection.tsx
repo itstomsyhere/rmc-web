@@ -78,7 +78,7 @@ function TiersCard() {
         </p>
       )}
       <Table className="min-w-[1120px]">
-        <THead><TR><TH>Nama</TH><TH>Warna</TH><TH>Min (Rp)</TH><TH>Maks (Rp)</TH><TH>Per bulan</TH><TH>Diskon %</TH><TH>Gratis ongkir ≥</TH><TH>Konsul</TH><TH className="min-w-[220px]">Copy benefit</TH><TH /></TR></THead>
+        <THead><TR><TH>Nama</TH><TH>Warna</TH><TH>Min (Rp)</TH><TH>Maks (Rp)</TH><TH>Per bulan</TH><TH>Diskon %</TH><TH>Gratis ongkir ≥</TH><TH>Konsul /bln</TH><TH className="min-w-[220px]">Copy benefit</TH><TH /></TR></THead>
         <TBody>
           {tiers.map((t, i) => {
             const bad = gaps.includes(i)
@@ -96,7 +96,7 @@ function TiersCard() {
                 <TD><Input value={t.perMonth} aria-label="Per bulan" className={`${cell} w-28`} onChange={e => update(t.key, { perMonth: e.target.value })} /></TD>
                 <TD><NumInput value={t.discount} aria-label="Diskon persen" min={0} max={100} className={`${cell} w-16`} onChange={n => update(t.key, { discount: n })} /></TD>
                 <TD><NumInput value={t.freeDelivMin} onClear={() => update(t.key, { freeDelivMin: null })} aria-label="Minimum gratis ongkir" placeholder="tidak ada" className={`${cell} w-28`} onChange={n => update(t.key, { freeDelivMin: n })} /></TD>
-                <TD><NumInput value={t.consult} aria-label="Sesi konsultasi" className={`${cell} w-16`} onChange={n => update(t.key, { consult: n })} /></TD>
+                <TD><NumInput value={t.consult} aria-label="Sesi konsultasi per bulan" className={`${cell} w-16`} onChange={n => update(t.key, { consult: n })} /></TD>
                 <TD><Input value={t.benefitCopy} aria-label="Copy benefit" className={cell} onChange={e => update(t.key, { benefitCopy: e.target.value })} /></TD>
                 <TD><RowTools index={i} count={tiers.length} onMove={(a, b) => set(moveItem(tiers, a, b))} onRemove={() => set(tiers.filter(x => x.key !== t.key))} /></TD>
               </TR>
@@ -104,7 +104,7 @@ function TiersCard() {
           })}
         </TBody>
       </Table>
-      <p className="mt-2 text-[12px] text-ink-3">Maks kosong = tanpa batas (tier tertinggi). Gratis ongkir 0 = tanpa minimum; kosong = tidak ada gratis ongkir.</p>
+      <p className="mt-2 text-[12px] text-ink-3">Maks kosong = tanpa batas (tier tertinggi). Gratis ongkir 0 = tanpa minimum; kosong = tidak ada gratis ongkir. Konsul = sesi per bulan (1 sesi = 1 jam trainer Apique Academy). Sumber: Kebijakan Program RMC RSQ-RMC-001 v2.0.</p>
       <SaveBar dirty={d.dirty} onSave={() => d.save()} onReset={d.reset} />
     </SettingsCard>
   )

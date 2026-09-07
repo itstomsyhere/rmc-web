@@ -37,6 +37,11 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok((await p.locator('.marquee-track li').count()) >= 2, 'hero marquee has duplicated strip')
   ok((await p.locator('#tier h3:visible').count()) === 6, '6 tier cards visible (mobile ladder / desktop cards)')
   ok(/Mitra Apique Management/.test(t) && /minimal 3%/.test(t), 'Mitra floor 3% note')
+  // RSQ-RMC-001 v2.0 §3: ongkir ≥ Rp500 rb (Starter–Intermediate) / ≥ Rp350 rb (Winner+); konsultasi 1/1/2 sesi per bulan; no "tanpa minimum"
+  const tierTxt = await p.evaluate(() => [...document.querySelectorAll('#tier ol > li')].map(li => li.innerText.replace(/\s+/g, ' ')))
+  ok(tierTxt.length === 6 && tierTxt.slice(0, 3).every(x => /min\. Rp500 rb/.test(x)) && tierTxt.slice(3).every(x => /min\. Rp350 rb/.test(x)), 'tier cards: ongkir 500 rb ×3 then 350 rb ×3 (policy §3)')
+  ok(/1 sesi\/bln/.test(tierTxt[3]) && /1 sesi\/bln/.test(tierTxt[4]) && /2 sesi\/bln/.test(tierTxt[5]) && !/sesi\/bln/.test(tierTxt[0]), 'tier cards: konsultasi 1/1/2 sesi per bulan from Winner')
+  ok(!/tanpa minimum|Tanpa min\./i.test(t) && !/mulai tier Champion/.test(t), 'no drifted claims (ultimate tanpa minimum / Gala Dinner by tier)')
   ok((await p.locator('#klasemen ol li').count()) === 10, 'klasemen shows 10 rows')
 
   // no horizontal scroll at 390
