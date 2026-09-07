@@ -195,10 +195,18 @@ body {
   /* klasemen bars fill from the left once the row is in view */
   .bar-fill { transform-origin: left; transition: transform 900ms var(--ease-out) 200ms; }
   [data-reveal="out"] .bar-fill { transform: scaleX(0); }
-  /* podium: rank 1 stands taller, 2 / 3 flank it */
+  /* podium: rank 1 stands taller, 2 / 3 flank it in silver / bronze. Entrance: cards rise on a spring (3 → 2 → 1),
+     the medal pops, the spend counts up (CountRupiah), the gold ring pulses once around rank 1. */
   .podium-1 { --pod: #D4A04E; }
-  .podium-2 { --pod: #C0C6CE; }
-  .podium-3 { --pod: #C98B5B; }
+  .podium-2 { --pod: #9AA3AF; }
+  .podium-3 { --pod: #B9703F; }
+  .podium-rise { transition-timing-function: cubic-bezier(.34, 1.56, .64, 1) !important; transition-duration: 720ms !important; }
+  .podium-rise[data-reveal="out"] { transform: translateY(44px) scale(.94); }
+  .podium-rise .medal { transform: scale(.4) rotate(-25deg); opacity: 0; transition: transform 620ms cubic-bezier(.34, 1.56, .64, 1) 380ms, opacity 200ms 380ms; }
+  .podium-rise[data-reveal="in"] .medal { transform: none; opacity: 1; }
+  @keyframes ring-pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 160, 78, .55); } 100% { box-shadow: 0 0 0 22px rgba(212, 160, 78, 0); } }
+  .podium-rise[data-reveal="in"].ring-pulse { animation: ring-pulse 1.1s ease-out 900ms 1; }
+  @media (hover: hover) { .podium-rise:hover .medal { transform: rotate(-8deg) scale(1.1); transition-delay: 0ms; } }
 
   /* Privilege tickets: solid coloured head, a perforation with two notches, white body. The notches are cut with a
      mask so they show the section behind; the head keeps a faint outline of its own icon as a watermark. */

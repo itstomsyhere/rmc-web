@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check, ChevronsRight, Crown, Gift, ShoppingBag, Sparkles, Trophy, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronsRight, Crown, Gift, Medal, ShoppingBag, Sparkles, Trophy, X } from 'lucide-react'
 import { BENEFIT_ICONS } from '@/lib/benefit-icons'
 import { Reveal, useCountUp, useInView } from '@/lib/reveal'
 import { poin } from '@/lib/format'
@@ -416,6 +416,12 @@ function TierCardV({ tier, idx, top, active }: { tier: Tier; idx: number; top: b
     </Reveal>
   )
 }
+/* a rupiah figure that counts up once in view (podium spend) */
+function CountRupiah({ value, className }: { value: number; className?: string }) {
+  const { ref, inView } = useInView<HTMLParagraphElement>()
+  const v = useCountUp(value, inView, 1100)
+  return <p ref={ref} className={cn('t-fig', className)} data-spend={value}>{rupiah(v)}</p>
+}
 /* the discount figure counts up from 0 once the card is in view (final value under reduced motion) */
 function CountPct({ value, className }: { value: number; className?: string }) {
   const { ref, inView } = useInView<HTMLParagraphElement>()
@@ -640,30 +646,34 @@ function KlasemenSection() {
               const share = Math.max(4, Math.round((r.spend / leadSpend) * 100))
               if (i < 3) {
                 const first = i === 0
+                const medal = ['Emas', 'Perak', 'Perunggu'][i]
                 return (
-                  <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 0 : 120 + i * 60}
-                    className={cn('lift reveal-pop relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', `podium-${i + 1}`,
-                      first ? 'bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:order-2 sm:pb-6 sm:pt-7' : 'border border-line bg-white sm:order-1',
-                      i === 2 && 'sm:order-3')}>
-                    {/* medal: trophy for rank 1 (the only svg in that li, the gate counts it), a numbered disc for 2 / 3 */}
-                    <span className={cn('grid shrink-0 place-items-center rounded-full', first ? 'h-14 w-14 bg-gold text-gold-ink sm:h-16 sm:w-16' : 'h-11 w-11 text-[15px] font-extrabold text-navy-900 sm:h-12 sm:w-12')} style={first ? undefined : { background: 'var(--pod)' }} aria-hidden>
-                      {first ? <Trophy className="h-7 w-7" strokeWidth={1.6} /> : <span className="t-fig">{r.rank}</span>}
+                  <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 320 : i === 1 ? 160 : 0}
+                    className={cn('lift podium-rise relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:justify-start sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', `podium-${i + 1}`,
+                      first ? 'ring-pulse bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:order-2 sm:min-h-[340px] sm:pb-6 sm:pt-7' : 'border sm:order-1',
+                      i === 1 && 'border-[#C0C6CE] bg-[#F3F5F8] sm:min-h-[292px]',
+                      i === 2 && 'border-[#E3C3A8] bg-[#FBF3EC] sm:order-3 sm:min-h-[256px]')}>
+                    {/* big faint rank number, like the tier columns */}
+                    <span aria-hidden className={cn('t-fig pointer-events-none absolute -bottom-3 right-2 select-none text-[88px] leading-none', first ? 'text-white/10' : 'text-navy-900/[.06]')}>{r.rank}</span>
+                    {/* medal: trophy for rank 1 (the only svg in that li, the gate counts it); a medal icon in silver / bronze for 2 and 3 */}
+                    <span className={cn('medal grid shrink-0 place-items-center rounded-full', first ? 'h-14 w-14 bg-gold text-gold-ink sm:h-16 sm:w-16' : 'h-12 w-12 text-white sm:h-14 sm:w-14')} style={first ? undefined : { background: 'var(--pod)' }} aria-hidden>
+                      {first ? <Trophy className="h-7 w-7" strokeWidth={1.6} /> : <Medal className="h-6 w-6" strokeWidth={1.7} />}
                     </span>
-                    <span className={cn('hidden h-11 w-11 place-items-center rounded-full text-[14px] font-extrabold sm:mt-3 sm:grid', first ? 'bg-white/15 text-white' : 'bg-surface-2 text-navy-700')} aria-hidden>{initials(r.laundry)}</span>
-                    <div className="min-w-0 flex-1 sm:w-full sm:flex-none">
-                      <p className={cn('t-num text-[11px] font-bold sm:mt-2', first ? 'text-gold' : 'text-ink-3')}>Peringkat {r.rank}{first && <span> · kandidat hadiah utama</span>}</p>
+                    <span className={cn('hidden h-11 w-11 place-items-center rounded-full text-[14px] font-extrabold sm:mt-3 sm:grid', first ? 'bg-white/15 text-white' : 'bg-white text-navy-700 shadow-1')} aria-hidden>{initials(r.laundry)}</span>
+                    <div className="relative min-w-0 flex-1 sm:w-full sm:flex-none">
+                      <p className={cn('t-num text-[11px] font-bold sm:mt-2', first ? 'text-gold' : i === 1 ? 'text-[#6B7480]' : 'text-[#9A5F33]')}>Peringkat {r.rank} · {medal}{first && <span> · kandidat hadiah utama</span>}</p>
                       <p className={cn('mt-0.5 break-words text-[16px] font-extrabold leading-tight sm:mt-1 sm:line-clamp-2 sm:text-balance', first ? 'text-white' : 'text-ink')}>{r.laundry}{me && <Badge className="ml-1 align-middle">Kamu</Badge>}</p>
                       {cfg.klasemen.showPic && <p className={cn('t-num mt-0.5 truncate text-[12px]', first ? 'text-white/75' : 'text-ink-2')}>{r.pic} · {r.orders} transaksi</p>}
                     </div>
-                    <p className={cn('t-fig shrink-0 text-[17px] leading-none sm:mt-2 sm:w-full sm:truncate sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')}>{rupiah(r.spend)}</p>
+                    <CountRupiah value={r.spend} className={cn('relative shrink-0 text-[17px] leading-none sm:mt-2 sm:w-full sm:truncate sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')} />
                     {first && grand && (
-                      <span className="inline-flex max-w-full basis-full items-center gap-2 self-start rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[12px] font-semibold text-white sm:mt-3 sm:basis-auto">
+                      <span className="relative inline-flex max-w-full basis-full items-center gap-2 self-start rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[12px] font-semibold text-white sm:mt-3 sm:basis-auto">
                         <img src={grand.image} alt="" width={800} height={600} className="h-6 w-6 shrink-0 rounded-[4px] object-cover" loading="lazy" />
                         <span className="truncate">Hadiah utama: {grand.label}</span>
                       </span>
                     )}
                     {/* spend relative to the leader */}
-                    <div className={cn('h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-3', first ? 'bg-white/15' : 'bg-line-2')} aria-hidden>
+                    <div className={cn('relative h-1.5 w-full basis-full overflow-hidden rounded-full sm:mt-auto sm:pt-0', first ? 'bg-white/15' : 'bg-navy-900/10')} style={{ marginTop: undefined }} aria-hidden>
                       <div className="bar-fill h-full rounded-full" style={{ width: `${share}%`, background: first ? '#D4A04E' : 'var(--pod)' }} />
                     </div>
                   </Reveal>
