@@ -179,7 +179,7 @@ function HeroSection() {
               <ul className="marquee-track px-5 lg:px-0" style={{ animationDuration: `${Math.max(24, assets.heroPrizes.length * 6)}s` }}>
                 {strip.map((p, i) => (
                   <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="w-[200px] shrink-0 sm:w-[240px]">
-                    <img src={p.image} alt={p.label} width={800} height={600} className="aspect-[4/3] w-full rounded-lg bg-white object-cover transition-transform duration-slow ease-out hover:scale-[1.03] active:scale-[1.03]" loading="lazy" />
+                    <img src={p.image} alt={p.label} width={800} height={600} className="aspect-[4/3] w-full rounded-lg bg-white object-cover transition-transform duration-slow ease-out hover:scale-[1.03] active:scale-[1.03]" loading="eager" decoding="async" />
                     <p className="mt-2 text-[13px] font-semibold text-white">{p.label}</p>
                   </li>
                 ))}
