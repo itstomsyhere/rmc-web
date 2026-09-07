@@ -188,9 +188,17 @@ body {
   .hook-card { transform: rotate(-2deg); transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out); animation: deck-float 7s ease-in-out 1.2s infinite; }
   @media (hover: hover) { .hook-card-wrap:hover .hook-card { transform: rotate(0deg) translateY(-6px); animation-play-state: paused; } }
   .hook-card-wrap:active .hook-card { transform: rotate(0deg) scale(.99); }
-  @keyframes sticker-in { 0% { opacity: 0; transform: rotate(-30deg) scale(.6); } 100% { opacity: 1; transform: rotate(-10deg) scale(1); } }
-  .sticker { transform: rotate(-10deg); animation: sticker-in 600ms cubic-bezier(.34, 1.56, .64, 1) 700ms both; }
-  @media (hover: hover) { .hook-card-wrap:hover .sticker { transform: rotate(0deg) scale(1.06); transition: transform 320ms cubic-bezier(.34, 1.56, .64, 1); } }
+  @keyframes sticker-in { 0% { opacity: 0; transform: rotate(-40deg) scale(.5); } 100% { opacity: 1; transform: rotate(-12deg) scale(1); } }
+  @keyframes seal-spin { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(-6deg); } }
+  .sticker { transform: rotate(-12deg); animation: sticker-in 600ms cubic-bezier(.34, 1.56, .64, 1) 700ms both, seal-spin 6s ease-in-out 1.4s infinite; }
+  @media (hover: hover) { .hook-card-wrap:hover .sticker { animation-play-state: paused, paused; transform: rotate(0deg) scale(1.08); transition: transform 320ms cubic-bezier(.34, 1.56, .64, 1); } }
+  /* klasemen bars fill from the left once the row is in view */
+  .bar-fill { transform-origin: left; transition: transform 900ms var(--ease-out) 200ms; }
+  [data-reveal="out"] .bar-fill { transform: scaleX(0); }
+  /* podium: rank 1 stands taller, 2 / 3 flank it */
+  .podium-1 { --pod: #D4A04E; }
+  .podium-2 { --pod: #C0C6CE; }
+  .podium-3 { --pod: #C98B5B; }
 
   /* Privilege tickets: solid coloured head, a perforation with two notches, white body. The notches are cut with a
      mask so they show the section behind; the head keeps a faint outline of its own icon as a watermark. */

@@ -130,7 +130,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   // R.018 — hook: no campaign period chip, staggered headline, tilted floating price card + sticker; ticket / membership cards
   ok(!/01 Sep 2026|31 Okt 2026|Sep–Okt 2026 -/.test(await text(p, '#hook')), 'hook: campaign period chip removed')
   ok((await p.locator('#hook h1 .hook-word').count()) >= 3 && /^matrix\(/.test(await tf('#hook .hook-card')) && (await tf('#hook .hook-card')) !== 'matrix(1, 0, 0, 1, 0, 0)', 'hook: staggered headline words + tilted price card')
-  ok(/hemat/.test(await text(p, '#hook .sticker')) && /-\d+%/.test(await text(p, '#hook .sticker')), 'hook: gold sticker shows the biggest cut')
+  ok((await p.locator('#hook svg.sticker polygon').count()) === 1 && /HEMAT/.test(await text(p, '#hook svg.sticker')) && /\d+%/.test(await text(p, '#hook svg.sticker')), 'hook: scalloped gold seal shows HEMAT + the biggest cut')
   ok((await p.locator('#benefit .ticket').count()) === 5 && (await p.locator('#benefit .ticket-cut').count()) === 5 && (await p.evaluate(() => getComputedStyle(document.querySelector('#benefit .ticket')).maskImage || getComputedStyle(document.querySelector('#benefit .ticket')).webkitMaskImage)).includes('radial-gradient'), 'privilege blocks are tickets (head + perforation + notches)')
   const heads = await p.evaluate(() => [...document.querySelectorAll('#tier ol > li')].map(h => getComputedStyle(h).backgroundColor))
   ok(heads.length === 6 && new Set(heads).size === 6, `tier columns are six distinct full-colour cards (${heads.length})`)
@@ -153,6 +153,10 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok((await p.locator('#hero .marquee').isVisible()) && (await p.evaluate(() => getComputedStyle(document.querySelector('#hero svg[data-doodle]')).webkitMaskImage || getComputedStyle(document.querySelector('#hero svg[data-doodle]')).maskImage)).includes('34%'), 'mobile: marquee back, doodle masked to the lower half')
   await p.locator('#golden-sale button[aria-label^="Tambah"]').first().click(); await p.waitForTimeout(100)
   ok((await p.evaluate(() => getComputedStyle(document.querySelector('[data-basket-bar]')).animationName)) === 'bar-in', 'basket bar springs in (bar-in keyframes)')
+  // R.022 — klasemen podium
+  await p.locator('#klasemen').scrollIntoViewIfNeeded(); await p.waitForTimeout(1400)
+  const pod = await p.evaluate(() => { const li = [...document.querySelectorAll('#klasemen ol > li')].slice(0, 3); return { orders: li.map(l => getComputedStyle(l).order), bg1: getComputedStyle(li[0]).backgroundColor, prize: !!document.querySelector('#klasemen ol li[data-rank="1"] img'), bar: getComputedStyle(document.querySelector('#klasemen ol li[data-rank="4"] .bar-fill')).transform } })
+  ok(pod.orders.join(',') === '2,1,3' && pod.bg1 === 'rgb(33, 26, 90)' && pod.prize && (pod.bar === 'none' || /^matrix\(1,/.test(pod.bar)), `klasemen podium: rank 1 centre in navy with the prize chip, bars filled (${JSON.stringify(pod)})`)
   ok(errs.length === 0, `no page errors (${errs.length})`)
   await finish(b, errs, 'landing-verify')
 })()

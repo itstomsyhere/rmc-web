@@ -62,6 +62,19 @@ function Rings({ className }: { className?: string }) {
   )
 }
 
+/* Gold scalloped seal for the biggest cut ("HEMAT 16%"): 24-point starburst, navy text, drop shadow. */
+function Seal({ pct, className }: { pct: number; className?: string }) {
+  const pts = Array.from({ length: 48 }, (_, i) => { const r = i % 2 ? 46 : 50; const a = (i / 48) * Math.PI * 2; return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}` }).join(' ')
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" className={cn('drop-shadow-[0_8px_16px_rgba(33,26,90,.22)]', className)}>
+      <polygon points={pts} fill="#D4A04E" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#211A5A" strokeOpacity=".35" strokeWidth="1.2" strokeDasharray="2 2.5" />
+      <text x="50" y="41" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="11" letterSpacing="1.5" fill="#211A5A">HEMAT</text>
+      <text x="50" y="68" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="28" letterSpacing="-1" fill="#211A5A">{pct}%</text>
+    </svg>
+  )
+}
+
 /* Hook headline: each word rises in on load (stagger), the last word keeps the highlighter mark for the gate. */
 function StaggerWords({ text }: { text: string }) {
   const words = text.trim().split(' ')
@@ -122,11 +135,11 @@ function HookSection() {
             {/* three biggest drops (Rp saved) among active Golden Sale items, same config the grid below reads.
                 Photo-led: the biggest drop is the featured tile, the other two sit compact beneath it. The card rests
                 slightly tilted and floats; a gold sticker with the biggest cut sits on its corner. */}
-            <span aria-hidden className="sticker t-fig t-fig-black absolute -right-3 top-9 z-10 grid h-[76px] w-[76px] place-items-center rounded-full bg-gold text-center text-[13px] leading-[1.05] text-gold-ink shadow-2 sm:-right-5 sm:top-8 sm:h-[88px] sm:w-[88px] sm:text-[14px]">hemat<br /><span className="text-[22px] sm:text-[26px]">-{maxPct}%</span></span>
+            <Seal pct={maxPct} className="sticker absolute -right-2 top-8 z-10 h-[92px] w-[92px] sm:-right-5 sm:top-6 sm:h-[112px] sm:w-[112px]" />
             <div className="hook-card overflow-hidden rounded-xl bg-white shadow-3">
               <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
                 <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
-                <p className="t-num text-[13px] font-extrabold text-gold-700">sampai -{maxPct}%</p>
+                <p className="t-num text-[13px] font-semibold text-ink-3">{drops.length} produk</p>
               </div>
               {drops.slice(0, 1).map(d => (
                 <a key={d.id} href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="group relative block overflow-hidden" data-no-press>
@@ -603,8 +616,9 @@ function BasketBar() {
   )
 }
 
-/* 7, Klasemen: leader gets a gold card (rank 1 = hadiah utama), the rest a list with a spend bar relative to the
-   leader. One <ol> so the ranking stays a single ordered list. Rows slide on hover (pointer devices). */
+/* 7, Klasemen: a podium for the top three (rank 1 in navy with the trophy, the grand-prize chip and a gold ring;
+   2 and 3 flank it in silver / bronze), then rows 4–10 with a spend bar that fills on reveal. One <ol> so the ranking
+   stays a single ordered list; the podium is laid out with CSS `order` so DOM order = rank order. */
 function KlasemenSection() {
   const cfg = useConfig(s => s.config)
   const orders = useOrders(s => s.orders)
@@ -613,45 +627,66 @@ function KlasemenSection() {
   const top = rows.slice(0, cfg.klasemen.topN)
   const mine = acc ? rows.find(r => r.accountId === acc.id || (acc.crmCustomerId && r.crmCustomerId === acc.crmCustomerId) || r.phone === acc.phone) : undefined
   const leadSpend = top[0]?.spend || 1
+  const grand = cfg.assets.heroPrizes[0]
+  const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
   return (
     <section id="klasemen" className="tex tex-plus scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
       <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '40%', height: '60%' }} />
+      <span aria-hidden className="band bg-navy-50" style={{ right: '-12%', top: '-8%', width: '34%', height: '44%' }} />
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
-          <ol className="mt-8" aria-label="Peringkat belanja Golden Sale">
+          <ol className="mt-10 grid grid-cols-3 items-end gap-2 sm:gap-4" aria-label="Peringkat belanja Golden Sale">
             {top.map((r, i) => {
               const me = !!mine && r.key === mine.key
-              if (i === 0) return (
-                <Reveal as="li" key={r.key} data-rank={r.rank} className="lift mb-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-lg border border-gold-200 bg-gold-50 p-5 sm:grid-cols-[auto_1fr_auto] sm:gap-6 sm:p-6">
-                  <span className="grid h-14 w-14 place-items-center rounded-md bg-gold text-gold-ink sm:h-16 sm:w-16" aria-hidden><Trophy className="h-7 w-7" strokeWidth={1.6} /></span>
-                  <div className="min-w-0">
-                    <p className="t-code text-[13px] font-bold text-gold-700">Peringkat 1 · kandidat hadiah utama</p>
-                    <p className="mt-1 break-words text-[20px] font-extrabold leading-tight text-balance text-ink sm:text-[24px]">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
-                    {cfg.klasemen.showPic && <p className="t-num mt-0.5 truncate text-[14px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
-                  </div>
-                  <p className="t-fig t-fig-black col-start-2 text-[24px] leading-none text-navy-700 sm:col-start-3 sm:text-right sm:text-[30px]">{rupiah(r.spend)}</p>
-                </Reveal>
-              )
+              const share = Math.max(4, Math.round((r.spend / leadSpend) * 100))
+              if (i < 3) {
+                const first = i === 0
+                return (
+                  <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 0 : 120 + i * 60}
+                    className={cn('lift reveal-pop relative flex min-w-0 flex-col items-center rounded-xl px-2 pb-4 pt-5 text-center sm:px-4', `podium-${i + 1}`,
+                      first ? 'order-2 bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:pb-6 sm:pt-7' : 'order-1 border border-line bg-white',
+                      i === 2 && 'order-3')}>
+                    {/* medal: trophy for rank 1 (the only svg in that li, the gate counts it), a numbered disc for 2 / 3 */}
+                    <span className={cn('grid place-items-center rounded-full', first ? 'h-14 w-14 bg-gold text-gold-ink sm:h-16 sm:w-16' : 'h-10 w-10 text-[15px] font-extrabold text-navy-900 sm:h-12 sm:w-12')} style={first ? undefined : { background: 'var(--pod)' }} aria-hidden>
+                      {first ? <Trophy className="h-7 w-7" strokeWidth={1.6} /> : <span className="t-fig">{r.rank}</span>}
+                    </span>
+                    <span className={cn('mt-3 grid h-11 w-11 place-items-center rounded-full text-[14px] font-extrabold', first ? 'bg-white/15 text-white' : 'bg-surface-2 text-navy-700')} aria-hidden>{initials(r.laundry)}</span>
+                    <p className={cn('t-num mt-2 text-[11px] font-bold', first ? 'text-gold' : 'text-ink-3')}>Peringkat {r.rank}{first && <span className="hidden sm:inline"> · kandidat hadiah utama</span>}</p>
+                    <p className={cn('mt-1 line-clamp-2 w-full break-words text-[13px] font-extrabold leading-tight text-balance sm:text-[16px]', first ? 'text-white' : 'text-ink')}>{r.laundry}{me && <Badge className="ml-1 align-middle">Kamu</Badge>}</p>
+                    {cfg.klasemen.showPic && <p className={cn('t-num mt-0.5 hidden w-full truncate text-[12px] sm:block', first ? 'text-white/75' : 'text-ink-2')}>{r.pic} · {r.orders} transaksi</p>}
+                    <p className={cn('t-fig mt-2 w-full truncate text-[15px] leading-none sm:text-[22px]', first ? 'text-gold' : 'text-navy-700')}>{rupiah(r.spend)}</p>
+                    {first && grand && (
+                      <span className="mt-3 inline-flex max-w-full items-center gap-2 rounded-md bg-white/10 py-1 pl-1 pr-2.5 text-[11px] font-semibold text-white sm:text-[12px]">
+                        <img src={grand.image} alt="" width={800} height={600} className="h-6 w-6 shrink-0 rounded-[4px] object-cover" loading="lazy" />
+                        <span className="truncate">Hadiah utama: {grand.label}</span>
+                      </span>
+                    )}
+                    {/* spend relative to the leader */}
+                    <div className={cn('mt-3 h-1.5 w-full overflow-hidden rounded-full', first ? 'bg-white/15' : 'bg-line-2')} aria-hidden>
+                      <div className="bar-fill h-full rounded-full" style={{ width: `${share}%`, background: first ? '#D4A04E' : 'var(--pod)' }} />
+                    </div>
+                  </Reveal>
+                )
+              }
               return (
-                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:-mx-4 sm:px-4', me && 'bg-green-50 hover:bg-green-50')}>
+                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide order-4 col-span-3 -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:-mx-4 sm:px-4', i === 3 && 'mt-4', me && 'bg-green-50 hover:bg-green-50')}>
                   <div className="flex items-center gap-4">
-                    <span className={cn('t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md text-[15px]', r.rank <= 3 ? 'bg-gold-100 text-gold-ink' : 'bg-surface-2 text-ink-3')}>{r.rank}</span>
+                    <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-[15px] text-ink-3">{r.rank}</span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
                       {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
                     </div>
                     <p className="t-fig shrink-0 text-[15px] text-navy-700 sm:text-[17px]">{rupiah(r.spend)}</p>
                   </div>
-                  {/* spend relative to the leader, the gap to rank 1 at a glance */}
                   <div className="mt-2 h-1 overflow-hidden rounded-full bg-line-2" style={{ marginLeft: 52 }} aria-hidden>
-                    <div className="h-full rounded-full bg-green-200 transition-[width] duration-slow ease-out" style={{ width: `${Math.max(4, Math.round((r.spend / leadSpend) * 100))}%` }} />
+                    <div className="bar-fill h-full rounded-full bg-green-200" style={{ width: `${share}%` }} />
                   </div>
                 </Reveal>
               )
             })}
             {mine && mine.rank > cfg.klasemen.topN && (
-              <li className="-mx-3 mt-2 flex items-center gap-4 rounded-md bg-green-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
+              <li className="order-5 col-span-3 -mx-3 mt-2 flex items-center gap-4 rounded-md bg-green-50 px-3 py-3.5 sm:-mx-4 sm:px-4">
                 <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white text-[15px] text-navy-700">{mine.rank}</span>
                 <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-ink-2">Peringkatmu saat ini</p></div>
                 <p className="t-fig text-[15px] text-navy-700">{rupiah(mine.spend)}</p>
@@ -659,7 +694,7 @@ function KlasemenSection() {
             )}
           </ol>
         )}
-        <p className="t-num mt-4 max-w-2xl text-[13px] leading-relaxed text-ink-2">Yang dihitung: pesanan Lunas (bukti bayar sudah diverifikasi) dalam periode {cfg.campaign.label}. Rp{cfg.rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin.</p>
+        <p className="t-num mt-6 max-w-2xl text-[13px] leading-relaxed text-ink-2">Yang dihitung: pesanan Lunas (bukti bayar sudah diverifikasi) dalam periode {cfg.campaign.label}. Rp{cfg.rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin.</p>
         <span className="hidden"><ShoppingBag /></span>
       </div>
     </section>
