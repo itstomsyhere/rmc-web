@@ -124,13 +124,16 @@ function HookSection() {
   const facts = [`Rp${rules.earnPerRp.toLocaleString('id-ID')} = 1 poin`, 'Diskon hingga 5%', 'Gratis ongkir', 'Konsultasi bisnis', 'Event tahunan Resique']
   const jump = (e: React.MouseEvent) => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }
   return (
-    <section id="hook" className="relative isolate z-20 scroll-mt-20 overflow-hidden bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
-      <Doodle variant="footer" />
-      <Wire className="left-[-70px] top-[60px] hidden h-52 w-52 text-green/50 lg:block" />
-      <Wire className="right-[-60px] top-[-40px] hidden h-40 w-40 text-white/25 lg:block [animation-direction:reverse]" />
-      <Wire className="bottom-[40px] left-[40%] hidden h-24 w-24 text-green/35 lg:block" />
-      <span aria-hidden className="float-6 pointer-events-none absolute left-[-30px] top-[220px] hidden h-16 w-16 rounded-full bg-green/70 lg:block" />
-      <span aria-hidden className="pointer-events-none absolute bottom-[-90px] right-[24%] hidden h-52 w-52 rounded-full border-[16px] border-white/[.06] lg:block" />
+    <section id="hook" className="relative isolate z-20 scroll-mt-20 bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
+      {/* decorations live in their own clipped layer so the facts strip below can hang out of the section */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <Doodle variant="footer" />
+        <Wire className="left-[-70px] top-[60px] hidden h-52 w-52 text-green/50 lg:block" />
+        <Wire className="right-[-60px] top-[-40px] hidden h-40 w-40 text-white/25 lg:block [animation-direction:reverse]" />
+        <Wire className="bottom-[40px] left-[40%] hidden h-24 w-24 text-green/35 lg:block" />
+        <span className="float-6 absolute left-[-30px] top-[220px] hidden h-16 w-16 rounded-full bg-green/70 lg:block" />
+        <span className="absolute bottom-[-90px] right-[24%] hidden h-52 w-52 rounded-full border-[16px] border-white/[.06] lg:block" />
+      </div>
       <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="min-w-0 lg:col-span-6">
           <p className="hook-in inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-[13px] font-bold text-green-200"><Sparkles className="h-4 w-4 text-green" strokeWidth={2} aria-hidden />Golden Privilege · Golden Sale</p>
