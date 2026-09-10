@@ -12,7 +12,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok(order.every((v, i) => i === 0 || v > order[i - 1]), 'sections in the specified order')
 
   const t = await text(p)
-  ok(/Resique Turun Harga!/.test(t), 'hook title "Resique Turun Harga!" (exclamation)')
+  ok(/Resique Turun Harga!/i.test(t), 'hook title "Resique Turun Harga!" (exclamation; rendered uppercase since R.025)')
   ok(/Harga turun paling besar/.test(t) && !/Contoh harga turun/.test(t), 'hook drop card titled "Harga turun paling besar" (no "Contoh")')
   ok((await p.locator('#benefit ul > li').count()) === 5, '5 privilege blocks (diskon · ongkir · konsultasi · redeem · event)')
   ok(/Diskon belanja/.test(t) && /Gratis ongkir/.test(t) && /Gratis konsultasi bisnis/.test(t) && /Redeem poin/.test(t) && /Event tahunan eksklusif Resique/.test(t), 'all 5 privilege titles present')

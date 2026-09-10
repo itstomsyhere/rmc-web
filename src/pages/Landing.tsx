@@ -124,7 +124,7 @@ function HookSection() {
   const facts = [`Rp${rules.earnPerRp.toLocaleString('id-ID')} = 1 poin`, 'Diskon hingga 5%', 'Gratis ongkir', 'Konsultasi bisnis', 'Event tahunan Resique']
   const jump = (e: React.MouseEvent) => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }
   return (
-    <section id="hook" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
+    <section id="hook" className="relative isolate z-20 scroll-mt-20 overflow-hidden bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
       <Doodle variant="footer" />
       <Wire className="left-[-70px] top-[60px] hidden h-52 w-52 text-green/50 lg:block" />
       <Wire className="right-[-60px] top-[-40px] hidden h-40 w-40 text-white/25 lg:block [animation-direction:reverse]" />
@@ -149,7 +149,7 @@ function HookSection() {
           <Reveal delay={120} className="hook-card-wrap relative mx-auto h-[400px] w-full max-w-[560px] min-w-0 sm:h-[460px] lg:col-span-6 lg:mx-0 lg:h-[520px] lg:max-w-none">
             {/* the three biggest drops (Rp saved) as floating photo tiles, the featured one front-left with the seal */}
             {drops.slice(0, 1).map(d => (
-              <div key={d.id} className="hook-float absolute left-0 top-8 z-10 w-[68%] sm:top-10">
+              <div key={d.id} className="hook-float absolute left-0 top-14 z-10 w-[68%] sm:top-16">
                 <a href="#golden-sale" onClick={jump} className="hook-card group relative block overflow-hidden rounded-xl bg-white shadow-3" data-no-press>
                   <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" />
                   <span className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" aria-hidden />
@@ -178,8 +178,8 @@ function HookSection() {
                 </a>
               </div>
             ))}
-            <a href="#golden-sale" onClick={jump} className="arrow-nudge absolute bottom-0 left-0 z-10 inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-white px-4 text-[13px] font-bold text-navy-700 shadow-2 transition-transform duration-base hover:-translate-y-0.5">
-              Harga turun paling besar · semua {activeCount} produk promo <ArrowRight className="h-4 w-4" strokeWidth={2} />
+            <a href="#golden-sale" onClick={jump} className="arrow-nudge absolute left-0 top-0 z-20 inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-white px-3.5 text-[13px] font-bold text-navy-700 shadow-2 transition-transform duration-base hover:-translate-y-0.5">
+              Harga turun paling besar <span className="t-num rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] text-green-700">{activeCount} produk</span> <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </a>
           </Reveal>
         )}
