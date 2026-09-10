@@ -76,14 +76,14 @@ function Seal({ pct, className }: { pct: number; className?: string }) {
 }
 
 /* Hook headline: each word rises in on load (stagger), the last word keeps the highlighter mark for the gate. */
-function StaggerWords({ text }: { text: string }) {
+function StaggerWords({ text, neon }: { text: string; neon?: boolean }) {
   const words = text.trim().split(' ')
   return (
     <>
       {words.map((w, i) => (
         <React.Fragment key={i}>
           <span className="hook-word inline-block" style={{ '--i': `${i * 90}ms` } as React.CSSProperties}>
-            {i === words.length - 1 ? <span className="mark mark-green text-navy-700">{w}</span> : w}
+            {i === words.length - 1 ? <span className={cn('mark', neon ? 'mark-neon text-green' : 'mark-green text-navy-700')}>{w}</span> : w}
           </span>
           {i < words.length - 1 ? ' ' : ''}
         </React.Fragment>
@@ -101,80 +101,99 @@ function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: strin
   )
 }
 
-/* 1, Hook: headline left, proof right, the three biggest real price drops from Golden Sale.
-   Content is the visual; no decoration. Animates once on load. */
+/* Wire-frame cube, the floating decoration of the drenched hook (after the summit page's 3D wire shapes). */
+function Wire({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinejoin="round" className={cn('wire pointer-events-none absolute', className)}>
+      <path d="M50 8l38 22v40L50 92 12 70V30z" /><path d="M12 30l38 22 38-22M50 52v40" />
+    </svg>
+  )
+}
+
+/* 1, Hook (Lurd, 10 Sep: "more bombastic", after apiquegroup.com/laundry-innovation-summit): a drenched navy-900 band,
+   the headline giant and uppercase with the last word in neon brand green, a floating collage of the three biggest
+   Golden Sale drops on the right with the HEMAT seal, wire-frame cubes at the edges, and a white facts strip that
+   hangs over the boundary into the hero band. Copy unchanged (config-driven). */
 function HookSection() {
-  const { copy, items } = useConfig(s => s.config)
+  const { copy, items, rules } = useConfig(s => s.config)
   const drops = items.filter(i => i.active && i.realPrice > i.promoPrice)
     .map(i => ({ ...i, pct: Math.round((1 - i.promoPrice / i.realPrice) * 100), save: i.realPrice - i.promoPrice }))
     .sort((a, b) => b.save - a.save).slice(0, 3)
   const maxPct = Math.max(...items.filter(i => i.realPrice > i.promoPrice).map(i => Math.round((1 - i.promoPrice / i.realPrice) * 100)), 0)
+  const activeCount = items.filter(i => i.active).length
+  const facts = [`Rp${rules.earnPerRp.toLocaleString('id-ID')} = 1 poin`, 'Diskon hingga 5%', 'Gratis ongkir', 'Konsultasi bisnis', 'Event tahunan Resique']
+  const jump = (e: React.MouseEvent) => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }
   return (
-    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden pb-12 pt-20 lg:pb-20 lg:pt-24">
-      {/* one solid green band behind the price card (desktop), the only colour on the paper */}
-      <span aria-hidden className="band hidden bg-green-50 lg:block" style={{ top: '-10%', right: '-14%', width: '44%', height: '120%' }} />
-      <Rings className="left-[-160px] top-[-140px] h-[460px] w-[460px] text-green-200" />
-      <span aria-hidden className="pointer-events-none absolute bottom-[-40px] left-[38%] hidden h-[180px] w-[180px] rounded-full border-[10px] border-gold-100 lg:block" />
-      <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
-        <div className="min-w-0 lg:col-span-7">
+    <section id="hook" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
+      <Doodle variant="footer" />
+      <Wire className="left-[-70px] top-[60px] hidden h-52 w-52 text-green/50 lg:block" />
+      <Wire className="right-[-60px] top-[-40px] hidden h-40 w-40 text-white/25 lg:block [animation-direction:reverse]" />
+      <Wire className="bottom-[40px] left-[40%] hidden h-24 w-24 text-green/35 lg:block" />
+      <span aria-hidden className="float-6 pointer-events-none absolute left-[-30px] top-[220px] hidden h-16 w-16 rounded-full bg-green/70 lg:block" />
+      <span aria-hidden className="pointer-events-none absolute bottom-[-90px] right-[24%] hidden h-52 w-52 rounded-full border-[16px] border-white/[.06] lg:block" />
+      <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+        <div className="min-w-0 lg:col-span-6">
+          <p className="hook-in inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-[13px] font-bold text-green-200"><Sparkles className="h-4 w-4 text-green" strokeWidth={2} aria-hidden />Golden Privilege · Golden Sale</p>
           <Reveal>
-            <h1 className="t-display max-w-4xl text-balance text-ink"><StaggerWords text={copy.hook} /></h1>
+            <h1 className="t-mega mt-5 max-w-4xl text-balance uppercase text-white"><StaggerWords text={copy.hook} neon /></h1>
           </Reveal>
-          <p className="hook-in mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-ink-2" style={{ '--i': '260ms' } as React.CSSProperties}>{copy.hookSub}</p>
+          <p className="hook-in mt-6 max-w-xl text-[17px] leading-relaxed text-pretty text-white/80 sm:text-[19px]" style={{ '--i': '260ms' } as React.CSSProperties}>{copy.hookSub}</p>
           <div className="hook-in mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5" style={{ '--i': '360ms' } as React.CSSProperties}>
-            <Button asChild size="lg" className="arrow-nudge hover:-translate-y-0.5">
-              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }}>
-                Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} />
-              </a>
+            <Button asChild size="lg" className="arrow-nudge bg-green text-navy-900 shadow-2 hover:-translate-y-0.5 hover:bg-green-200">
+              <a href="#golden-sale" onClick={jump}>Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} /></a>
             </Button>
-            <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-navy-700 transition-colors duration-base hover:text-navy-800 [--u-bottom:8px]">{copy.ctaPoints} <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>
+            <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">{copy.ctaPoints} <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>
           </div>
         </div>
         {drops.length > 0 && (
-          <Reveal delay={120} className="hook-card-wrap relative min-w-0 lg:col-span-5">
-            {/* three biggest drops (Rp saved) among active Golden Sale items, same config the grid below reads.
-                Photo-led: the biggest drop is the featured tile, the other two sit compact beneath it. The card rests
-                slightly tilted and floats; a gold sticker with the biggest cut sits on its corner. */}
-            <Seal pct={maxPct} className="sticker absolute -right-2 top-8 z-10 h-[92px] w-[92px] sm:-right-5 sm:top-6 sm:h-[112px] sm:w-[112px]" />
-            <div className="hook-card overflow-hidden rounded-xl bg-white shadow-3">
-              <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
-                <p className="text-[15px] font-bold text-ink">Harga turun paling besar</p>
-                <p className="t-num text-[13px] font-semibold text-ink-3">{drops.length} produk</p>
-              </div>
-              {drops.slice(0, 1).map(d => (
-                <a key={d.id} href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="group relative block overflow-hidden" data-no-press>
-                  <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[16/9] w-full object-cover" />
-                  <span className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" aria-hidden />
-                  <span className="absolute left-4 top-4 rounded-md bg-gold px-2.5 py-1 t-code text-[13px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
+          <Reveal delay={120} className="hook-card-wrap relative mx-auto h-[400px] w-full max-w-[560px] min-w-0 sm:h-[460px] lg:col-span-6 lg:mx-0 lg:h-[520px] lg:max-w-none">
+            {/* the three biggest drops (Rp saved) as floating photo tiles, the featured one front-left with the seal */}
+            {drops.slice(0, 1).map(d => (
+              <div key={d.id} className="hook-float absolute left-0 top-8 z-10 w-[68%] sm:top-10">
+                <a href="#golden-sale" onClick={jump} className="hook-card group relative block overflow-hidden rounded-xl bg-white shadow-3" data-no-press>
+                  <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" />
+                  <span className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" aria-hidden />
+                  <span className="absolute left-4 top-4 rounded-md bg-gold px-2.5 py-1 text-[13px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
                   <span className="absolute inset-x-4 bottom-4 flex flex-col text-white">
                     <span className="block truncate text-[15px] font-bold">{d.name}</span>
                     <span className="mt-1 flex items-baseline gap-2">
-                      <span className="t-fig text-[24px] leading-none">{rupiah(d.promoPrice)}</span>
+                      <span className="t-fig text-[26px] leading-none sm:text-[30px]">{rupiah(d.promoPrice)}</span>
                       <span className="t-num text-[13px] font-semibold text-white/75"><span className="strike">{rupiah(d.realPrice)}</span></span>
                     </span>
                   </span>
                 </a>
-              ))}
-              <ul className="grid grid-cols-2 gap-px bg-line-2">
-                {drops.slice(1, 3).map(d => (
-                  <li key={d.id} className="bg-white">
-                    <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="group flex h-full items-center gap-3 px-4 py-3 transition-colors duration-base hover:bg-surface-2" data-no-press>
-                      <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-md bg-surface-2"><img src={d.image} alt="" width={800} height={600} className="zoom-img h-full w-full object-cover" /></span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-[13px] font-semibold text-ink">{d.name}</span>
-                        <span className="t-fig mt-0.5 block text-[16px] leading-tight text-green-700">{rupiah(d.promoPrice)}</span>
-                        <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1"><span className="t-num strike text-[12px] font-semibold text-ink-3">{rupiah(d.realPrice)}</span><span className="t-num inline-block rounded-md bg-gold-100 px-1.5 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span></span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <a href="#golden-sale" onClick={e => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }} className="arrow-nudge flex min-h-[48px] items-center justify-between border-t border-line-2 px-5 text-[14px] font-semibold text-navy-700 transition-colors duration-base hover:bg-green-50">
-                Semua {items.filter(i => i.active).length} produk promo <ArrowRight className="h-4 w-4" strokeWidth={2} />
-              </a>
-            </div>
+                <Seal pct={maxPct} className="sticker absolute -right-6 -top-7 z-20 h-[96px] w-[96px] sm:-right-8 sm:-top-9 sm:h-[120px] sm:w-[120px]" />
+              </div>
+            ))}
+            {drops.slice(1, 3).map((d, i) => (
+              <div key={d.id} className={cn('hook-float absolute w-[46%]', i === 0 ? 'right-0 top-0 [animation-delay:1.6s]' : 'bottom-6 right-[4%] [animation-delay:3.2s] sm:bottom-8')}>
+                <a href="#golden-sale" onClick={jump} className={cn('group relative block overflow-hidden rounded-xl bg-white shadow-3 transition-transform duration-slow ease-out hover:rotate-0', i === 0 ? 'rotate-[6deg]' : 'rotate-[-5deg]')} data-no-press>
+                  <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" />
+                  <span className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 to-transparent" aria-hidden />
+                  <span className="absolute left-3 top-3 rounded-md bg-gold px-2 py-0.5 text-[12px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
+                  <span className="absolute inset-x-3 bottom-3 flex flex-col text-white">
+                    <span className="block truncate text-[12px] font-semibold">{d.name}</span>
+                    <span className="t-fig text-[17px] leading-none">{rupiah(d.promoPrice)}</span>
+                  </span>
+                </a>
+              </div>
+            ))}
+            <a href="#golden-sale" onClick={jump} className="arrow-nudge absolute bottom-0 left-0 z-10 inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-white px-4 text-[13px] font-bold text-navy-700 shadow-2 transition-transform duration-base hover:-translate-y-0.5">
+              Harga turun paling besar · semua {activeCount} produk promo <ArrowRight className="h-4 w-4" strokeWidth={2} />
+            </a>
           </Reveal>
         )}
+      </div>
+      {/* facts strip, white, hangs over the boundary into the hero band (the summit page's partner strip, but with the programme's facts) */}
+      <div className="container relative z-20 mt-14 lg:mt-16">
+        <ul data-hook-strip className="hook-in -mb-36 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-xl bg-white px-4 py-3 shadow-3 sm:gap-x-0 lg:-mb-40" style={{ '--i': '520ms' } as React.CSSProperties}>
+          {facts.map((f, i) => (
+            <li key={f} className="flex items-center text-[13px] font-bold text-navy-700 sm:text-[14px]">
+              {i > 0 && <span className="mx-3 hidden h-1.5 w-1.5 rounded-full bg-green sm:block" aria-hidden />}
+              <span className="rounded-md px-2 py-1 transition-colors duration-base hover:bg-green-50">{f}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   )
@@ -187,7 +206,7 @@ function HeroSection() {
   const acc = useCurrentAccount()
   const strip = [...assets.heroPrizes, ...assets.heroPrizes]
   return (
-    <section id="hero" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-700 py-14 text-white lg:py-20">
+    <section id="hero" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-700 pb-14 pt-32 text-white lg:pb-20 lg:pt-40">
       <Doodle variant="hero" />
       {/* one solid darker band behind the deck for depth, no gradient, no blur */}
       <span aria-hidden className="band bg-navy-800" style={{ right: '-10%', bottom: '-30%', width: '60%', height: '70%' }} />

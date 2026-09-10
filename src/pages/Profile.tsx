@@ -88,6 +88,8 @@ function ProfileBody({ account }: { account: Account }) {
           {linked ? (
             <>
               <Reveal delay={40}><PointsChart rmc={rmc} earnPerRp={cfg.rules.earnPerRp} /></Reveal>
+              {/* Riwayat pesanan sits right under the transaction graph (Lurd, 10 Sep) */}
+              <Reveal delay={60}><OrderList rows={myOrders} /></Reveal>
               <Reveal delay={80}><PrizeGrid account={account} points={rmc.points} /></Reveal>
               {myRedemptions.length > 0 && <Reveal delay={100} className="lg:hidden"><RedemptionList rows={myRedemptions} /></Reveal>}
             </>
@@ -104,7 +106,7 @@ function ProfileBody({ account }: { account: Account }) {
               </Card>
             </Reveal>
           )}
-          <Reveal delay={120}><OrderList rows={myOrders} /></Reveal>
+          {!linked && <Reveal delay={120}><OrderList rows={myOrders} /></Reveal>}
         </div>
       </div>
     </div>
@@ -375,7 +377,7 @@ function OrderList({ rows }: { rows: Order[] }) {
     <Card>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-navy-50 text-navy-700"><ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} /></span>
-        <div><CardTitle>Pesanan Golden Sale kamu</CardTitle><CardDescription className="mt-1">{rows.length === 0 ? 'Belum ada pesanan' : `${rows.length} pesanan · hanya Lunas yang menambah poin`}</CardDescription></div>
+        <div><CardTitle>Riwayat pesanan</CardTitle><CardDescription className="mt-1">{rows.length === 0 ? 'Belum ada pesanan Golden Sale' : `${rows.length} pesanan Golden Sale · hanya Lunas yang menambah poin`}</CardDescription></div>
       </CardHeader>
       <CardContent>
         {show.length === 0 ? (

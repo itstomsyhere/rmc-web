@@ -185,9 +185,16 @@ body {
   @keyframes rise-in { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: translateY(0); } }
   .hook-word { animation: rise-in 520ms var(--ease-out) both; animation-delay: var(--i, 0ms); }
   .hook-in { animation: rise-in 520ms var(--ease-out) both; animation-delay: var(--i, 0ms); }
-  .hook-card { transform: rotate(-2deg); transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out); animation: deck-float 7s ease-in-out 1.2s infinite; }
-  @media (hover: hover) { .hook-card-wrap:hover .hook-card { transform: rotate(0deg) translateY(-6px); animation-play-state: paused; } }
+  /* the wrapper floats (translateY only), the card holds the tilt, so hover can straighten it */
+  .hook-float { animation: deck-float 7s ease-in-out 1.2s infinite; will-change: transform; }
+  .hook-card { transform: rotate(-3deg); transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out); }
+  @media (hover: hover) { .hook-card-wrap:hover .hook-float { animation-play-state: paused; } .hook-card-wrap:hover .hook-card { transform: rotate(0deg) translateY(-6px); } }
   .hook-card-wrap:active .hook-card { transform: rotate(0deg) scale(.99); }
+  /* giant uppercase headline of the drenched hook: 6rem ceiling, tight but never touching */
+  .t-mega { font-weight: 800; letter-spacing: -0.03em; line-height: .96; font-size: clamp(44px, 8.2vw, 96px); }
+  .mark-neon { --mark: rgba(113, 189, 65, .22); }
+  @keyframes wire-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .wire { animation: wire-spin 48s linear infinite; }
   @keyframes sticker-in { 0% { opacity: 0; transform: rotate(-40deg) scale(.5); } 100% { opacity: 1; transform: rotate(-12deg) scale(1); } }
   @keyframes seal-spin { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(-6deg); } }
   .sticker { transform: rotate(-12deg); animation: sticker-in 600ms cubic-bezier(.34, 1.56, .64, 1) 700ms both, seal-spin 6s ease-in-out 1.4s infinite; }
