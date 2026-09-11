@@ -691,7 +691,6 @@ function GoldenSaleSection() {
   return (
     <section id="golden-sale" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
       <SaleConfetti />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 bottom-10 select-none whitespace-nowrap [--wm:rgba(255,255,255,.08)] lg:bottom-6">GOLDEN SALE!!</span>
       {/* angled gold ribbon marquee across the top edge */}
       <div aria-hidden className="ribbon pointer-events-none absolute inset-x-[-6%] top-3 overflow-hidden bg-gold py-2 text-gold-ink shadow-2 lg:top-4">
         <ul className="marquee-track gap-0" style={{ animationDuration: '28s' }}>
@@ -812,19 +811,19 @@ function KlasemenSection() {
   const grand = cfg.assets.heroPrizes[0]
   const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
   return (
-    <section id="klasemen" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 pb-10 pt-14 lg:pb-14 lg:pt-24">
-      {/* the arena: gold ground, a navy stage floor under the podium, two spotlight beams, a gold banner behind the title,
-          rings, sparkles drifting (watermark + confetti dots removed 11 Sep) */}
-      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[30%] lg:h-[620px] lg:w-[110%]" />
-      <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/40 lg:block" />
-      <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/40 lg:block" />
-      <span aria-hidden className="band bg-gold-100" style={{ left: '-8%', top: '-6%', width: '46%', height: '30%' }} />
-      <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold" />
-      <Rings className="left-[-160px] top-[-140px] h-[360px] w-[360px] text-navy-200" />
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        {['left-[12%] top-[200px]', 'right-[14%] top-[60px] hidden md:block', 'left-[48%] top-[40px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
-      </div>
+    <section id="klasemen" className="scroll-mt-20 bg-white pb-10 pt-14 lg:pb-14 lg:pt-24">
       <div className="container">
+        {/* the frame: a gold panel that carries the arena (navy stage floor, spotlight beams, rings, sparkles);
+            the section itself stays plain white (Lurd, 11 Sep) */}
+        <div data-klasemen-frame className="tex tex-grain relative isolate overflow-hidden rounded-2xl bg-gold-50 px-5 py-8 ring-1 ring-gold-100 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+          <span aria-hidden className="pointer-events-none absolute left-1/2 top-[40%] -z-10 h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[32%] lg:h-[620px] lg:w-[110%]" />
+          <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/40" />
+          <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/40" />
+          <Rings className="right-[-120px] bottom-[-100px] -z-10 h-[380px] w-[380px] text-gold" />
+          <Rings className="left-[-160px] top-[-140px] -z-10 h-[360px] w-[360px] text-navy-200" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+            {['left-[8%] top-[140px]', 'right-[10%] top-[40px] hidden md:block', 'left-[48%] top-[24px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
+          </div>
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
           <ol className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-3 sm:items-end sm:gap-4" aria-label="Peringkat belanja Golden Sale">
@@ -891,6 +890,7 @@ function KlasemenSection() {
             )}
           </ol>
         )}
+        </div>
         <p className="t-num mt-6 max-w-2xl text-[13px] leading-relaxed text-ink-2">Yang dihitung: pesanan Lunas (bukti bayar sudah diverifikasi) dalam periode {cfg.campaign.label}. Rp{cfg.rules.earnPerRp.toLocaleString('id-ID')} belanja = 1 poin.</p>
         <span className="hidden"><ShoppingBag /></span>
       </div>
