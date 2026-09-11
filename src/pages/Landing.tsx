@@ -65,6 +65,35 @@ function Rings({ className }: { className?: string }) {
   )
 }
 
+/* Celebration ground after the Figma Golden Sale frame (Lurd, 11 Sep): deep navy, thin diagonal streaks, gold confetti
+   slivers, four-point stars and a few dots. `dim` = streaks only (the banner section ground). Rotation sits on a wrapping
+   <g> so the CSS float on the inner shape does not override it. Decorative only. */
+function Streaks({ dim, className }: { dim?: boolean; className?: string }) {
+  const lines = [[-40, 120, 260, -60], [60, 380, 420, 140], [200, 620, 620, 340], [520, 80, 760, -80], [640, 540, 980, 320], [880, 300, 1120, 140], [960, 660, 1260, 460], [1040, 40, 1240, -90], [300, -20, 460, -120], [-20, 520, 180, 400], [420, 700, 700, 520], [720, -40, 900, -160], [1140, 560, 1300, 450], [140, 260, 300, 150], [760, 220, 900, 130], [560, 420, 700, 330], [1000, 420, 1130, 340], [240, 480, 360, 400], [820, 620, 1000, 500], [-30, 300, 90, 220]]
+  const confetti = [[90, 60, -30], [330, 540, 20], [700, 90, -15], [1080, 470, 35], [1150, 120, -25], [520, 300, 15], [260, 200, -40], [900, 560, 10], [40, 440, 50], [620, 20, -60]]
+  const stars = [[150, 140, 9], [1010, 70, 7], [820, 520, 8], [480, 560, 6], [1170, 330, 5], [380, 90, 5]]
+  const dots = [[60, 200, 4, '#71BD41'], [980, 200, 3, '#F6E8CC'], [720, 400, 3, '#71BD41'], [240, 620, 4, '#D4A04E'], [1120, 590, 3, '#F6E8CC'], [560, 180, 2.5, '#D4A04E']]
+  const star = (r: number) => `M0 ${-r}c${r * .1} ${r * .55} ${r * .45} ${r * .9} ${r} ${r}c${-r * .55} ${r * .1} ${-r * .9} ${r * .45} ${-r} ${r}c${-r * .1} ${-r * .55} ${-r * .45} ${-r * .9} ${-r} ${-r}c${r * .55} ${-r * .1} ${r * .9} ${-r * .45} ${r} ${-r}z`
+  return (
+    <svg aria-hidden data-streaks className={cn('pointer-events-none absolute inset-0 h-full w-full', className)} viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" fill="none">
+      <g stroke="#2E2A7A" strokeLinecap="round" strokeOpacity={dim ? .5 : .7}>
+        {lines.map(([x1, y1, x2, y2], i) => <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={i % 3 === 0 ? 2 : 1} />)}
+      </g>
+      {!dim && (
+        <>
+          <g fill="#D4A04E">
+            {confetti.map(([x, y, r], i) => <g key={i} transform={`translate(${x} ${y}) rotate(${r})`}><rect x="-7" y="-3" width="14" height="6" rx="1.5" className="float-6" style={{ animationDelay: `${(i * 0.7) % 4}s` }} /></g>)}
+          </g>
+          <g fill="#F6E8CC">
+            {stars.map(([x, y, r], i) => <g key={i} transform={`translate(${x} ${y})`}><path d={star(r)} className="twinkle" style={{ animationDelay: `${(i * 0.5) % 2.6}s` }} /></g>)}
+          </g>
+          {dots.map(([x, y, r, c], i) => <circle key={i} cx={x as number} cy={y as number} r={r as number} fill={c as string} className="twinkle" style={{ animationDelay: `${(i * 0.9) % 2.6}s` }} />)}
+        </>
+      )}
+    </svg>
+  )
+}
+
 /* Wire-frame cube, the floating decoration of the banner (after the summit page's 3D wire shapes). */
 function Wire({ className }: { className?: string }) {
   return (
@@ -177,14 +206,12 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-navy-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
-      {/* the paper behind the banner card is worked: a green band, rings, a dot field, so the card floats on something */}
-      <span aria-hidden className="band bg-navy-100" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
-      <span aria-hidden className="band bg-white/80" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
-      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-navy-200" />
-      <span aria-hidden className="tex-dots-field pointer-events-none absolute inset-y-0 left-0 w-1/2" />
+    <section id="hook" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-800 pb-10 pt-5 lg:pb-14 lg:pt-8">
+      {/* the field behind the banner card: the same deep-navy streak ground as the Golden Sale frame, quieter (streaks
+          only), so the card sits dark-on-dark in one family instead of pale paper against a navy card */}
+      <Streaks dim className="-z-10" />
       <div className="container relative">
-        <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
+        <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3 ring-1 ring-white/10" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
           <BannerGround />
           <div ref={track} className="banner-track no-scrollbar flex snap-x snap-mandatory overflow-x-auto" role="region" aria-roledescription="carousel" aria-label="Banner Golden Privilege">
             {slides.map((sl, i) => {
@@ -690,6 +717,7 @@ function GoldenSaleSection() {
   const ribbon = Array.from({ length: 8 }, (_, i) => i)
   return (
     <section id="golden-sale" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
+      <Streaks />
       <SaleConfetti />
       {/* angled gold ribbon marquee across the top edge */}
       <div aria-hidden className="ribbon pointer-events-none absolute inset-x-[-6%] top-3 overflow-hidden bg-gold py-2 text-gold-ink shadow-2 lg:top-4">
@@ -815,16 +843,17 @@ function KlasemenSection() {
       <div className="container">
         {/* the frame: a gold panel that carries the arena (navy stage floor, spotlight beams, rings, sparkles);
             the section itself stays plain white (Lurd, 11 Sep) */}
-        <div data-klasemen-frame className="tex tex-grain relative isolate overflow-hidden rounded-2xl bg-gold-50 px-5 py-8 ring-1 ring-gold-100 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
-          <span aria-hidden className="pointer-events-none absolute left-1/2 top-[40%] -z-10 h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[32%] lg:h-[620px] lg:w-[110%]" />
-          <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/40" />
-          <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/40" />
+        <div data-klasemen-frame className="relative isolate overflow-hidden rounded-2xl bg-navy-900 px-5 py-8 text-white ring-1 ring-white/10 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+          <Streaks className="-z-10" />
+          <span aria-hidden className="pointer-events-none absolute left-1/2 top-[42%] -z-10 h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-800 lg:top-[34%] lg:h-[620px] lg:w-[110%]" />
+          <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/[.04]" />
+          <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] -z-10 h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/[.04]" />
           <Rings className="right-[-120px] bottom-[-100px] -z-10 h-[380px] w-[380px] text-gold" />
-          <Rings className="left-[-160px] top-[-140px] -z-10 h-[360px] w-[360px] text-navy-200" />
+          <Rings className="left-[-160px] top-[-140px] -z-10 h-[360px] w-[360px] text-navy-500" />
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
             {['left-[8%] top-[140px]', 'right-[10%] top-[40px] hidden md:block', 'left-[48%] top-[24px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
           </div>
-        <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
+<SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} tone="white" />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
           <ol className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-3 sm:items-end sm:gap-4" aria-label="Peringkat belanja Golden Sale">
             {top.map((r, i) => {
@@ -836,7 +865,7 @@ function KlasemenSection() {
                 return (
                   <Reveal as="li" key={r.key} data-rank={r.rank} delay={first ? 320 : i === 1 ? 160 : 0}
                     className={cn('lift podium-rise relative flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-4 text-left sm:flex-col sm:flex-nowrap sm:items-center sm:justify-start sm:gap-0 sm:px-4 sm:pb-4 sm:pt-5 sm:text-center', ['podium-1', 'podium-2', 'podium-3'][i],
-                      first ? 'ring-pulse bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-white sm:order-2 sm:min-h-[340px] sm:pb-6 sm:pt-7' : 'border sm:order-1',
+                      first ? 'ring-pulse bg-navy-700 text-white ring-2 ring-gold ring-offset-2 ring-offset-navy-900 sm:order-2 sm:min-h-[340px] sm:pb-6 sm:pt-7' : 'border sm:order-1',
                       i === 1 && 'border-[#C0C6CE] bg-[#F3F5F8] sm:min-h-[292px]',
                       i === 2 && 'border-[#E3C3A8] bg-[#FBF3EC] sm:order-3 sm:min-h-[256px]')}>
                     {/* big faint rank number, like the tier columns */}
@@ -866,26 +895,26 @@ function KlasemenSection() {
                 )
               }
               return (
-                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide -mx-3 rounded-md px-3 py-3 hover:bg-surface-2 sm:order-4 sm:col-span-3 sm:-mx-4 sm:px-4', i === 3 && 'mt-2 sm:mt-4', me && 'bg-green-50 hover:bg-green-50')}>
+                <Reveal as="li" key={r.key} data-rank={r.rank} delay={Math.min(i, 9) * 40} className={cn('slide -mx-3 rounded-md px-3 py-3 hover:bg-white/10 sm:order-4 sm:col-span-3 sm:-mx-4 sm:px-4', i === 3 && 'mt-2 sm:mt-4', me && 'bg-green/15 hover:bg-green/15')}>
                   <div className="flex items-center gap-4">
-                    <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-[15px] text-ink-3">{r.rank}</span>
+                    <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white/10 text-[15px] text-white/70">{r.rank}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[15px] font-bold text-ink">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
-                      {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-ink-2">{r.pic} · {r.orders} transaksi</p>}
+                      <p className="truncate text-[15px] font-bold text-white">{r.laundry}{me && <Badge className="ml-2 align-middle">Kamu</Badge>}</p>
+                      {cfg.klasemen.showPic && <p className="t-num truncate text-[13px] text-white/65">{r.pic} · {r.orders} transaksi</p>}
                     </div>
-                    <p className="t-fig shrink-0 text-[15px] text-navy-700 sm:text-[17px]">{rupiah(r.spend)}</p>
+                    <p className="t-fig shrink-0 text-[15px] text-gold sm:text-[17px]">{rupiah(r.spend)}</p>
                   </div>
-                  <div className="mt-2 h-1 overflow-hidden rounded-full bg-line-2" style={{ marginLeft: 52 }} aria-hidden>
-                    <div className="bar-fill h-full rounded-full bg-green-200" style={{ width: `${share}%` }} />
+                  <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/15" style={{ marginLeft: 52 }} aria-hidden>
+                    <div className="bar-fill h-full rounded-full bg-green" style={{ width: `${share}%` }} />
                   </div>
                 </Reveal>
               )
             })}
             {mine && mine.rank > cfg.klasemen.topN && (
-              <li className="-mx-3 mt-2 flex items-center gap-4 rounded-md bg-green-50 px-3 py-3.5 sm:order-5 sm:col-span-3 sm:-mx-4 sm:px-4">
+              <li className="-mx-3 mt-2 flex items-center gap-4 rounded-md bg-green/15 px-3 py-3.5 sm:order-5 sm:col-span-3 sm:-mx-4 sm:px-4">
                 <span className="t-fig grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white text-[15px] text-navy-700">{mine.rank}</span>
-                <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-ink">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-ink-2">Peringkatmu saat ini</p></div>
-                <p className="t-fig text-[15px] text-navy-700">{rupiah(mine.spend)}</p>
+                <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-bold text-white">{mine.laundry} <Badge className="ml-1 align-middle">Kamu</Badge></p><p className="text-[13px] text-white/65">Peringkatmu saat ini</p></div>
+                <p className="t-fig text-[15px] text-gold">{rupiah(mine.spend)}</p>
               </li>
             )}
           </ol>

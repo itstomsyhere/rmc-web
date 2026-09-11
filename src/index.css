@@ -171,6 +171,9 @@ body {
     .tier-card:active .bar, .tier-card[data-reveal="in"] .bar { transform: scaleX(1); }
   }
   @keyframes float-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  /* Streaks ground: stars and dots breathe (opacity only) */
+  @keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+  .twinkle { animation: twinkle 2.6s ease-in-out infinite alternate; }
   .float-6 { animation: float-6 5s ease-in-out infinite; }
 
   /* Basket / pay bar: springs up from the edge, the checkout button pops once after it (Lurd, 8 Sep: "fun when appears") */
