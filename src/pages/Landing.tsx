@@ -120,10 +120,10 @@ function StaggerWords({ text, neon }: { text: string; neon?: boolean }) {
   )
 }
 
-function SectionTitle({ title, sub, tone = 'ink', center, phrase }: { title: string; sub?: string; tone?: 'ink' | 'white'; center?: boolean; phrase?: string }) {
+function SectionTitle({ title, sub, tone = 'ink', center, phrase, mark }: { title: string; sub?: string; tone?: 'ink' | 'white'; center?: boolean; phrase?: string; mark?: string }) {
   return (
     <Reveal className={cn('max-w-2xl', center && 'mx-auto text-center')}>
-      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}><Marked text={title} phrase={phrase} className={tone === 'white' ? 'mark-light text-green' : undefined} /></h2>
+      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}><Marked text={title} phrase={phrase} className={mark ?? (tone === 'white' ? 'mark-light text-green' : undefined)} /></h2>
       {sub && <p className={cn('mt-3 text-[15px] leading-relaxed text-pretty sm:text-[17px]', tone === 'white' ? 'text-white/80' : 'text-ink-2')}>{sub}</p>}
     </Reveal>
   )
@@ -206,12 +206,11 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-800 pb-10 pt-5 lg:pb-14 lg:pt-8">
-      {/* the field behind the banner card: the same deep-navy streak ground as the Golden Sale frame, quieter (streaks
-          only), so the card sits dark-on-dark in one family instead of pale paper against a navy card */}
-      <Streaks dim className="-z-10" />
+    <section id="hook" className="scroll-mt-20 bg-navy-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
+      {/* a quiet shade under the banner card, nothing else: the card carries all the depth (Lurd, 11 Sep: the field was
+          distracting from the banner) */}
       <div className="container relative">
-        <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3 ring-1 ring-white/10" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
+        <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
           <BannerGround />
           <div ref={track} className="banner-track no-scrollbar flex snap-x snap-mandatory overflow-x-auto" role="region" aria-roledescription="carousel" aria-label="Banner Golden Privilege">
             {slides.map((sl, i) => {
@@ -853,7 +852,7 @@ function KlasemenSection() {
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
             {['left-[8%] top-[140px]', 'right-[10%] top-[40px] hidden md:block', 'left-[48%] top-[24px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
           </div>
-<SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} tone="white" />
+<SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} tone="white" mark="mark-gold text-gold [--mark:rgba(212,160,78,.38)]" />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
           <ol className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-3 sm:items-end sm:gap-4" aria-label="Peringkat belanja Golden Sale">
             {top.map((r, i) => {

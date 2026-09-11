@@ -7,7 +7,6 @@ import { srcSet2x } from '@/lib/logo'
 import { Reveal } from '@/lib/reveal'
 import { cn } from '@/lib/utils'
 import { CONTACTS, EXT, SOCIALS } from '@/data/contacts'
-import { Doodle } from '@/components/Doodle'
 
 const SOCIAL_ICON = { instagram: Instagram, youtube: Youtube, facebook: Facebook } as const
 
@@ -35,7 +34,6 @@ export function SiteFooter() {
   const jump = (to: string) => (e: React.MouseEvent) => { if (to.startsWith('/#') && location.hash.replace(/\?.*$/, '') === '#/') { e.preventDefault(); document.getElementById(to.slice(2))?.scrollIntoView({ behavior: 'smooth' }) } }
   return (
     <footer className={cn("tex tex-grain relative isolate mt-auto overflow-hidden bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]", hasCart && onLanding && "pb-24")}>
-      <Doodle variant="footer" />
       <Reveal className="container relative z-10 grid grid-cols-1 gap-10 pb-12 pt-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:pb-16 lg:pt-12">
         <div>
           <img src={cfg.assets.logoWhite} srcSet={srcSet2x(cfg.assets.logoWhite)} alt="Resique Supermarket Laundry" width={180} height={39} className="h-9 w-auto" loading="lazy" decoding="async" />
