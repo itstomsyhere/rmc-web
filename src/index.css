@@ -190,8 +190,11 @@ body {
   .hook-card { transform: rotate(-3deg); transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out); }
   @media (hover: hover) { .hook-card-wrap:hover .hook-float { animation-play-state: paused; } .hook-card-wrap:hover .hook-card { transform: rotate(0deg) translateY(-6px); } }
   .hook-card-wrap:active .hook-card { transform: rotate(0deg) scale(.99); }
-  /* giant uppercase headline of the drenched hook: 6rem ceiling, tight but never touching */
-  .t-mega { font-weight: 800; letter-spacing: -0.03em; line-height: .96; font-size: clamp(44px, 8.2vw, 96px); }
+  /* giant uppercase banner headline: 5rem ceiling inside the card, tight but never touching */
+  .t-mega { font-weight: 800; letter-spacing: -0.03em; line-height: .98; font-size: clamp(36px, 6.4vw, 80px); }
+  /* banner slider: native scroll-snap, one slide per viewport of the track */
+  .banner-track { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .banner-track > * { scroll-snap-stop: always; }
   .mark-neon { --mark: rgba(113, 189, 65, .22); }
   @keyframes wire-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   .wire { animation: wire-spin 48s linear infinite; }

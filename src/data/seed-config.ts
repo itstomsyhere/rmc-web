@@ -14,14 +14,12 @@ export const SEED_TIERS: Tier[] = [
   { key: 'ultimate',     name: 'Ultimate',     sw: '#211A5A', fg: '#8A6A00', min: 120_000_000, max: null,        perMonth: '> Rp20 jt',  discount: 5, freeDelivMin: 350_000, consult: 2, benefitCopy: 'Diskon 5%, gratis ongkir min. Rp350 rb, konsultasi bisnis 2 sesi per bulan.' },
 ]
 
-/* Five RMC privileges (Lurd, 4 Sep), wording per RSQ-RMC-001 v2.0 §3–§6. Golden Privilege prizes are campaign-specific
-   (admin-defined, BR-4.11); the RMC policy itself redeems poin as voucher belanja. */
 export const SEED_BENEFITS: Benefit[] = [
-  { id: 'b-diskon',     icon: 'Percent',        figure: 'Hingga 5%', figureNote: 'diskon belanja', title: 'Diskon belanja',                  desc: 'Naik level, naik potongan: 1% sampai 5%, langsung dipotong di kasir tanpa klaim apa pun. Mitra Apique Management dapat minimal 3% sejak Starter.' },
-  { id: 'b-ongkir',     icon: 'Truck',          figure: 'Gratis',    figureNote: 'ongkir',         title: 'Gratis ongkir',                   desc: 'Berlaku di semua level, tiap transaksi. Belanja Rp500 rb ke atas (Starter–Intermediate) atau Rp350 rb ke atas (Winner ke atas), ongkirnya kami yang tanggung.' },
-  { id: 'b-konsultasi', icon: 'MessagesSquare', figure: '1-2 sesi',  figureNote: 'per bulan',      title: 'Gratis konsultasi bisnis',        desc: 'Satu jam bersama trainer Apique Academy untuk bedah strategi laundry-mu. Winner & Champion 1 sesi per bulan, Ultimate 2 sesi per bulan.' },
-  { id: 'b-poin',       icon: 'Gift',           figure: 'Rp1.000',   figureNote: '= 1 poin',       title: 'Redeem poin',                     desc: 'Tiap Rp1.000 belanja jadi 1 poin, otomatis (mesin cuci tidak dihitung). Kumpulkan 500 poin, tukar jadi voucher belanja atau hadiah Golden Privilege. Poin hangus 20 Des, tukar sebelum itu.' },
-  { id: 'b-event',      icon: 'PartyPopper',    figure: '1×',        figureNote: 'tiap Desember',  title: 'Event tahunan eksklusif Resique', desc: 'Belanja terbanyak Juli–Desember? Kamu diundang ke event apresiasi akhir tahun, RMC biasa maupun Mitra, lengkap dengan undian grandprize khusus tamu undangan.' },
+  /* R.026 (11 Sep): the four benefits of the RGP UI mock, wording verbatim (the stakeholder keeps the PDF as the landing page). */
+  { id: 'b-diskon',     icon: 'Percent',        title: 'Diskon Belanja',            desc: 'Langsung dipotong saat transaksi' },
+  { id: 'b-ongkir',     icon: 'Truck',          title: 'Gratis Ongkir',             desc: 'Sesuai minimum pembelian' },
+  { id: 'b-poin',       icon: 'Coins',          title: 'Reward Point',              desc: 'Setiap transaksi menghasilkan poin untuk ditukarkan voucher belanja.' },
+  { id: 'b-konsultasi', icon: 'MessagesSquare', title: 'Konsultasi Bisnis Laundry', desc: 'Bersama trainer Apique Academy untuk level Winner ke atas' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [
@@ -47,13 +45,13 @@ export const SEED_PRIZES: Prize[] = [
 
 export const DEFAULT_CONFIG: Config = {
   copy: {
-    hook: 'Resique Turun Harga!',
-    hookSub: 'Harga chemical & perlengkapan turun. Setiap Rp1.000 belanja tetap dapat 1 poin RMC.',
-    tagline: 'Tingkatkan transaksi, dapatkan hadiahnya!',
-    taglineSub: 'Rp1.000 belanja = 1 poin RMC. Poin bisa ditukar voucher, parfum, sampai laptop.',
-    benefitTitle: 'Yang didapat member RMC',
-    benefitSub: 'Diskon hingga 5%, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.',
-    tierTitle: 'Diskon tier hingga 5%',
+    hook: 'Sekarang Turun Harga!',
+    hookSub: '+ Banyak Bonusnya!',
+    tagline: 'Tingkatkan Transaksi dan Dapatkan Hadiahnya!',
+    taglineSub: 'Belanja di Resique untuk dapatkan Hadiahnya, TANPA DIUNDI!',
+    benefitTitle: 'Benefit Tak Terbatas dari Resique Member Card',
+    benefitSub: 'Memberikan berbagai keuntungan eksklusif untuk setiap pembelian kebutuhan laundry Anda semakin menguntungkan.',
+    tierTitle: 'Terus naik tingkat & nikmati keuntungan yang lebih besar lagi!',
     tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des).',
     ctaPoints: 'Cek poin-mu!',
     ctaPointsSub: 'Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.',

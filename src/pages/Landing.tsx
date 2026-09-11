@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check, ChevronsRight, Crown, Gift, Medal, ShoppingBag, Sparkles, Trophy, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronLeft, ChevronRight, ChevronsRight, Coins, Crown, Medal, ShoppingBag, ShoppingCart, Sparkles, Star, Ticket, Trophy, X } from 'lucide-react'
 import { BENEFIT_ICONS } from '@/lib/benefit-icons'
 import { Reveal, useCountUp, useInView } from '@/lib/reveal'
 import { poin } from '@/lib/format'
+import type { Benefit, Prize } from '@/model/types'
 import { srcSet2x } from '@/lib/logo'
 import { Doodle } from '@/components/Doodle'
 import { rmcFor } from '@/model/rmc'
@@ -24,12 +25,11 @@ import { Price } from '@/components/shop/Price'
 import { QtyStepper } from '@/components/shop/QtyStepper'
 import type { Config, GoldenSaleItem, Tier } from '@/model/types'
 
-/* Landing, 7 sections, two colour blocks (hero + "Cek poin-mu!" band) in Resique navy, green for action, gold
-   reserved for reward/rank. Rhythm: hook (paper + grain) → hero (navy, prize deck + ticker) → 5 privilege blocks
-   (paper) → tier cards (white, dot field) → CTA band (navy) → Golden Sale (paper, gold band) → Klasemen (white, plus
-   marks). No eyebrows, no gradient text, no orbs, no glass, cards ≤ 10px radius. Motion (R.017): one hero moment (the
-   deck deals in), scroll-in pop on card lists, hover + press on every control, idle float on the deck and the
-   Ultimate badge, reduced-motion respected (index.css). */
+/* Landing (R.026, 11 Sep: the stakeholder keeps the RGP UI mock as the landing page). Rhythm follows the mock: banner
+   card with a slider (hook) → prize grid "Tingkatkan Transaksi dan Dapatkan Hadiahnya!" (hero) → navy benefit band with
+   the member card + four benefits + the four-step strip → six tier columns → "Cek poin-mu!" band → Golden Sale →
+   Klasemen. Resique navy + green, gold reward-only. Copy is config-driven; the mock's words are the seed. Motion:
+   slider autoplay, floating phone / cards, scroll-in pop on card lists, hover + press on every control. */
 
 export function LandingPage() {
   const hasCart = useCart(s => Object.keys(s.qty).length > 0)
@@ -48,7 +48,11 @@ export function LandingPage() {
 }
 
 /* Last word of a title carries the highlighter mark (draws in when the title scrolls into view, .mark in index.css). */
-function Marked({ text, className }: { text: string; className?: string }) {
+function Marked({ text, className, phrase }: { text: string; className?: string; phrase?: string }) {
+  if (phrase && text.includes(phrase)) {
+    const [before, after] = text.split(phrase)
+    return <>{before}<span className={cn('mark', className)}>{phrase}</span>{after}</>
+  }
   const words = text.trim().split(' ')
   return <>{words.slice(0, -1).join(' ')}{words.length > 1 ? ' ' : ''}<span className={cn('mark', className)}>{words.slice(-1)[0]}</span></>
 }
@@ -58,19 +62,6 @@ function Rings({ className }: { className?: string }) {
   return (
     <svg aria-hidden className={cn('pointer-events-none absolute hidden opacity-70 md:block', className)} viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth={1.2}>
       <circle cx="100" cy="100" r="98" /><circle cx="100" cy="100" r="74" /><circle cx="100" cy="100" r="50" /><circle cx="100" cy="100" r="26" />
-    </svg>
-  )
-}
-
-/* Gold scalloped seal for the biggest cut ("HEMAT 16%"): 24-point starburst, navy text, drop shadow. */
-function Seal({ pct, className }: { pct: number; className?: string }) {
-  const pts = Array.from({ length: 48 }, (_, i) => { const r = i % 2 ? 46 : 50; const a = (i / 48) * Math.PI * 2; return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}` }).join(' ')
-  return (
-    <svg aria-hidden viewBox="0 0 100 100" className={cn('drop-shadow-[0_8px_16px_rgba(33,26,90,.22)]', className)}>
-      <polygon points={pts} fill="#D4A04E" />
-      <circle cx="50" cy="50" r="40" fill="none" stroke="#211A5A" strokeOpacity=".35" strokeWidth="1.2" strokeDasharray="2 2.5" />
-      <text x="50" y="41" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="11" letterSpacing="1.5" fill="#211A5A">HEMAT</text>
-      <text x="50" y="68" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="28" letterSpacing="-1" fill="#211A5A">{pct}%</text>
     </svg>
   )
 }
@@ -92,263 +83,262 @@ function StaggerWords({ text, neon }: { text: string; neon?: boolean }) {
   )
 }
 
-function SectionTitle({ title, sub, tone = 'ink' }: { title: string; sub?: string; tone?: 'ink' | 'white' }) {
+function SectionTitle({ title, sub, tone = 'ink', center, phrase }: { title: string; sub?: string; tone?: 'ink' | 'white'; center?: boolean; phrase?: string }) {
   return (
-    <Reveal className="max-w-2xl">
-      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}><Marked text={title} className={tone === 'white' ? 'mark-light' : undefined} /></h2>
+    <Reveal className={cn('max-w-2xl', center && 'mx-auto text-center')}>
+      <h2 className={cn('t-h2 text-balance', tone === 'white' ? 'text-white' : 'text-ink')}><Marked text={title} phrase={phrase} className={tone === 'white' ? 'mark-light text-green' : undefined} /></h2>
       {sub && <p className={cn('mt-3 text-[15px] leading-relaxed text-pretty sm:text-[17px]', tone === 'white' ? 'text-white/80' : 'text-ink-2')}>{sub}</p>}
     </Reveal>
   )
 }
 
-/* Wire-frame cube, the floating decoration of the drenched hook (after the summit page's 3D wire shapes). */
-function Wire({ className }: { className?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinejoin="round" className={cn('wire pointer-events-none absolute', className)}>
-      <path d="M50 8l38 22v40L50 92 12 70V30z" /><path d="M12 30l38 22 38-22M50 52v40" />
-    </svg>
-  )
-}
-
-/* 1, Hook (Lurd, 10 Sep: "more bombastic", after apiquegroup.com/laundry-innovation-summit): a drenched navy-900 band,
-   the headline giant and uppercase with the last word in neon brand green, a floating collage of the three biggest
-   Golden Sale drops on the right with the HEMAT seal, wire-frame cubes at the edges, and a white facts strip that
-   hangs over the boundary into the hero band. Copy unchanged (config-driven). */
+/* 1, Hook = the RGP mock's banner: a rounded navy banner card with a slider (3 slides, dots + arrows, autoplay that
+   pauses on hover/focus and under reduced motion). Slide 1 carries the mock's exact words: "RESIQUE SUPERMARKET LAUNDRY /
+   SEKARANG / TURUN HARGA! / + BANYAK BONUSNYA!" with a phone mock-up on the right. Copy is config-driven. */
 function HookSection() {
-  const { copy, items, rules } = useConfig(s => s.config)
+  const { copy, items, assets } = useConfig(s => s.config)
   const drops = items.filter(i => i.active && i.realPrice > i.promoPrice)
     .map(i => ({ ...i, pct: Math.round((1 - i.promoPrice / i.realPrice) * 100), save: i.realPrice - i.promoPrice }))
     .sort((a, b) => b.save - a.save).slice(0, 3)
-  const maxPct = Math.max(...items.filter(i => i.realPrice > i.promoPrice).map(i => Math.round((1 - i.promoPrice / i.realPrice) * 100)), 0)
-  const activeCount = items.filter(i => i.active).length
-  const facts = [`Rp${rules.earnPerRp.toLocaleString('id-ID')} = 1 poin`, 'Diskon hingga 5%', 'Gratis ongkir', 'Konsultasi bisnis', 'Event tahunan Resique']
-  const jump = (e: React.MouseEvent) => { e.preventDefault(); document.getElementById('golden-sale')?.scrollIntoView({ behavior: 'smooth' }) }
+  const maxPct = Math.max(...drops.map(d => d.pct), 0)
+  const jump = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
+  const track = React.useRef<HTMLDivElement>(null)
+  const [idx, setIdx] = React.useState(0)
+  const [paused, setPaused] = React.useState(false)
+  const count = 3
+  const goTo = React.useCallback((i: number) => { const el = track.current; if (!el) return; const n = ((i % count) + count) % count; el.scrollTo({ left: n * el.clientWidth, behavior: 'smooth' }) }, [])
+  React.useEffect(() => {
+    const el = track.current; if (!el) return
+    const onScroll = () => setIdx(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)))
+    el.addEventListener('scroll', onScroll, { passive: true }); return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+  React.useEffect(() => {
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t = setInterval(() => goTo(idx + 1), 6000); return () => clearInterval(t)
+  }, [idx, paused, goTo])
+  const slides = [
+    { id: 'harga', kicker: 'Resique Supermarket Laundry', title: copy.hook, sub: copy.hookSub, h1: true },
+    { id: 'hadiah', kicker: 'Resique Member Card', title: copy.tagline, sub: copy.taglineSub, h1: false },
+    { id: 'sale', kicker: 'Golden Sale', title: 'Golden Sale!!', sub: `Harga turun paling besar sampai -${maxPct}%`, h1: false },
+  ]
   return (
-    <section id="hook" className="relative isolate z-20 scroll-mt-20 bg-navy-900 pb-24 pt-14 text-white lg:pb-28 lg:pt-20">
-      {/* decorations live in their own clipped layer so the facts strip below can hang out of the section */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <Doodle variant="footer" />
-        <Wire className="left-[-70px] top-[60px] hidden h-52 w-52 text-green/50 lg:block" />
-        <Wire className="right-[-60px] top-[-40px] hidden h-40 w-40 text-white/25 lg:block [animation-direction:reverse]" />
-        <Wire className="bottom-[40px] left-[40%] hidden h-24 w-24 text-green/35 lg:block" />
-        <span className="float-6 absolute left-[-30px] top-[220px] hidden h-16 w-16 rounded-full bg-green/70 lg:block" />
-        <span className="absolute bottom-[-90px] right-[24%] hidden h-52 w-52 rounded-full border-[16px] border-white/[.06] lg:block" />
-      </div>
-      <div className="container grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="min-w-0 lg:col-span-6">
-          <p className="hook-in inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-[13px] font-bold text-green-200"><Sparkles className="h-4 w-4 text-green" strokeWidth={2} aria-hidden />Golden Privilege · Golden Sale</p>
-          <Reveal>
-            <h1 className="t-mega mt-5 max-w-4xl text-balance uppercase text-white"><StaggerWords text={copy.hook} neon /></h1>
-          </Reveal>
-          <p className="hook-in mt-6 max-w-xl text-[17px] leading-relaxed text-pretty text-white/80 sm:text-[19px]" style={{ '--i': '260ms' } as React.CSSProperties}>{copy.hookSub}</p>
-          <div className="hook-in mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5" style={{ '--i': '360ms' } as React.CSSProperties}>
-            <Button asChild size="lg" className="arrow-nudge bg-green text-navy-900 shadow-2 hover:-translate-y-0.5 hover:bg-green-200">
-              <a href="#golden-sale" onClick={jump}>Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} /></a>
-            </Button>
-            <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">{copy.ctaPoints} <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>
-          </div>
-        </div>
-        {drops.length > 0 && (
-          <Reveal delay={120} className="hook-card-wrap relative mx-auto h-[400px] w-full max-w-[560px] min-w-0 sm:h-[460px] lg:col-span-6 lg:mx-0 lg:h-[520px] lg:max-w-none">
-            {/* the three biggest drops (Rp saved) as floating photo tiles, the featured one front-left with the seal */}
-            {drops.slice(0, 1).map(d => (
-              <div key={d.id} className="hook-float absolute left-0 top-14 z-10 w-[68%] sm:top-16">
-                <a href="#golden-sale" onClick={jump} className="hook-card group relative block overflow-hidden rounded-xl bg-white shadow-3" data-no-press>
-                  <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" />
-                  <span className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" aria-hidden />
-                  <span className="absolute left-4 top-4 rounded-md bg-gold px-2.5 py-1 text-[13px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
-                  <span className="absolute inset-x-4 bottom-4 flex flex-col text-white">
-                    <span className="block truncate text-[15px] font-bold">{d.name}</span>
-                    <span className="mt-1 flex items-baseline gap-2">
-                      <span className="t-fig text-[26px] leading-none sm:text-[30px]">{rupiah(d.promoPrice)}</span>
-                      <span className="t-num text-[13px] font-semibold text-white/75"><span className="strike">{rupiah(d.realPrice)}</span></span>
-                    </span>
-                  </span>
-                </a>
-                <Seal pct={maxPct} className="sticker absolute -right-6 -top-7 z-20 h-[96px] w-[96px] sm:-right-8 sm:-top-9 sm:h-[120px] sm:w-[120px]" />
-              </div>
-            ))}
-            {drops.slice(1, 3).map((d, i) => (
-              <div key={d.id} className={cn('hook-float absolute w-[46%]', i === 0 ? 'right-0 top-0 [animation-delay:1.6s]' : 'bottom-6 right-[4%] [animation-delay:3.2s] sm:bottom-8')}>
-                <a href="#golden-sale" onClick={jump} className={cn('group relative block overflow-hidden rounded-xl bg-white shadow-3 transition-transform duration-slow ease-out hover:rotate-0', i === 0 ? 'rotate-[6deg]' : 'rotate-[-5deg]')} data-no-press>
-                  <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" />
-                  <span className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 to-transparent" aria-hidden />
-                  <span className="absolute left-3 top-3 rounded-md bg-gold px-2 py-0.5 text-[12px] font-extrabold text-gold-ink shadow-1">-{d.pct}%</span>
-                  <span className="absolute inset-x-3 bottom-3 flex flex-col text-white">
-                    <span className="block truncate text-[12px] font-semibold">{d.name}</span>
-                    <span className="t-fig text-[17px] leading-none">{rupiah(d.promoPrice)}</span>
-                  </span>
-                </a>
-              </div>
-            ))}
-            <a href="#golden-sale" onClick={jump} className="arrow-nudge absolute left-0 top-0 z-20 inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-white px-3.5 text-[13px] font-bold text-navy-700 shadow-2 transition-transform duration-base hover:-translate-y-0.5">
-              Harga turun paling besar <span className="t-num rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] text-green-700">{activeCount} produk</span> <ArrowRight className="h-4 w-4" strokeWidth={2} />
-            </a>
-          </Reveal>
-        )}
-      </div>
-      {/* facts strip, white, hangs over the boundary into the hero band (the summit page's partner strip, but with the programme's facts) */}
-      <div className="container relative z-20 mt-14 lg:mt-16">
-        <ul data-hook-strip className="hook-in -mb-36 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-xl bg-white px-4 py-3 shadow-3 sm:gap-x-0 lg:-mb-40" style={{ '--i': '520ms' } as React.CSSProperties}>
-          {facts.map((f, i) => (
-            <li key={f} className="flex items-center text-[13px] font-bold text-navy-700 sm:text-[14px]">
-              {i > 0 && <span className="mx-3 hidden h-1.5 w-1.5 rounded-full bg-green sm:block" aria-hidden />}
-              <span className="rounded-md px-2 py-1 transition-colors duration-base hover:bg-green-50">{f}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )
-}
-
-/* 2, Hero: the single colour block. Tagline + the prize deck (4 fanned photo cards that deal in once, then float)
-   + a running ticker of every prize (keeps the marquee idiom). */
-function HeroSection() {
-  const { copy, assets, rules } = useConfig(s => s.config)
-  const acc = useCurrentAccount()
-  const strip = [...assets.heroPrizes, ...assets.heroPrizes]
-  return (
-    <section id="hero" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-700 pb-14 pt-32 text-white lg:pb-20 lg:pt-40">
-      <Doodle variant="hero" />
-      {/* one solid darker band behind the deck for depth, no gradient, no blur */}
-      <span aria-hidden className="band bg-navy-800" style={{ right: '-10%', bottom: '-30%', width: '60%', height: '70%' }} />
-      <div className="container relative z-10 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-8">
-        <Reveal className="min-w-0 lg:col-span-5">
-          <h2 className="t-h1 text-balance text-white"><Marked text={copy.tagline} className="mark-light" /></h2>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-pretty text-white/80 sm:text-[17px]">{copy.taglineSub}</p>
-          <p className="t-code mt-5 inline-flex items-center gap-2 rounded-md bg-gold px-2.5 py-1 text-[13px] font-bold text-gold-ink"><Gift className="h-4 w-4" strokeWidth={2} aria-hidden />Rp{rules.earnPerRp.toLocaleString('id-ID')} = 1 poin</p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
-            <Button asChild size="lg" variant="inverse" className="arrow-nudge hover:-translate-y-0.5">
-              <Link to={acc ? '/profile' : '/login'}>Lihat hadiah <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link>
-            </Button>
-            <a href="#cek-poin" onClick={e => { e.preventDefault(); document.getElementById('cek-poin')?.scrollIntoView({ behavior: 'smooth' }) }} className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">Cara tukar poin <ChevronsRight className="h-4 w-4" strokeWidth={2} /></a>
-          </div>
-        </Reveal>
-        <div className="min-w-0 lg:col-span-7">
-          <PrizeDeck prizes={assets.heroPrizes.slice(0, 4)} />
-        </div>
-      </div>
-      {assets.heroPrizes.length > 0 && (
-        <div className="container relative z-10 mt-12 hidden lg:block">
-          {/* desktop: a still rail of every prize (the running strip looked awkward at full width) */}
-          <ul className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-5" aria-label="Semua hadiah yang bisa ditukar">
-            {assets.heroPrizes.map((p, i) => (
-              <Reveal as="li" key={p.id} delay={i * 50} className="inline-flex items-center gap-2.5 rounded-lg bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[13px] font-semibold text-white transition-[transform,background-color] duration-base ease-out hover:-translate-y-0.5 hover:bg-white/15">
-                <img src={p.image} alt="" width={800} height={600} className="h-9 w-9 rounded-md object-cover" loading="eager" decoding="async" />
-                {p.label}
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      )}
-      {assets.heroPrizes.length > 0 && (
-        <div className="marquee relative z-10 mt-10 border-t border-white/10 pt-4 lg:hidden" role="region" aria-label="Hadiah yang bisa ditukar">
-          <ul className="marquee-track px-5" style={{ animationDuration: `${Math.max(30, assets.heroPrizes.length * 6)}s` }}>
-            {strip.map((p, i) => (
-              <li key={p.id + i} aria-hidden={i >= assets.heroPrizes.length} className="inline-flex shrink-0 items-center gap-2 rounded-md bg-white/10 py-1.5 pl-1.5 pr-3 text-[13px] font-semibold text-white transition-transform duration-base ease-out hover:-translate-y-0.5">
-                <img src={p.image} alt="" width={800} height={600} className="h-6 w-6 rounded-[4px] object-cover" loading="eager" decoding="async" />
-                {p.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </section>
-  )
-}
-
-/* The deck: front card straight-ish, three behind it fanned; the slot floats, the card holds the pose (index.css). */
-const DECK_POSES = [
-  { dx: '4%', dy: '0%', dr: '-4deg', ds: 1, dd: '0s' },
-  { dx: '74%', dy: '-6%', dr: '5deg', ds: 1, dd: '1.5s' },
-  { dx: '32%', dy: '-26%', dr: '-9deg', ds: 0.94, dd: '3s' },
-  { dx: '88%', dy: '-34%', dr: '11deg', ds: 0.9, dd: '4.5s' },
-]
-function PrizeDeck({ prizes }: { prizes: Config['assets']['heroPrizes'] }) {
-  const { ref, inView } = useInView<HTMLUListElement>({ margin: '0px 0px -12% 0px' })
-  const [dealt, setDealt] = React.useState(false)
-  React.useEffect(() => { if (!inView) return; const t = setTimeout(() => setDealt(true), 900); return () => clearTimeout(t) }, [inView])
-  if (prizes.length === 0) return null
-  return (
-    <ul ref={ref} data-deal={inView ? 'in' : 'out'} className="deck mx-auto h-[250px] w-full max-w-[560px] sm:h-[320px] lg:h-[380px] lg:max-w-none" aria-label="Hadiah utama Golden Privilege">
-      {prizes.map((p, i) => ({ p, i })).reverse().map(({ p, i }) => {
-        const pose = DECK_POSES[i]
-        return (
-          <li key={p.id} className="deck-slot" style={{ '--dd': pose.dd, zIndex: 4 - i } as React.CSSProperties}>
-            <div data-front={i === 0 || undefined} className="deck-card overflow-hidden rounded-lg bg-white shadow-3" style={{ '--dx': pose.dx, '--dy': pose.dy, '--dr': pose.dr, '--ds': pose.ds, transitionDelay: dealt ? '0ms' : `${(prizes.length - 1 - i) * 90}ms` } as React.CSSProperties}>
-              <div className="relative">
-                <img src={p.image} alt={p.label} width={800} height={600} className="aspect-[4/3] w-full object-cover" loading="eager" decoding="async" fetchPriority={i === 0 ? 'high' : undefined} />
-                {i > 0 && <span className="absolute inset-0 bg-ink/10" aria-hidden />}
-                {i === 0 && <span className="t-code absolute left-3 top-3 rounded-md bg-gold px-2 py-0.5 text-[12px] font-extrabold text-gold-ink shadow-1">Hadiah utama</span>}
-              </div>
-              <p className="truncate px-3 py-2 text-[13px] font-bold text-ink">{p.label}</p>
-            </div>
-          </li>
-        )
-      })}
-    </ul>
-  )
-}
-
-/* 3, Privilege member RMC: five blocks (diskon belanja · gratis ongkir · konsultasi bisnis · redeem poin · event
-   tahunan), each led by its icon + figure. Desktop reads [½ ½] / [⅓ ⅓ ⅓]; content from config (admin-defined). */
-function BenefitSection() {
-  const { copy, benefits } = useConfig(s => s.config)
-  /* ticket heads: navy · gold · green · navy · gold (solid brand colours); the body is always white */
-  const heads = ['bg-navy-700 text-white', 'bg-gold text-gold-ink', 'bg-green-700 text-white', 'bg-navy-700 text-white', 'bg-gold text-gold-ink']
-  const chips = ['bg-green text-navy-900', 'bg-white text-gold-700', 'bg-white text-green-700', 'bg-green text-navy-900', 'bg-white text-gold-700']
-  const five = benefits.length === 5
-  return (
-    <section id="benefit" className="tex tex-grain scroll-mt-20 overflow-hidden py-14 lg:py-24">
-      {/* navy band low-left + two ring outlines top-right: the paper is worked, not blank */}
-      <span aria-hidden className="band bg-navy-50" style={{ left: '-14%', bottom: '-30%', width: '46%', height: '60%' }} />
-      <Rings className="right-[-120px] top-[-80px] h-[420px] w-[420px] text-green-200" />
+    <section id="hook" className="scroll-mt-20 bg-bg pb-6 pt-5 lg:pb-10 lg:pt-8">
       <div className="container">
-        <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} />
-        <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4">
-          {benefits.map((b, i) => {
-            const dark = i === 0
-            const Icon = BENEFIT_ICONS[b.icon] || Sparkles
-            const span = five ? (i < 2 ? 'lg:col-span-3' : 'lg:col-span-2') : 'lg:col-span-2'
-            const lastOdd = i === benefits.length - 1 && benefits.length % 2 === 1 ? 'sm:col-span-2' : ''
-            return (
-              <Reveal as="li" key={b.id} delay={i * 70} className={cn('reveal-pop min-w-0', span, lastOdd, five && i >= 2 && 'sm:col-span-1')}>
-                <div className={cn('ticket lift-lg card-fx flex h-full min-h-[240px] flex-col rounded-lg bg-white', dark && 'sweep')} style={{ '--tint': '#F1F9EA' } as React.CSSProperties}>
-                  {/* ticket head: solid brand colour, icon chip + the big figure */}
-                  <div className={cn('ticket-head relative flex h-[112px] items-start justify-between gap-4 overflow-hidden px-5 pt-5', heads[i % heads.length])}>
-                    <div className="fig">
-                      {b.figure && <p className="t-fig t-fig-sans text-[38px] leading-none">{b.figure}</p>}
-                      {b.figureNote && <p className="t-num mt-1 text-[13px] font-bold opacity-85">{b.figureNote}</p>}
+        <div className="relative isolate overflow-hidden rounded-xl bg-navy-700 text-white shadow-3" data-banner onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+            <Doodle variant="hero" />
+            <span className="band bg-navy-800" style={{ right: '-10%', bottom: '-40%', width: '55%', height: '90%' }} />
+            <span className="absolute -right-10 -top-16 h-56 w-56 rounded-full border-[14px] border-green/20" />
+          </div>
+          <div ref={track} className="banner-track no-scrollbar flex snap-x snap-mandatory overflow-x-auto" role="region" aria-roledescription="carousel" aria-label="Banner Golden Privilege">
+            {slides.map((sl, i) => {
+              const Title = sl.h1 ? 'h1' : 'h2'
+              return (
+                <div key={sl.id} data-slide={sl.id} className="grid w-full shrink-0 snap-start grid-cols-1 items-center gap-8 px-6 pb-14 pt-8 sm:px-10 lg:min-h-[420px] lg:grid-cols-12 lg:gap-6 lg:px-14 lg:py-12" aria-roledescription="slide" aria-label={`${i + 1} dari ${count}`}>
+                  <div className="min-w-0 lg:col-span-7">
+                    <p className="text-[12px] font-bold uppercase tracking-[0.04em] text-white/80 sm:text-[13px]">{sl.kicker}</p>
+                    <Title className={cn('t-mega mt-3 max-w-3xl text-balance uppercase text-white', !sl.h1 && 'text-[clamp(30px,5vw,60px)]')}>{sl.h1 ? <StaggerWords text={sl.title} neon /> : <Marked text={sl.title} className="mark-neon text-green" />}</Title>
+                    {sl.sub && <p className={cn('mt-3 max-w-xl text-balance font-extrabold uppercase text-white', sl.h1 ? 'text-[20px] sm:text-[26px]' : 'text-[15px] font-semibold normal-case text-white/85 sm:text-[17px]')}>{sl.sub}</p>}
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+                      {sl.id === 'hadiah' ? (
+                        <Button asChild size="lg" className="arrow-nudge bg-green text-navy-900 shadow-2 hover:-translate-y-0.5 hover:bg-green-200"><Link to="/register">Daftar Sekarang <ArrowRight className="h-4 w-4" strokeWidth={2} /></Link></Button>
+                      ) : (
+                        <Button asChild size="lg" className="arrow-nudge bg-green text-navy-900 shadow-2 hover:-translate-y-0.5 hover:bg-green-200"><a href="#golden-sale" onClick={jump('golden-sale')}>Lihat Golden Sale <ArrowRight className="h-4 w-4" strokeWidth={2} /></a></Button>
+                      )}
+                      {sl.h1 && <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">{copy.ctaPoints} <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>}
                     </div>
-                    <span className={cn('chip grid h-12 w-12 shrink-0 place-items-center rounded-full shadow-1', chips[i % chips.length])} aria-hidden>
-                      <Icon className="h-[22px] w-[22px]" strokeWidth={1.8} />
-                    </span>
-                    <Icon aria-hidden className="ticket-mark pointer-events-none absolute -bottom-4 right-16 h-24 w-24 opacity-[0.14]" strokeWidth={1} />
                   </div>
-                  {/* perforation between head and body */}
-                  <span aria-hidden className="ticket-cut" />
-                  <div className="px-5 pb-5 pt-4">
-                    <h3 className="text-[17px] font-bold text-balance text-ink">{b.title}</h3>
-                    <p className="mt-1 text-[14px] leading-relaxed text-pretty text-ink-2">{b.desc}</p>
+                  <div className="relative min-w-0 lg:col-span-5">
+                    {sl.id === 'harga' && <PhoneMock logo={assets.mark} />}
+                    {sl.id === 'hadiah' && (
+                      <div className="relative mx-auto h-[220px] w-full max-w-[420px] sm:h-[260px]">
+                        {assets.heroPrizes.slice(0, 3).map((p, j) => (
+                          <div key={p.id} className={cn('hook-float absolute w-[58%] overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-4 z-20 rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 left-[22%] rotate-[3deg] [animation-delay:3s]')}>
+                            <img src={p.image} alt={p.label} width={800} height={600} className="aspect-[4/3] w-full object-cover" loading={j === 0 ? 'eager' : 'lazy'} decoding="async" />
+                            <p className="truncate px-3 py-1.5 text-[12px] font-bold text-ink">{p.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {sl.id === 'sale' && (
+                      <div className="relative mx-auto h-[220px] w-full max-w-[420px] sm:h-[260px]">
+                        {drops.map((d, j) => (
+                          <a key={d.id} href="#golden-sale" onClick={jump('golden-sale')} data-no-press className={cn('hook-float group absolute w-[58%] overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-4 z-20 rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 left-[22%] rotate-[3deg] [animation-delay:3s]')}>
+                            <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading="lazy" decoding="async" />
+                            <span className="absolute left-2 top-2 rounded-md bg-gold px-2 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span>
+                            <span className="flex items-baseline gap-2 px-3 py-1.5"><span className="t-fig text-[14px] text-navy-700">{rupiah(d.promoPrice)}</span><span className="t-num strike text-[11px] text-ink-3">{rupiah(d.realPrice)}</span></span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-              </Reveal>
-            )
-          })}
-        </ul>
+              )
+            })}
+          </div>
+          {/* controls: arrows (desktop) + dots */}
+          <button type="button" aria-label="Slide sebelumnya" onClick={() => goTo(idx - 1)} className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition-[background-color,transform] duration-base hover:-translate-x-0.5 hover:bg-white/20 lg:grid"><ChevronLeft className="h-5 w-5" strokeWidth={2} /></button>
+          <button type="button" aria-label="Slide berikutnya" onClick={() => goTo(idx + 1)} className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition-[background-color,transform] duration-base hover:translate-x-0.5 hover:bg-white/20 lg:grid"><ChevronRight className="h-5 w-5" strokeWidth={2} /></button>
+          <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-1.5" role="tablist" aria-label="Pilih slide">
+            {slides.map((sl, i) => (
+              <button key={sl.id} type="button" role="tab" aria-selected={i === idx} aria-label={`Slide ${i + 1}`} onClick={() => goTo(i)} className={cn('banner-dot h-2 rounded-full transition-[width,background-color] duration-base', i === idx ? 'w-7 bg-green' : 'w-2 bg-white/40 hover:bg-white/70')} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
 }
 
-/* 4, Tier ladder: one markup for every width. */
+/* CSS phone mock-up (the mock's hand-held phone): a Resique app screen with the member card. Decorative. */
+function PhoneMock({ logo }: { logo: string }) {
+  const demo = SEED_ACCOUNTS[0]
+  return (
+    <div className="relative mx-auto h-[260px] w-full max-w-[420px] sm:h-[300px] lg:h-[340px]">
+      <div className="hook-float absolute left-1/2 top-2 w-[190px] -translate-x-1/2 rotate-[-8deg] rounded-[34px] bg-navy-900 p-2 shadow-3 sm:w-[210px]">
+        <div className="overflow-hidden rounded-[26px] bg-white text-ink">
+          <div className="flex items-center gap-2 px-3 pt-3">
+            <img src={logo} alt="" width={28} height={28} className="h-6 w-6" />
+            <span className="text-[10px] font-extrabold text-navy-700">Resique</span>
+          </div>
+          <p className="px-3 pt-2 text-[11px] font-bold">Customer Solution Resique</p>
+          <div className="mx-3 mt-2 rounded-lg bg-navy-700 p-3 text-white">
+            <p className="text-[9px] font-bold text-green-200">RMC · Resique Member Card</p>
+            <p className="t-fig mt-1 text-[16px] leading-none">RMC 2026 0001</p>
+            <p className="mt-1.5 truncate text-[9px] text-white/80">{demo.laundry}</p>
+          </div>
+          <div className="mt-2 grid grid-cols-2 gap-1.5 px-3 pb-3">
+            <span className="rounded-md bg-green-700 px-2 py-1.5 text-center text-[9px] font-bold text-white">Cek Poin</span>
+            <span className="rounded-md bg-surface-2 px-2 py-1.5 text-center text-[9px] font-bold text-navy-700">Golden Sale</span>
+          </div>
+        </div>
+      </div>
+      <span aria-hidden className="float-6 absolute right-[8%] top-6 rounded-md bg-gold px-2 py-1 text-[11px] font-extrabold text-gold-ink shadow-2 [animation-delay:1.2s]">Diskon 5%</span>
+      <span aria-hidden className="float-6 absolute bottom-6 left-[6%] rounded-md bg-white px-2 py-1 text-[11px] font-extrabold text-navy-700 shadow-2 [animation-delay:2.4s]">Rp1.000 = 1 poin</span>
+    </div>
+  )
+}
+
+/* 2, Hero = the mock's prize grid: "Tingkatkan Transaksi dan Dapatkan Hadiahnya!" with four prize cards (photo, name,
+   point cost). Prizes come from config (the same catalogue the profile redeems from). */
+function HeroSection() {
+  const { copy, prizes } = useConfig(s => s.config)
+  const top = [...prizes].filter(p => p.active).sort((a, b) => b.pointCost - a.pointCost).slice(0, 4)
+  return (
+    <section id="hero" className="tex tex-grain scroll-mt-20 overflow-hidden bg-white py-14 lg:py-20">
+      <Rings className="right-[-140px] top-[-120px] h-[420px] w-[420px] text-green-200" />
+      <span aria-hidden className="band bg-navy-50" style={{ left: '-14%', bottom: '-30%', width: '40%', height: '60%' }} />
+      <div className="container">
+        <SectionTitle title={copy.tagline} sub={copy.taglineSub} center />
+        {top.length === 0 ? <EmptyState className="mt-8" title="Hadiah belum diatur" desc="Admin menambahkan hadiah lewat CRM." /> : (
+          <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5" aria-label="Hadiah Golden Privilege">
+            {top.map((p, i) => <PrizeCard key={p.id} prize={p} idx={i} />)}
+          </ul>
+        )}
+      </div>
+    </section>
+  )
+}
+function PrizeCard({ prize, idx }: { prize: Prize; idx: number }) {
+  return (
+    <Reveal as="li" delay={idx * 60} className="reveal-pop">
+      <Link to="/login" data-prize-card className="lift group flex h-full flex-col rounded-lg border border-line bg-white p-3 sm:p-4" data-no-press>
+        <span className="block overflow-hidden rounded-md bg-surface-2"><img src={prize.image} alt={prize.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading="lazy" decoding="async" /></span>
+        <span className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{prize.name}</span>
+        <span className="t-num mt-2 inline-flex w-fit items-center gap-1.5 rounded-md bg-gold-100 px-2 py-1 text-[12px] font-extrabold text-gold-ink"><Coins className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />{poin(prize.pointCost)} Pt</span>
+      </Link>
+    </Reveal>
+  )
+}
+
+/* 3, Benefit = the mock's navy band: title with "Tak Terbatas" in green, the member card on the left, four benefits
+   (icon · title · one-line explanation) on the right; below it the light four-step band (Diskon Belanja → Dapatkan
+   Point → Tukarkan Voucher → Nikmati Keuntungannya). */
+const STEPS = [
+  { n: 1, icon: ShoppingCart, label: ['Diskon', 'Belanja'] },
+  { n: 2, icon: Star, label: ['Dapatkan', 'Point'] },
+  { n: 3, icon: Ticket, label: ['Tukarkan', 'Voucher'] },
+  { n: 4, icon: ShoppingBag, label: ['Nikmati', 'Keuntungannya'] },
+]
+function BenefitSection() {
+  const { copy, benefits } = useConfig(s => s.config)
+  return (
+    <section id="benefit" className="scroll-mt-20">
+      <div className="relative isolate overflow-hidden bg-navy-700 py-14 text-white lg:py-20">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"><Doodle variant="footer" /><span className="band bg-navy-800" style={{ left: '-12%', bottom: '-40%', width: '48%', height: '80%' }} /></div>
+        <div className="container">
+          <SectionTitle title={copy.benefitTitle} sub={copy.benefitSub} tone="white" center phrase="Tak Terbatas" />
+          <div className="mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
+            <div className="min-w-0 lg:col-span-5"><MemberCardArt /></div>
+            <ul className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-7 lg:gap-5">
+              {benefits.map((b, i) => <BenefitRow key={b.id} b={b} idx={i} />)}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div className="bg-navy-50 py-10 lg:py-12" data-steps>
+        <ol className="container flex flex-wrap items-start justify-center gap-y-6" aria-label="Cara kerja Resique Member Card">
+          {STEPS.map((st, i) => (
+            <li key={st.n} className="flex items-start">
+              <Reveal delay={i * 90} className="reveal-pop flex w-[150px] flex-col items-center text-center sm:w-[170px]">
+                <span className="relative grid h-[88px] w-[88px] place-items-center rounded-full bg-white text-green-700 shadow-2 transition-transform duration-base hover:-translate-y-1 sm:h-[96px] sm:w-[96px]">
+                  <st.icon className="h-9 w-9" strokeWidth={1.6} aria-hidden />
+                  <span className="t-fig absolute -top-1 left-1/2 grid h-7 w-7 -translate-x-1/2 place-items-center rounded-full bg-green text-[13px] text-navy-900 ring-2 ring-white">{st.n}</span>
+                </span>
+                <span className="mt-3 text-[14px] font-extrabold leading-tight text-navy-700">{st.label[0]}<br />{st.label[1]}</span>
+              </Reveal>
+              {i < STEPS.length - 1 && <ArrowRight className="mx-1 mt-8 hidden h-6 w-6 shrink-0 text-navy-700/60 sm:mx-4 sm:block" strokeWidth={2} aria-hidden />}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+function BenefitRow({ b, idx }: { b: Benefit; idx: number }) {
+  const Icon = BENEFIT_ICONS[b.icon] || Sparkles
+  return (
+    <Reveal as="li" delay={idx * 70} className="reveal-pop min-w-0">
+      <div className="lift-lg card-fx flex h-full items-start gap-4 rounded-lg p-3" style={{ '--tint': 'rgba(255,255,255,.08)' } as React.CSSProperties}>
+        <span className="chip grid h-12 w-12 shrink-0 place-items-center rounded-full bg-green text-navy-900 shadow-1" aria-hidden><Icon className="h-6 w-6" strokeWidth={1.8} /></span>
+        <div className="min-w-0">
+          <h3 className="text-[16px] font-extrabold leading-tight text-white sm:text-[17px]">{b.title}</h3>
+          <p className="mt-1 text-[14px] leading-relaxed text-pretty text-white/80">{b.desc}</p>
+        </div>
+      </div>
+    </Reveal>
+  )
+}
+/* the member card of the mock: navy, "RMC · Resique Member Card", member id, nama usaha; floats and straightens on hover */
+function MemberCardArt() {
+  const demo = SEED_ACCOUNTS[0]
+  return (
+    <div className="tilt-wrap relative mx-auto max-w-[400px] py-4">
+      <div className="hook-float">
+        <div className="lift relative overflow-hidden rounded-xl bg-navy-900 p-6 text-white shadow-3 ring-1 ring-white/15 [transform:rotate(-4deg)] hover:[transform:rotate(0deg)_translateY(-6px)]" data-member-card>
+          <span aria-hidden className="absolute -right-10 -top-16 h-44 w-44 rounded-full border-[18px] border-green/25" />
+          <span aria-hidden className="absolute -bottom-12 right-10 h-32 w-32 rounded-full bg-green/15" />
+          <p className="t-fig text-[34px] leading-none text-white">RMC</p>
+          <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.06em] text-green-200">Resique Member Card</p>
+          <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.06em] text-white/60">Member ID</p>
+          <p className="t-fig text-[18px] leading-none">RMC 2026 0001 0003</p>
+          <div className="mt-5 flex items-end justify-between gap-3">
+            <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white/60">Nama Usaha</p><p className="truncate text-[14px] font-bold">{demo.laundry}</p></div>
+            <span className="rounded-md bg-gold px-2 py-0.5 text-[11px] font-extrabold text-gold-ink">Winner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* 4, Tier = the mock's six columns: emblem, name, per-month, then "Benefit Diskon Tiap Transaksi" + %, "Gratis Ongkir /
+   Min Belanja / Rp 500.000", "Gratis Sesi Konsultasi Bisnis / 1x /bulan", "Belanja 6 Bulan (Rp) / band" — the check and
+   cross marks sit before the row label as in the mock. Mobile keeps the snap rail. */
 function TierSection() {
   const cfg = useConfig(s => s.config)
   const rail = React.useRef<HTMLOListElement>(null)
   const [active, setActive] = React.useState(0)
-  // small screens: the card crossing the centre of the rail is the active one (scale + dot); once on reveal, nudge
-  // the rail so the slider affordance is obvious
   React.useEffect(() => {
     const el = rail.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -372,11 +362,10 @@ function TierSection() {
   const goTo = (i: number) => { const li = rail.current?.querySelectorAll<HTMLElement>(':scope > li')[i]; li?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }) }
   return (
     <section id="tier" className="tex tex-dots scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
-      {/* a gold band leans behind the Ultimate column, a navy one behind the title */}
       <span aria-hidden className="band bg-gold-50" style={{ right: '-10%', top: '18%', width: '30%', height: '70%' }} />
       <span aria-hidden className="band bg-navy-50" style={{ left: '-12%', top: '-10%', width: '38%', height: '42%' }} />
       <div className="container">
-        <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} />
+        <SectionTitle title={cfg.copy.tierTitle} sub={cfg.copy.tierSub} center />
         <ol ref={rail} className="tier-rail no-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 lg:mx-0 lg:grid lg:grid-cols-6 lg:gap-3 lg:overflow-visible lg:px-0 lg:pb-0" aria-label="Daftar tier RMC">
           {cfg.tiers.map((t, i) => <TierCardV key={t.key} tier={t} idx={i} top={i === cfg.tiers.length - 1} active={i === active} />)}
         </ol>
@@ -385,57 +374,56 @@ function TierSection() {
             <button key={t.key} type="button" role="tab" aria-selected={i === active} aria-label={t.name} onClick={() => goTo(i)} className={cn('tier-dot h-2 rounded-full', i === active ? 'w-6' : 'w-2 bg-line')} style={i === active ? { background: t.sw } : undefined} />
           ))}
         </div>
-        <div className="mt-6 flex max-w-2xl items-start gap-3 rounded-lg bg-green-50 p-4">
-          <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md bg-white text-[13px] font-extrabold text-green-700">M</span>
-          <p className="text-[15px] leading-relaxed text-ink-2">
-            <strong className="text-ink">Mitra Apique Management</strong> punya diskon minimal <strong className="t-num text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Kalau diskon tier lebih besar, itu yang dipakai.
-          </p>
-        </div>
+        <p className="mx-auto mt-6 max-w-3xl text-center text-[14px] leading-relaxed text-ink-2">*Mitra Apique Management memiliki diskon minimal <strong className="t-num text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Jika diskon tier lebih besar, itu yang dipakai.</p>
       </div>
     </section>
   )
 }
-/* Tier column (the RGP mock's six coloured columns, tightened): a full-colour card in the tier colour, emblem on top
-   (crown on Ultimate), name + per-month, then four rows — diskon (big %), gratis ongkir, konsultasi, belanja 6 bulan —
-   each with a check / cross mark and a hairline divider. A big faint tier number sits in the corner. Hover: lift,
-   white tint, emblem springs, the bottom bar draws in; the % counts up on scroll-in. */
+const rpFull = (n: number) => `Rp ${n.toLocaleString('id-ID')}`
 function TierCardV({ tier, idx, top, active }: { tier: Tier; idx: number; top: boolean; active?: boolean }) {
-  const rows: { label: string; value: React.ReactNode; on: boolean }[] = [
-    { label: 'Gratis ongkir', value: tier.freeDelivMin === null ? '-' : tier.freeDelivMin === 0 ? 'Tanpa min.' : `min. ${rupiah(tier.freeDelivMin, { short: true })}`, on: tier.freeDelivMin !== null },
-    { label: 'Konsultasi bisnis', value: tier.consult ? `${tier.consult} sesi/bln` : '-', on: tier.consult > 0 },
-  ]
+  const ongkirOn = tier.freeDelivMin !== null
+  const konsulOn = tier.consult > 0
   return (
     <Reveal as="li" delay={idx * 60} data-active={active ? 'true' : 'false'} className={cn('lift tier-card card-fx reveal-pop group relative flex w-[76%] shrink-0 snap-center flex-col overflow-hidden rounded-xl p-4 text-white sm:w-[44%] lg:w-auto', top && 'sweep ring-2 ring-gold ring-offset-2 ring-offset-white hover:shadow-gold')}
       style={{ '--tier': tier.sw, '--tint': 'rgba(255,255,255,.10)', background: tier.sw } as React.CSSProperties}>
-      <span aria-hidden className="t-fig t-fig-black pointer-events-none absolute -bottom-3 -right-1 select-none text-[96px] leading-none text-white/10">{idx + 1}</span>
+      <span aria-hidden className="t-fig pointer-events-none absolute -bottom-3 -right-1 select-none text-[96px] leading-none text-white/10">{idx + 1}</span>
       <div className="tier-head relative flex items-start justify-between gap-2">
         <span className={cn('badge grid h-11 w-11 shrink-0 place-items-center rounded-full', top ? 'bg-gold text-gold-ink' : 'bg-white/15 text-white')} aria-hidden>
-          {top ? <Crown className="h-6 w-6" strokeWidth={1.6} fill="currentColor" /> : <span className="t-fig text-[15px]">{idx + 1}</span>}
+          {top ? <Crown className="h-6 w-6" strokeWidth={1.6} fill="currentColor" /> : <Medal className="h-6 w-6" strokeWidth={1.7} />}
         </span>
-        {top && <span className="t-code rounded-md bg-gold px-2 py-0.5 text-[11px] font-bold text-gold-ink">Ultimate</span>}
       </div>
       <h3 className="mt-3 text-[18px] font-extrabold leading-tight">{tier.name}</h3>
       <p className="t-num text-[12px] text-white/75">{tier.perMonth} / bulan</p>
-      <div className="mt-3 border-t border-white/20 pt-3">
-        <p className="text-[11px] font-semibold text-white/75">Diskon tiap transaksi</p>
-        <CountPct value={tier.discount} className={cn('t-fig-sans', top ? 'text-gold' : 'text-white')} />
+      <div className="mt-3 border-t border-white/20 pt-3" data-row="diskon">
+        <p className="text-[11px] font-semibold leading-tight text-white/80">Benefit Diskon<br />Tiap Transaksi</p>
+        <CountPct value={tier.discount} className={cn('mt-1', top ? 'text-gold' : 'text-white')} />
       </div>
-      {rows.map(r => (
-        <div key={r.label} className="mt-3 border-t border-white/20 pt-3">
-          <p className="text-[11px] font-semibold text-white/75">{r.label}</p>
-          <p className={cn('t-num mt-0.5 flex items-center gap-1.5 text-[13px] font-bold', !r.on && 'text-white/55')}>
-            {r.on ? <Check className="h-3.5 w-3.5 shrink-0 text-green-200" strokeWidth={3} aria-hidden /> : <X className="h-3.5 w-3.5 shrink-0 text-white/45" strokeWidth={2.5} aria-hidden />}
-            <span>{r.on ? r.value : 'Belum termasuk'}</span>
-          </p>
-        </div>
-      ))}
-      {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), show the exact rupiah */}
-      <div className="mt-3 border-t border-white/20 pt-3">
-        <p className="text-[11px] font-semibold text-white/75">Belanja 6 bln (Rp)</p>
-        <p className="t-num text-[13px] font-bold">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</p>
+      <TierRow on={ongkirOn} label="Gratis Ongkir" sub="Min Belanja" value={tier.freeDelivMin === null ? undefined : tier.freeDelivMin === 0 ? 'Tanpa min.' : rpFull(tier.freeDelivMin)} row="ongkir" />
+      <TierRow on={konsulOn} label="Gratis Sesi" sub="Konsultasi Bisnis" value={konsulOn ? `${tier.consult}x /bulan` : undefined} row="konsul" />
+      {/* bands are inclusive both ends (0–8.999.999, next tier starts sharp at 9.000.000), the exact rupiah, Lurd's rule */}
+      <div className="mt-3 border-t border-white/20 pt-3" data-row="belanja">
+        <p className="text-[11px] font-semibold text-white/80">Belanja 6 Bulan (Rp)</p>
+        <p className="t-num mt-0.5 text-[13px] font-bold">{tier.max !== null ? <>{tier.min.toLocaleString('id-ID')} –<br />{tier.max.toLocaleString('id-ID')}</> : `≥ ${tier.min.toLocaleString('id-ID')}`}</p>
       </div>
       <span className="bar" aria-hidden />
     </Reveal>
+  )
+}
+/* one benefit row of a tier column: the mock's filled check (green) / cross (muted) disc before the label */
+function TierRow({ on, label, sub, value, row }: { on: boolean; label: string; sub: string; value?: string; row: string }) {
+  return (
+    <div className={cn('mt-3 border-t border-white/20 pt-3', !on && 'opacity-70')} data-row={row}>
+      <div className="flex items-start gap-2">
+        <span className={cn('mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full', on ? 'bg-green text-navy-900' : 'bg-white/30 text-navy-900')} aria-hidden>
+          {on ? <Check className="h-3 w-3" strokeWidth={3.2} /> : <X className="h-3 w-3" strokeWidth={3} />}
+        </span>
+        <div className="min-w-0">
+          <p className="text-[12px] font-bold leading-tight">{label}</p>
+          <p className="text-[11px] font-semibold leading-tight text-white/75">{sub}</p>
+          {value && <p className="t-num mt-1 text-[14px] font-extrabold leading-none">{value}</p>}
+        </div>
+      </div>
+    </div>
   )
 }
 /* a rupiah figure that counts up once in view (podium spend) */

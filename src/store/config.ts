@@ -23,10 +23,17 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
   const OLD_BENEFIT_IDS = ['b1', 'b2', 'b3', 'b4']
   if (!Array.isArray(out.benefits) || !out.benefits.length || out.benefits.every(b => OLD_BENEFIT_IDS.includes(b.id))) out.benefits = DEFAULT_CONFIG.benefits
   const COPY_UPGRADES: Partial<Record<keyof Config['copy'], string[]>> = {
-    hook: ['Resique Turun Harga'],
-    benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
-    tierTitle: ['Diskon tier 0% sampai 5%'],
+    hook: ['Resique Turun Harga', 'Resique Turun Harga!'],
+    hookSub: ['Harga chemical & perlengkapan turun. Setiap Rp1.000 belanja tetap dapat 1 poin RMC.'],
+    tagline: ['Tingkatkan transaksi, dapatkan hadiahnya!'],
+    taglineSub: ['Rp1.000 belanja = 1 poin RMC. Poin bisa ditukar voucher, parfum, sampai laptop.'],
+    benefitTitle: ['Yang didapat member RMC'],
+    benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.', 'Diskon hingga 5%, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
+    tierTitle: ['Diskon tier 0% sampai 5%', 'Diskon tier hingga 5%'],
   }
+  // R.026: the five-privilege seed (R.013–R.025) gives way to the four PDF benefits when the stored set is still a seed
+  const SEED_TITLES_OLD = ['Diskon belanja', 'Gratis ongkir', 'Gratis konsultasi bisnis', 'Redeem poin', 'Event tahunan eksklusif Resique']
+  if (out.benefits.length && out.benefits.every(b => SEED_TITLES_OLD.includes(b.title))) out.benefits = DEFAULT_CONFIG.benefits
   // R.011: tiers/benefits that still carry the drifted crm-prototype values follow the RSQ-RMC-001 v2.0 seed
   const OLD_TIER_SIG: Record<string, [number | null, number]> = { starter: [null, 0], beginner: [500_000, 0], intermediate: [300_000, 0], winner: [150_000, 1], champion: [75_000, 2], ultimate: [0, 3] }
   if (out.tiers.every(t => { const o = OLD_TIER_SIG[t.key]; return o && t.freeDelivMin === o[0] && t.consult === o[1] })) out.tiers = DEFAULT_CONFIG.tiers
