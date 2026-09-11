@@ -32,7 +32,7 @@ export function SiteFooter() {
   return (
     <footer className="tex tex-grain relative isolate mt-auto overflow-hidden bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]">
       <Doodle variant="footer" />
-      <Reveal className="container relative z-10 grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:py-16">
+      <Reveal className="container relative z-10 grid grid-cols-1 gap-10 pb-12 pt-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:pb-16 lg:pt-12">
         <div>
           <img src={cfg.assets.logoWhite} srcSet={srcSet2x(cfg.assets.logoWhite)} alt="Resique Supermarket Laundry" width={180} height={39} className="h-9 w-auto" loading="lazy" decoding="async" />
           <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-pretty text-white/75">Supermarket laundry terlengkap di Indonesia. Chemical, perlengkapan, mesin, dan paket usaha laundry di satu tempat.</p>

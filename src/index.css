@@ -78,6 +78,12 @@ body {
   .t-fig { font-family: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; font-variant-numeric: lining-nums proportional-nums; letter-spacing: -0.02em; }
   .t-fig-black { font-weight: 800; }
   .t-fig-sans { font-weight: 800; }
+  /* small editorial notes (Mitra note): Poppins Regular, never bold (Lurd, 11 Sep) */
+  .t-note { font-family: Poppins, "Plus Jakarta Sans", Futura, "Helvetica Neue", Helvetica, sans-serif; font-weight: 400; letter-spacing: 0; }
+  /* small editorial notes (Mitra note): Poppins Regular, never bold (Lurd, 11 Sep) */
+  .t-note { font-family: Poppins, "Plus Jakarta Sans", Futura, "Helvetica Neue", Helvetica, sans-serif; font-weight: 400; letter-spacing: 0; }
+  /* small editorial notes (Mitra note): Poppins Regular, never bold (Lurd, 11 Sep) */
+  .t-note { font-family: Poppins, "Plus Jakarta Sans", Futura, "Helvetica Neue", Helvetica, sans-serif; font-weight: 400; letter-spacing: 0; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
      .t-eyebrow is a plain small label now (no tracked caps — that was the AI-scaffold tell). */
   .t-eyebrow { @apply text-[13px] font-semibold text-navy-700; }
@@ -229,7 +235,7 @@ body {
   .tier-head .badge { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1); }
 
   /* dot field as a standalone layer (the hook paper); the watermark of the Golden Sale ground */
-  .tex-dots-field { background-image: radial-gradient(circle, rgba(33, 26, 90, .14) 1.2px, transparent 1.6px); background-size: 22px 22px; mask-image: linear-gradient(90deg, #000 0, transparent 100%); -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 100%); }
+  .tex-dots-field { background-image: radial-gradient(circle, rgba(33, 26, 90, .18) 1.2px, transparent 1.6px); background-size: 22px 22px; mask-image: linear-gradient(90deg, #000 0, transparent 100%); -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 100%); }
   .sale-watermark { font-weight: 800; font-size: clamp(64px, 14vw, 200px); line-height: 1; letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 2px var(--wm, rgba(255, 255, 255, .10)); }
   /* angled gold ribbon marquee across the Golden Sale band */
   .ribbon { transform: rotate(-2deg); transform-origin: left center; }
@@ -240,8 +246,9 @@ body {
   .card3d-wrap { perspective: 1200px; }
   .card3d { transform: rotateY(-10deg) rotate(-3deg); transform-style: preserve-3d; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 0 60px rgba(255, 255, 255, .28), 0 24px 48px rgba(0, 0, 0, .35); transition: transform 520ms var(--ease-out), box-shadow 520ms var(--ease-out); }
   /* two full turns (720°) then the zoom-in, holds at the end while hovered */
-  @keyframes card-swirl { 0% { transform: rotateY(-10deg) rotate(-3deg) scale(1); } 35% { transform: rotateY(350deg) rotate(4deg) scale(.96); } 70% { transform: rotateY(710deg) rotate(-2deg) scale(.98); } 82% { transform: rotateY(720deg) rotate(0deg) scale(1); } 100% { transform: rotateY(720deg) rotate(0deg) scale(1.12); } }
-  @media (hover: hover) { .card3d-wrap:hover .card3d { animation: card-swirl 2s cubic-bezier(.25, .8, .3, 1) forwards; box-shadow: 0 0 0 1px rgba(255, 255, 255, .35), 0 0 90px rgba(255, 255, 255, .4), 0 30px 60px rgba(0, 0, 0, .4); } }
+  /* one continuous motion: the card zooms in WHILE it swirls two full turns, one ease-out curve, holds at the end */
+  @keyframes card-swirl { 0% { transform: rotateY(-10deg) rotate(-3deg) scale(1); } 100% { transform: rotateY(710deg) rotate(0deg) scale(1.12); } }
+  @media (hover: hover) { .card3d-wrap:hover .card3d { animation: card-swirl 1.8s cubic-bezier(.3, .6, .2, 1) forwards; box-shadow: 0 0 0 1px rgba(255, 255, 255, .35), 0 0 90px rgba(255, 255, 255, .4), 0 30px 60px rgba(0, 0, 0, .4); } }
   .card3d-wrap:active .card3d { transform: rotateY(0deg) rotate(0deg) scale(1.04); }
   @media (prefers-reduced-motion: reduce) { .depth { transform: none !important; } .card3d { transform: none !important; animation: none !important; } }
   /* Four-step strip: the active step swells with a green ring, the arrow after it nudges (the flow reads left → right). */

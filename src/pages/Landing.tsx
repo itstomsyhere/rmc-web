@@ -190,11 +190,11 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-green-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
+    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-navy-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
       {/* the paper behind the banner card is worked: a green band, rings, a dot field, so the card floats on something */}
-      <span aria-hidden className="band bg-green-100" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
-      <span aria-hidden className="band bg-white/70" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
-      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-green" />
+      <span aria-hidden className="band bg-navy-100" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
+      <span aria-hidden className="band bg-white/80" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
+      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-navy-200" />
       <span aria-hidden className="tex-dots-field pointer-events-none absolute inset-y-0 left-0 w-1/2" />
       <div className="container relative">
         <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
@@ -358,7 +358,6 @@ function BenefitSection() {
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border-[14px] border-green-50" />
             <span aria-hidden className="pointer-events-none absolute -left-12 -bottom-16 h-40 w-40 rounded-full bg-green-50" />
             <div className="relative flex flex-col items-center gap-1 px-5 pb-2 pt-7 text-center">
-              <p className="inline-flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.06em] text-green-700"><Sparkles className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />Cara kerjanya</p>
               <h3 className="text-[20px] font-extrabold text-balance text-navy-700 sm:text-[24px]">4 langkah, langsung untung</h3>
             </div>
         <ol ref={stepsRef} className="relative flex flex-wrap items-start justify-center gap-y-6 px-4 pb-8 pt-4" aria-label="Cara kerja Resique Member Card">
@@ -470,7 +469,7 @@ function TierSection() {
         </div>
         <Reveal delay={120} className="mx-auto mt-6 flex max-w-3xl items-start gap-3 rounded-lg border border-gold-200 bg-gold-50 px-4 py-3 shadow-1" data-mitra-note>
           <span className="t-fig mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md bg-gold text-[15px] text-gold-ink" aria-hidden>*</span>
-          <p className="font-display text-[15px] font-medium leading-relaxed tracking-[0.005em] text-gold-ink">*Mitra Apique Management memiliki diskon minimal <strong className="font-bold">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Jika diskon tier lebih besar, itu yang dipakai.</p>
+          <p className="t-note text-[15px] leading-relaxed text-gold-ink">*Mitra Apique Management memiliki diskon minimal <strong className="font-medium">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Jika diskon tier lebih besar, itu yang dipakai.</p>
         </Reveal>
       </div>
     </section>
@@ -832,7 +831,7 @@ function KlasemenSection() {
   const grand = cfg.assets.heroPrizes[0]
   const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
   return (
-    <section id="klasemen" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 py-14 lg:py-24">
+    <section id="klasemen" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 pb-10 pt-14 lg:pb-14 lg:pt-24">
       {/* the arena: gold ground, a navy stage floor under the podium, two spotlight beams, a gold banner behind the title,
           outlined KLASEMEN watermark, rings, confetti + sparkles drifting */}
       <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[30%] lg:h-[620px] lg:w-[110%]" />
