@@ -204,7 +204,7 @@ function HookSection() {
                       {sl.h1 && <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">Cek poin-mu! <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>}
                     </div>
                   </div>
-                  <div className={cn('relative min-w-0 lg:col-span-5', sl.id === 'harga' && 'lg:self-end')}>
+                  <div className={cn('min-w-0 lg:col-span-5', sl.id === 'harga' && 'lg:self-end')}>
                     {sl.id === 'harga' && (
                       /* the mock's own hero picture: phone-in-hand with the Resique WhatsApp profile, Rinso pouch + jerrycan, washing
                          machine and scale floating around it (layers lifted from the RGP PDF, composited once → hero-phone.webp).
