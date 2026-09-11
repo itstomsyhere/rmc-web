@@ -23,7 +23,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   const ctaBg = await p.evaluate(() => getComputedStyle(document.getElementById('cek-poin')).backgroundColor)
   ok(ctaBg === 'rgb(33, 26, 90)', `CTA section is a navy block (${ctaBg})`)
   ok((await p.locator('#cek-poin ol li').count()) === 3, 'CTA section lists the 3 steps')
-  ok(!/0–5%/.test(t) && /5%/.test((await p.evaluate(() => [...document.querySelectorAll('#tier ol > li')].pop().innerText))), 'Ultimate column shows the 5% ceiling (no "0–5%" anywhere)')
+  ok(!/0–5%/.test(t) && (await p.evaluate(() => [...document.querySelectorAll('#tier ol > li')].pop().querySelector('[data-pct]').dataset.pct)) === '5', 'Ultimate column carries the 5% ceiling (no "0–5%" anywhere)')
   const card = await text(p, '[data-rmc-card]')
   ok(/Resique Member Card/.test(card) && /Poin RMC/.test(card) && /Laundry 24 Jam Kuningan/.test(card) && /Winner/.test(card), 'CTA band shows the demo member RMC card (tier + poin)')
   // title marks: every section h2 + the hook h1 carry the highlighter on the last word; it draws in (scaleX 1) once in view
@@ -81,6 +81,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok((await tf('header nav a', '::after')).startsWith('matrix(0'), 'nav underline hidden at rest (scaleX 0)')
   await p.locator('header nav a').first().hover(); await p.waitForTimeout(350)
   ok(/^matrix\(1/.test(await tf('header nav a', '::after')), 'nav underline grows on hover (scaleX 1)')
+  await p.locator('#hook [role="tab"]').nth(0).click(); await p.waitForTimeout(900)
   await p.locator('#hook a[href="#golden-sale"]').first().hover(); await p.waitForTimeout(350)
   ok((await tf('#hook a[href="#golden-sale"] svg')) !== 'none' && (await tf('#hook a[href="#golden-sale"]')) !== 'none', 'hook CTA lifts + arrow nudges on hover')
   await p.locator('#hook a[href="#/login"]').hover(); await p.waitForTimeout(350)
