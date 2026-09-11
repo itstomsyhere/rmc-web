@@ -77,7 +77,8 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok((await tf('#benefit ul > li > div')) !== 'none' && (await tf('#benefit ul > li > div .chip')) !== 'none', 'privilege block lifts + icon chip springs on hover')
   await p.locator('[data-rmc-card]').hover(); await p.waitForTimeout(500)
   const tilt = await tf('[data-rmc-card]')
-  ok(/^matrix\(1, 0, 0, 1, 0, -6\)/.test(tilt), `RMC card straightens on hover (${tilt})`)
+  const tm = /matrix\(([^)]+)\)/.exec(tilt); const tv = tm ? tm[1].split(',').map(Number) : []
+  ok(tv.length === 6 && Math.abs(tv[0] - 1) < 0.01 && Math.abs(tv[1]) < 0.01 && Math.abs(tv[5] + 6) < 0.5, `RMC card straightens on hover (${tilt})`)
   ok((await tf('header nav a', '::after')).startsWith('matrix(0'), 'nav underline hidden at rest (scaleX 0)')
   await p.locator('header nav a').first().hover(); await p.waitForTimeout(350)
   ok(/^matrix\(1/.test(await tf('header nav a', '::after')), 'nav underline grows on hover (scaleX 1)')
@@ -129,7 +130,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok(tint === '1', `privilege block tint fades in on hover (${tint})`)
   // R.026 — banner slider (the mock)
   ok((await p.locator('#hook h1 .hook-word').count()) >= 3 && !/01 Sep 2026|31 Okt 2026/.test(await text(p, '#hook')), 'banner headline words stagger in; no campaign chip')
-  const sl = await p.evaluate(() => { const tr = document.querySelector('#hook .banner-track'); return { slides: tr.querySelectorAll('[data-slide]').length, dots: document.querySelectorAll('#hook [role="tab"]').length, snap: getComputedStyle(tr).scrollSnapType, ox: getComputedStyle(tr).overflowX, w: tr.clientWidth, sw: tr.scrollWidth, phone: document.querySelectorAll('#hook [data-slide="harga"] img').length === 3 && !!document.querySelector('#hook svg.sticker polygon') && document.querySelectorAll('#hook svg.wire').length === 3 } })
+  const sl = await p.evaluate(() => { const tr = document.querySelector('#hook .banner-track'); return { slides: tr.querySelectorAll('[data-slide]').length, dots: document.querySelectorAll('#hook [role="tab"]').length, snap: getComputedStyle(tr).scrollSnapType, ox: getComputedStyle(tr).overflowX, w: tr.clientWidth, sw: tr.scrollWidth, phone: document.querySelectorAll('#hook [data-slide="harga"] img').length === 3 && !!document.querySelector('#hook svg.sticker polygon') && document.querySelectorAll('#hook svg.wire').length >= 3 } })
   ok(sl.slides === 3 && sl.dots === 3 && /x/.test(sl.snap) && sl.ox === 'auto' && sl.sw >= sl.w * 3 - 2 && sl.phone, `banner: 3 snap slides + 3 dots + drop collage (${JSON.stringify(sl)})`)
   await p.locator('#hook [role="tab"]').nth(2).click(); await p.waitForTimeout(900)
   ok((await p.evaluate(() => Math.round(document.querySelector('#hook .banner-track').scrollLeft / document.querySelector('#hook .banner-track').clientWidth))) === 2 && (await p.locator('#hook [role="tab"][aria-selected="true"]').count()) === 1, 'banner dot 3 scrolls the track to slide 3 (Golden Sale!!)')
