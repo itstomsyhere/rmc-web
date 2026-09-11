@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check, ChevronLeft, ChevronRight, ChevronsRight, Coins, Crown, Medal, ShoppingBag, ShoppingCart, Sparkles, Star, Ticket, Trophy, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronLeft, ChevronRight, ChevronsRight, Coins, Crown, Medal, ShoppingBag, ShoppingCart, Sparkles, Star, Ticket, Trophy, X, Zap } from 'lucide-react'
 import { BENEFIT_ICONS } from '@/lib/benefit-icons'
 import { Reveal, useCountUp, useInView } from '@/lib/reveal'
 import { poin } from '@/lib/format'
@@ -21,7 +21,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/misc'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
-import { Price } from '@/components/shop/Price'
 import { QtyStepper } from '@/components/shop/QtyStepper'
 import type { Config, GoldenSaleItem, Tier } from '@/model/types'
 
@@ -384,38 +383,29 @@ function BenefitRow({ b, idx }: { b: Benefit; idx: number }) {
     </Reveal>
   )
 }
-/* The member card of the mock: navy card, a green swoosh ribbon sweeping across, a chip, "RMC / RESIQUE MEMBER CARD",
-   MEMBER ID and Nama Usaha. It rests in perspective (rotateY / rotateX), floats, and flattens on hover. */
+/* The member card, drawn from the photo Lurd sent (11 Sep): royal-blue card, one green crescent sweeping up the right
+   edge, white text — RMC / RESIQUE MEMBER CARD / MEMBER ID RMC 2025 0321 0839 / "Lebih Rutin, Lebih Untung" — a soft
+   white glow. Rests slightly turned, floats; on hover it swirls once and zooms in (card-swirl keyframes). */
 function MemberCardArt() {
-  const demo = SEED_ACCOUNTS[0]
   return (
     <div className="card3d-wrap relative mx-auto max-w-[420px] py-6">
       <div className="hook-float">
-        <div className="card3d relative aspect-[1.586] overflow-hidden rounded-xl bg-navy-900 p-5 text-white shadow-3 ring-1 ring-white/15 sm:p-6" data-member-card>
-          {/* green swoosh ribbon across the card */}
+        <div className="card3d relative aspect-[1.586] overflow-hidden rounded-xl p-5 text-white sm:p-6" data-member-card style={{ background: '#1D4FB8' }}>
+          {/* right-edge dark field + the green crescent */}
           <svg aria-hidden className="swoosh absolute inset-0 h-full w-full" viewBox="0 0 400 252" preserveAspectRatio="none" fill="none">
-            <path d="M-20 178C90 130 170 210 260 150S380 60 420 90V252H-20Z" fill="#71BD41" fillOpacity=".92" />
-            <path d="M-20 196C90 150 170 230 260 170S380 80 420 110" stroke="#B7E094" strokeWidth="3" strokeOpacity=".9" />
-            <path d="M-20 214C90 168 170 248 260 188S380 98 420 128" stroke="#211A5A" strokeWidth="2" strokeOpacity=".5" />
+            <path d="M310 252C365 200 400 130 400 40V252Z" fill="#153C8F" />
+            <path d="M225 252C300 215 360 150 400 60V118C355 190 300 236 250 252Z" fill="#71BD41" />
+            <path d="M232 252C305 216 362 150 400 66" stroke="#B7E094" strokeWidth="2" strokeOpacity=".8" />
           </svg>
-          <span aria-hidden className="absolute inset-y-0 left-[58%] w-24 -skew-x-12 bg-white/[.06]" />
           <div className="relative flex h-full flex-col">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="t-fig text-[32px] leading-none text-white sm:text-[38px]">RMC</p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.08em] text-green-200 sm:text-[11px]">Resique Member Card</p>
-              </div>
-              <span className="grid h-8 w-11 place-items-center rounded-md bg-gold shadow-1 sm:h-9 sm:w-12" aria-hidden>
-                <span className="grid h-5 w-8 grid-cols-3 gap-px overflow-hidden rounded-[3px] border border-gold-ink/40">{Array.from({ length: 6 }, (_, i) => <span key={i} className="border border-gold-ink/30" />)}</span>
-              </span>
+            <div>
+              <p className="t-fig text-[34px] leading-none text-white sm:text-[42px]">RMC</p>
+              <p className="mt-1 text-[11px] font-extrabold uppercase tracking-[0.02em] text-white sm:text-[13px]">Resique Member Card</p>
             </div>
             <div className="mt-auto">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-white/70 sm:text-[10px]">Member ID</p>
-              <p className="t-fig text-[16px] leading-none sm:text-[19px]">RMC 2026 0001 0003</p>
-              <div className="mt-2.5 flex items-end justify-between gap-3">
-                <div className="min-w-0"><p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-navy-900/80 sm:text-[10px]">Nama Usaha</p><p className="truncate text-[13px] font-extrabold text-navy-900 sm:text-[15px]">{demo.laundry}</p></div>
-                <span className="rounded-md bg-navy-900 px-2 py-0.5 text-[11px] font-extrabold text-green-200">Winner</span>
-              </div>
+              <p className="text-[9px] font-semibold uppercase tracking-[0.06em] text-white/85 sm:text-[10px]">Member ID</p>
+              <p className="t-fig text-[14px] leading-none sm:text-[16px]">RMC 2025 0321 0839</p>
+              <p className="mt-3 text-[11px] leading-tight text-white/90 sm:text-[12px]">Lebih Rutin,<br /><strong className="text-[13px] font-extrabold text-white sm:text-[14px]">Lebih Untung</strong></p>
             </div>
           </div>
         </div>
@@ -652,25 +642,51 @@ function RmcCardPreview({ rules }: { rules: Config['rules'] }) {
   )
 }
 
-/* Floating -N% tags + confetti dots behind the Golden Sale grid (decorative, drift on the deck-float keyframes;
-   fewer on phones). The tags read the real biggest cut so the decoration never lies. */
-function SaleConfetti({ pct }: { pct: number }) {
-  const tags = [
-    { cls: 'right-[8%] top-[110px] rotate-[-12deg] [animation-delay:0s] hidden md:block', t: `-${pct}%` },
-    { cls: 'left-[50%] top-[36px] rotate-[10deg] [animation-delay:1.4s] hidden lg:block', t: 'Promo' },
-    { cls: 'left-[26%] bottom-[120px] rotate-[6deg] [animation-delay:2.6s] hidden lg:block', t: `-${Math.max(5, pct - 5)}%` },
-    { cls: 'right-[10%] bottom-[60px] rotate-[-8deg] [animation-delay:3.8s]', t: 'Stok terbatas' },
-  ]
-  const dots = ['left-[14%] top-[60px] h-3 w-3 bg-green', 'left-[52%] top-[40px] h-2 w-2 bg-navy-700', 'right-[18%] top-[90px] h-4 w-4 bg-gold', 'left-[8%] bottom-[200px] h-2 w-2 bg-navy-700 hidden md:block', 'right-[8%] bottom-[140px] h-3 w-3 bg-green hidden md:block', 'left-[40%] bottom-[30px] h-2 w-2 bg-gold', 'right-[40%] top-[140px] h-2 w-2 bg-green hidden lg:block']
+/* Confetti behind the Golden Sale band (dark ground): gold coins, green + white dots, a few stars; drift on the float
+   keyframes; fewer on phones. */
+function SaleConfetti() {
+  const dots = ['left-[8%] top-[70px] h-3 w-3 bg-gold', 'left-[44%] top-[36px] h-2 w-2 bg-green', 'right-[14%] top-[80px] h-4 w-4 bg-gold', 'left-[12%] bottom-[160px] h-2 w-2 bg-white/70 hidden md:block', 'right-[6%] bottom-[120px] h-3 w-3 bg-green hidden md:block', 'left-[36%] bottom-[40px] h-2 w-2 bg-gold', 'right-[36%] top-[150px] h-2.5 w-2.5 bg-white/60 hidden lg:block', 'left-[60%] bottom-[90px] h-3 w-3 bg-gold hidden lg:block']
+  const stars = ['left-[20%] top-[120px]', 'right-[22%] top-[40px] hidden md:block', 'left-[70%] bottom-[60px] hidden lg:block']
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {tags.map((tg, i) => <span key={i} className={cn('hook-float absolute rounded-md bg-navy-700 px-2.5 py-1 text-[12px] font-extrabold text-white shadow-2 sm:text-[13px]', tg.cls)}>{tg.t}</span>)}
-      {dots.map((d, i) => <span key={i} className={cn('float-6 absolute rounded-full opacity-80', d)} style={{ animationDelay: `${(i * 0.9) % 5}s` }} />)}
+      {dots.map((d, i) => <span key={i} className={cn('float-6 absolute rounded-full', d)} style={{ animationDelay: `${(i * 0.9) % 5}s` }} />)}
+      {stars.map((st, i) => <Sparkles key={i} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
+      <span className="absolute -right-24 -top-24 h-[320px] w-[320px] rounded-full border-[24px] border-white/[.05]" />
+      <span className="absolute -left-20 -bottom-28 h-[300px] w-[300px] rounded-full bg-navy-800" />
     </div>
   )
 }
 
-/* 6, Golden Sale */
+/* Countdown to the campaign end (end of day, local time). Ticks every second; the boxes read Hari / Jam / Menit / Detik. */
+function Countdown({ end }: { end: string }) {
+  const target = React.useMemo(() => new Date(`${end}T23:59:59`).getTime(), [end])
+  const [now, setNow] = React.useState(() => Date.now())
+  React.useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t) }, [])
+  const left = Math.max(0, target - now)
+  const d = Math.floor(left / 86_400_000), h = Math.floor(left / 3_600_000) % 24, m = Math.floor(left / 60_000) % 60, sec = Math.floor(left / 1000) % 60
+  const cells = [[d, 'Hari'], [h, 'Jam'], [m, 'Menit'], [sec, 'Detik']] as const
+  return (
+    <div className="inline-flex flex-col items-start gap-2 lg:items-end" data-countdown aria-live="off">
+      <p className="inline-flex items-center gap-1.5 text-[12px] font-bold text-gold"><Zap className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />{left === 0 ? 'Periode berakhir' : 'Berakhir dalam'}</p>
+      <div className="flex items-center gap-1.5">
+        {cells.map(([v, l], i) => (
+          <React.Fragment key={l}>
+            <span className="flex min-w-[56px] flex-col items-center rounded-md bg-gold px-2 py-1.5 text-gold-ink shadow-2 sm:min-w-[62px]">
+              <span className="t-fig text-[22px] leading-none sm:text-[24px]" data-cd={l}>{String(v).padStart(2, '0')}</span>
+              <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.04em]">{l}</span>
+            </span>
+            {i < cells.length - 1 && <span className="t-fig text-[20px] text-gold" aria-hidden>:</span>}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* 6, Golden Sale = the latest Figma (11 Sep, designer's note: "wow factor, like a Shopee flash sale"): dark navy band,
+   an angled gold ribbon marquee "GOLDEN SALE • HARGA SPESIAL MEMBER RESIQUE", a FLASH SALE chip, "GOLDEN SALE!!" with
+   SALE!! in gold, the live countdown, white product cards with a red -N% badge, price + strike, a gold "Hemat Rp…" chip
+   and the green Tambah. Confetti drifts behind. Copy is config-driven ({pct} = the real biggest cut). */
 function GoldenSaleSection() {
   const cfg = useConfig(s => s.config)
   const orders = useOrders(s => s.orders)
@@ -678,17 +694,28 @@ function GoldenSaleSection() {
   const inc = useCart(s => s.inc)
   const dec = useCart(s => s.dec)
   const items = cfg.items.filter(i => i.active)
+  const maxPct = Math.max(...items.map(i => i.realPrice > i.promoPrice ? Math.round((1 - i.promoPrice / i.realPrice) * 100) : 0), 0)
+  const ribbon = Array.from({ length: 8 }, (_, i) => i)
   return (
-    <section id="golden-sale" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 py-14 lg:py-24">
-      {/* the mock's yellow GOLDEN SALE!! band, made playful: giant outline watermark, floating -N% tags, confetti dots, rings */}
-      <span aria-hidden className="band bg-gold-100" style={{ top: '-10%', right: '-14%', width: '48%', height: '60%' }} />
-      <span aria-hidden className="band bg-green-50" style={{ left: '-12%', bottom: '-20%', width: '40%', height: '50%' }} />
-      <Rings className="right-[4%] top-[20px] h-[300px] w-[300px] text-gold-200" />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 top-6 select-none whitespace-nowrap lg:top-4">GOLDEN SALE!!</span>
-      <SaleConfetti pct={Math.max(...items.map(i => i.realPrice > i.promoPrice ? Math.round((1 - i.promoPrice / i.realPrice) * 100) : 0), 0)} />
+    <section id="golden-sale" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
+      <SaleConfetti />
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 top-24 select-none whitespace-nowrap text-white lg:top-28">GOLDEN SALE!!</span>
+      {/* angled gold ribbon marquee across the top edge */}
+      <div aria-hidden className="ribbon pointer-events-none absolute inset-x-[-6%] top-3 overflow-hidden bg-gold py-2 text-gold-ink shadow-2 lg:top-4">
+        <ul className="marquee-track gap-0" style={{ animationDuration: '28s' }}>
+          {ribbon.map(i => <li key={i} className="inline-flex shrink-0 items-center gap-3 px-3 text-[11px] font-extrabold uppercase tracking-[0.08em] sm:text-[12px]"><Sparkles className="h-3.5 w-3.5" strokeWidth={2.2} />Golden Sale<span className="h-1 w-1 rounded-full bg-gold-ink/60" />Harga spesial member Resique</li>)}
+        </ul>
+      </div>
       <div className="container relative">
-        <SectionTitle title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
-        <p className="t-num mt-3 text-[15px] text-ink-2">{items.length} produk · sampai {fmtDate(cfg.campaign.end)} · selama stok ada</p>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <Reveal className="max-w-2xl">
+            <p className="inline-flex items-center gap-1.5 rounded-md bg-gold px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.06em] text-gold-ink"><Zap className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />Flash Sale</p>
+            <h2 className="t-h1 mt-3 text-balance uppercase text-white"><Marked text={cfg.copy.saleTitle} className="mark-gold text-gold" /></h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-pretty text-white/80 sm:text-[17px]">{cfg.copy.saleSub.replace('{pct}', String(maxPct))}</p>
+            <p className="t-num mt-2 text-[13px] text-white/60">{items.length} produk · sampai {fmtDate(cfg.campaign.end)} · selama stok ada</p>
+          </Reveal>
+          <Reveal delay={80}><Countdown end={cfg.campaign.end} /></Reveal>
+        </div>
         {items.length === 0 ? (
           <EmptyState className="mt-8" title="Belum ada item Golden Sale" desc="Item promo belum dibuka. Cek lagi nanti." />
         ) : (
@@ -699,7 +726,7 @@ function GoldenSaleSection() {
               const q = qty[it.id] || 0
               const max = Math.min(it.maxPerCustomer > 0 ? it.maxPerCustomer : Infinity, left)
               return (
-                <Reveal as="li" key={it.id} delay={Math.min(idx, 11) * 40}>
+                <Reveal as="li" key={it.id} delay={Math.min(idx, 11) * 40} className="reveal-pop">
                   <ProductCard item={it} qty={q} left={left} max={Number.isFinite(max) ? max : undefined}
                     onInc={() => { if (left <= 0) return toast.error('Stok habis'); if (Number.isFinite(max) && q >= max) return toast.warning(`Maksimal ${max} per pelanggan`); inc(it.id) }}
                     onDec={() => dec(it.id)} />
@@ -714,18 +741,25 @@ function GoldenSaleSection() {
 }
 function ProductCard({ item, qty, left, max, onInc, onDec }: { item: GoldenSaleItem; qty: number; left: number; max?: number; onInc: () => void; onDec: () => void }) {
   const soldOut = left <= 0
+  const pct = item.realPrice > 0 ? Math.round((1 - item.promoPrice / item.realPrice) * 100) : 0
+  const save = item.realPrice - item.promoPrice
   return (
-    <article className={cn('lift group flex h-full flex-col rounded-lg border bg-white p-3 sm:p-4', qty > 0 ? 'border-green-200 ring-1 ring-green-200' : 'border-line hover:border-green-200', soldOut && 'opacity-70')}>
+    <article className={cn('lift card-fx sweep group flex h-full flex-col rounded-lg bg-white p-3 text-ink sm:p-4', qty > 0 ? 'ring-2 ring-green' : 'ring-1 ring-white/10', soldOut && 'opacity-70')} style={{ '--tint': '#FBF5E8' } as React.CSSProperties}>
       <div className="relative overflow-hidden rounded-md bg-surface-2">
         <img src={item.image} alt={item.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading="lazy" />
-        {soldOut ? <Badge variant="muted" className="absolute left-2 top-2">Habis</Badge>
-          : Number.isFinite(left) && left <= 10 ? <Badge variant="warn" className="absolute left-2 top-2">Sisa {left}</Badge> : null}
+        {pct > 0 && <span className="absolute left-2 top-2 rounded-md bg-danger px-2 py-0.5 text-[11px] font-extrabold text-white shadow-1">-{pct}%</span>}
+        {soldOut ? <Badge variant="muted" className="absolute right-2 top-2">Habis</Badge>
+          : Number.isFinite(left) && left <= 10 ? <Badge variant="warn" className="absolute right-2 top-2">Sisa {left}</Badge> : null}
       </div>
       <h3 className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{item.name}</h3>
-      <p className="mt-0.5 text-[13px] text-ink-3">{item.cat} · per {item.unit}</p>
-      <Price real={item.realPrice} promo={item.promoPrice} size="sm" className="mt-2" />
+      <p className="mt-0.5 text-[12px] text-ink-3">{item.cat} · per {item.unit}</p>
+      <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <span className="t-fig text-[16px] text-navy-700 sm:text-[17px]">{rupiah(item.promoPrice)}</span>
+        {save > 0 && <span className="t-num strike text-[12px] text-ink-4">{rupiah(item.realPrice)}</span>}
+      </div>
+      {save > 0 && <span className="t-num mt-1.5 inline-flex w-fit rounded-md bg-gold-100 px-2 py-0.5 text-[11px] font-extrabold text-gold-ink">Hemat {rupiah(save)}</span>}
       <div className="mt-3">
-        <QtyStepper qty={qty} onInc={onInc} onDec={onDec} max={max} disabled={soldOut} label={item.name} className="w-full justify-center sm:w-auto" />
+        <QtyStepper qty={qty} onInc={onInc} onDec={onDec} max={max} disabled={soldOut} label={item.name} className="w-full justify-center" />
       </div>
     </article>
   )
@@ -786,9 +820,15 @@ function KlasemenSection() {
   const grand = cfg.assets.heroPrizes[0]
   const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
   return (
-    <section id="klasemen" className="tex tex-plus scroll-mt-20 overflow-hidden border-t border-line bg-white py-14 lg:py-24">
-      <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '40%', height: '60%' }} />
-      <span aria-hidden className="band bg-navy-50" style={{ right: '-12%', top: '-8%', width: '34%', height: '44%' }} />
+    <section id="klasemen" className="tex tex-plus scroll-mt-20 overflow-hidden bg-bg py-14 lg:py-24">
+      {/* the leaderboard ground: gold + navy bands, rings, a faint outlined KLASEMEN watermark, confetti (the stage the podium stands on) */}
+      <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '44%', height: '64%' }} />
+      <span aria-hidden className="band bg-navy-50" style={{ right: '-12%', top: '-8%', width: '38%', height: '48%' }} />
+      <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold-200" />
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap text-navy-700 [--wm:rgba(33,26,90,.10)] lg:top-4">KLASEMEN</span>
+      <span aria-hidden className="float-6 pointer-events-none absolute left-[6%] top-[120px] hidden h-3 w-3 rounded-full bg-gold md:block" />
+      <span aria-hidden className="float-6 pointer-events-none absolute right-[10%] top-[220px] hidden h-2 w-2 rounded-full bg-green md:block [animation-delay:1.5s]" />
+      <span aria-hidden className="float-6 pointer-events-none absolute left-[40%] bottom-[80px] hidden h-2.5 w-2.5 rounded-full bg-navy-700/60 lg:block [animation-delay:3s]" />
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (

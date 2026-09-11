@@ -30,6 +30,8 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
     benefitTitle: ['Yang didapat member RMC'],
     benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.', 'Diskon hingga 5%, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
     tierTitle: ['Diskon tier 0% sampai 5%', 'Diskon tier hingga 5%'],
+    saleTitle: ['Golden Sale'],
+    saleSub: ['Harga promo selama periode Golden Privilege, selama stok ada.'],
     ctaPoints: ['Cek poin-mu!'],
     ctaPointsSub: ['Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.'],
   }
