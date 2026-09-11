@@ -113,6 +113,42 @@ function SectionTitle({ title, sub, tone = 'ink', center, phrase }: { title: str
   )
 }
 
+/* Banner ground (Lurd, 11 Sep: "more depth"): three layers at different distances. Far = a perspective floor grid
+   and the doodle; mid = big solid shapes (navy-800 disc, navy-500 ring, band); near = wire cubes and dots, bigger and
+   brighter the closer they are. Each layer translates by its depth with the pointer (--px / --py set on the banner),
+   so the ground moves like a room, not a poster. Reduced motion: static. */
+function BannerGround() {
+  return (
+    <div aria-hidden data-ground className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      {/* far */}
+      <div className="depth absolute inset-0" data-depth="far" style={{ '--d': '6px' } as React.CSSProperties}>
+        <Doodle variant="hero" />
+        <svg className="absolute inset-x-0 bottom-0 h-[46%] w-full text-green-200 opacity-[0.22]" viewBox="0 0 1200 300" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth={1}>
+          {[0, 40, 90, 150, 220, 300].map(y => <line key={y} x1="0" y1={y} x2="1200" y2={y} />)}
+          {[-200, 0, 150, 300, 450, 600, 750, 900, 1050, 1200, 1400].map(x => <line key={x} x1={600 + (x - 600) * 0.25} y1="0" x2={x} y2="300" />)}
+        </svg>
+      </div>
+      {/* mid */}
+      <div className="depth absolute inset-0" data-depth="mid" style={{ '--d': '14px' } as React.CSSProperties}>
+        <span className="absolute -left-24 -bottom-40 h-[420px] w-[420px] rounded-full bg-navy-800" />
+        <span className="absolute -right-16 -top-24 h-[300px] w-[300px] rounded-full border-[22px] border-navy-500/60" />
+        <span className="band bg-navy-800" style={{ right: '-10%', bottom: '-40%', width: '55%', height: '90%' }} />
+        <span className="absolute left-[38%] top-[-60px] h-[200px] w-[200px] rounded-full border-[10px] border-white/[.05]" />
+      </div>
+      {/* near */}
+      <div className="depth absolute inset-0" data-depth="near" style={{ '--d': '26px' } as React.CSSProperties}>
+        <Wire className="left-[-60px] top-[30px] hidden h-48 w-48 text-green/60 lg:block" />
+        <Wire className="right-[-40px] top-[-20px] hidden h-32 w-32 text-white/30 lg:block [animation-direction:reverse]" />
+        <Wire className="bottom-[16px] left-[42%] hidden h-16 w-16 text-green/30 lg:block" />
+        <Wire className="right-[30%] top-[40px] hidden h-10 w-10 text-white/20 lg:block" />
+        <span className="float-6 absolute left-[-24px] top-[190px] hidden h-14 w-14 rounded-full bg-green/80 lg:block" />
+        <span className="float-6 absolute right-[22%] bottom-[40px] hidden h-4 w-4 rounded-full bg-gold lg:block [animation-delay:2s]" />
+        <span className="float-6 absolute left-[30%] top-[60px] hidden h-2.5 w-2.5 rounded-full bg-green-200 lg:block [animation-delay:1s]" />
+      </div>
+    </div>
+  )
+}
+
 /* 1, Hook = the RGP mock's banner card with a slider, styled like the drenched R.025 hook (Lurd, 11 Sep): navy-900
    drench, wire-frame cubes, floating green dot, doodle; slide 1 carries the mock's exact words and a floating collage
    of the three biggest Golden Sale drops with the HEMAT seal. 3 slides, dots + arrows, autoplay paused on hover/focus
@@ -129,6 +165,15 @@ function HookSection() {
   const [idx, setIdx] = React.useState(0)
   const [paused, setPaused] = React.useState(false)
   const count = 3
+  // pointer parallax (desktop): the ground layers shift by their depth, --px / --py in -1..1 on the banner
+  const banner = React.useRef<HTMLDivElement>(null)
+  const onMove = (e: React.PointerEvent) => {
+    const el = banner.current; if (!el || e.pointerType !== 'mouse') return
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--px', String(((e.clientX - r.left) / r.width - 0.5) * 2))
+    el.style.setProperty('--py', String(((e.clientY - r.top) / r.height - 0.5) * 2))
+  }
+  const onLeave = () => { const el = banner.current; if (el) { el.style.setProperty('--px', '0'); el.style.setProperty('--py', '0') } }
   const goTo = React.useCallback((i: number) => { const el = track.current; if (!el) return; const n = ((i % count) + count) % count; el.scrollTo({ left: n * el.clientWidth, behavior: 'smooth' }) }, [])
   React.useEffect(() => {
     const el = track.current; if (!el) return
@@ -153,16 +198,8 @@ function HookSection() {
       <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-green-200" />
       <span aria-hidden className="tex-dots-field pointer-events-none absolute inset-y-0 left-0 w-1/2" />
       <div className="container relative">
-        <div className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-            <Doodle variant="hero" />
-            <Wire className="left-[-60px] top-[30px] hidden h-44 w-44 text-green/50 lg:block" />
-            <Wire className="right-[-50px] top-[-30px] hidden h-36 w-36 text-white/25 lg:block [animation-direction:reverse]" />
-            <Wire className="bottom-[20px] left-[42%] hidden h-20 w-20 text-green/35 lg:block" />
-            <span className="float-6 absolute left-[-24px] top-[180px] hidden h-14 w-14 rounded-full bg-green/70 lg:block" />
-            <span className="absolute -right-10 -bottom-20 h-52 w-52 rounded-full border-[16px] border-white/[.06]" />
-            <span className="band bg-navy-800" style={{ right: '-10%', bottom: '-40%', width: '55%', height: '90%' }} />
-          </div>
+        <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
+          <BannerGround />
           <div ref={track} className="banner-track no-scrollbar flex snap-x snap-mandatory overflow-x-auto" role="region" aria-roledescription="carousel" aria-label="Banner Golden Privilege">
             {slides.map((sl, i) => {
               const Title = sl.h1 ? 'h1' : 'h2'
@@ -347,22 +384,39 @@ function BenefitRow({ b, idx }: { b: Benefit; idx: number }) {
     </Reveal>
   )
 }
-/* the member card of the mock: navy, "RMC · Resique Member Card", member id, nama usaha; floats and straightens on hover */
+/* The member card of the mock: navy card, a green swoosh ribbon sweeping across, a chip, "RMC / RESIQUE MEMBER CARD",
+   MEMBER ID and Nama Usaha. It rests in perspective (rotateY / rotateX), floats, and flattens on hover. */
 function MemberCardArt() {
   const demo = SEED_ACCOUNTS[0]
   return (
-    <div className="tilt-wrap relative mx-auto max-w-[400px] py-4">
+    <div className="card3d-wrap relative mx-auto max-w-[420px] py-6">
       <div className="hook-float">
-        <div className="lift relative overflow-hidden rounded-xl bg-navy-900 p-6 text-white shadow-3 ring-1 ring-white/15 [transform:rotate(-4deg)] hover:[transform:rotate(0deg)_translateY(-6px)]" data-member-card>
-          <span aria-hidden className="absolute -right-10 -top-16 h-44 w-44 rounded-full border-[18px] border-green/25" />
-          <span aria-hidden className="absolute -bottom-12 right-10 h-32 w-32 rounded-full bg-green/15" />
-          <p className="t-fig text-[34px] leading-none text-white">RMC</p>
-          <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.06em] text-green-200">Resique Member Card</p>
-          <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.06em] text-white/60">Member ID</p>
-          <p className="t-fig text-[18px] leading-none">RMC 2026 0001 0003</p>
-          <div className="mt-5 flex items-end justify-between gap-3">
-            <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white/60">Nama Usaha</p><p className="truncate text-[14px] font-bold">{demo.laundry}</p></div>
-            <span className="rounded-md bg-gold px-2 py-0.5 text-[11px] font-extrabold text-gold-ink">Winner</span>
+        <div className="card3d relative aspect-[1.586] overflow-hidden rounded-xl bg-navy-900 p-5 text-white shadow-3 ring-1 ring-white/15 sm:p-6" data-member-card>
+          {/* green swoosh ribbon across the card */}
+          <svg aria-hidden className="swoosh absolute inset-0 h-full w-full" viewBox="0 0 400 252" preserveAspectRatio="none" fill="none">
+            <path d="M-20 178C90 130 170 210 260 150S380 60 420 90V252H-20Z" fill="#71BD41" fillOpacity=".92" />
+            <path d="M-20 196C90 150 170 230 260 170S380 80 420 110" stroke="#B7E094" strokeWidth="3" strokeOpacity=".9" />
+            <path d="M-20 214C90 168 170 248 260 188S380 98 420 128" stroke="#211A5A" strokeWidth="2" strokeOpacity=".5" />
+          </svg>
+          <span aria-hidden className="absolute inset-y-0 left-[58%] w-24 -skew-x-12 bg-white/[.06]" />
+          <div className="relative flex h-full flex-col">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="t-fig text-[32px] leading-none text-white sm:text-[38px]">RMC</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.08em] text-green-200 sm:text-[11px]">Resique Member Card</p>
+              </div>
+              <span className="grid h-8 w-11 place-items-center rounded-md bg-gold shadow-1 sm:h-9 sm:w-12" aria-hidden>
+                <span className="grid h-5 w-8 grid-cols-3 gap-px overflow-hidden rounded-[3px] border border-gold-ink/40">{Array.from({ length: 6 }, (_, i) => <span key={i} className="border border-gold-ink/30" />)}</span>
+              </span>
+            </div>
+            <div className="mt-auto">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-white/70 sm:text-[10px]">Member ID</p>
+              <p className="t-fig text-[16px] leading-none sm:text-[19px]">RMC 2026 0001 0003</p>
+              <div className="mt-2.5 flex items-end justify-between gap-3">
+                <div className="min-w-0"><p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-navy-900/80 sm:text-[10px]">Nama Usaha</p><p className="truncate text-[13px] font-extrabold text-navy-900 sm:text-[15px]">{demo.laundry}</p></div>
+                <span className="rounded-md bg-navy-900 px-2 py-0.5 text-[11px] font-extrabold text-green-200">Winner</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
