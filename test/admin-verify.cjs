@@ -35,7 +35,7 @@ const { ok, launch, go, resetStores, readStore, fill, text, finish } = require('
   ok((await readStore(p, 'config')).config.copy.hook === 'Resique Diskon Gede', 'config.copy.hook saved')
   ok((await readStore(p, 'crm')).audit.some(a => /oleh Satrio Wibowo \(BoD\)/.test(a.meta)), 'audit records the actor')
   await go(p, '/')
-  ok(/Resique Diskon Gede/.test(await text(p, '#hook')), 'landing reflects new headline')
+  ok(/Resique Diskon Gede/i.test(await text(p, '#hook')), 'landing reflects new headline (banner renders uppercase)')
 
   // export xlsx
   await go(p, '/admin?embed=1&actor=Satrio%20Wibowo&role=BoD&level=Full&caps=super_admin,manage_config&tab=transaksi')
