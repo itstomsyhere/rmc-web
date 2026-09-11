@@ -157,7 +157,6 @@ function HookSection() {
   const drops = items.filter(i => i.active && i.realPrice > i.promoPrice)
     .map(i => ({ ...i, pct: Math.round((1 - i.promoPrice / i.realPrice) * 100), save: i.realPrice - i.promoPrice }))
     .sort((a, b) => b.save - a.save)
-  const top3 = drops.slice(0, 3)
   const maxPct = Math.max(...drops.map(d => d.pct), 0)
   const jump = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
   const track = React.useRef<HTMLDivElement>(null)
@@ -217,17 +216,14 @@ function HookSection() {
                       {sl.h1 && <Link to="/login" className="u-slide arrow-nudge inline-flex min-h-[44px] items-center gap-1 text-[15px] font-semibold text-white [--u-bottom:8px]">Cek poin-mu! <ChevronsRight className="h-4 w-4" strokeWidth={2} /></Link>}
                     </div>
                   </div>
-                  <div className="relative min-w-0 lg:col-span-5">
+                  <div className={cn('relative min-w-0 lg:col-span-5', sl.id === 'harga' && 'lg:self-end')}>
                     {sl.id === 'harga' && (
-                      <div className="hook-card-wrap relative mx-auto h-[250px] w-full max-w-[440px] sm:h-[300px] lg:h-[340px]">
-                        {top3.map((d, j) => (
-                          <a key={d.id} href="#golden-sale" onClick={jump('golden-sale')} data-no-press className={cn(tile(j), 'group')}>
-                            <img src={d.image} alt={d.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading={j === 0 ? 'eager' : 'lazy'} decoding="async" />
-                            <span className="absolute left-2 top-2 rounded-md bg-gold px-2 py-0.5 text-[11px] font-extrabold text-gold-ink">-{d.pct}%</span>
-                            <span className="flex flex-col px-3 py-1.5"><span className="truncate text-[11px] font-semibold text-ink-2">{d.name}</span><span className="flex items-baseline gap-2"><span className="t-fig text-[15px] text-navy-700">{rupiah(d.promoPrice)}</span><span className="t-num strike text-[11px] text-ink-3">{rupiah(d.realPrice)}</span></span></span>
-                          </a>
-                        ))}
-                        <Seal pct={maxPct} className="sticker absolute -right-2 -top-4 z-30 h-[84px] w-[84px] sm:-right-4 sm:-top-6 sm:h-[104px] sm:w-[104px]" />
+                      /* the mock's own hero picture: phone-in-hand with the Resique WhatsApp profile, Rinso pouch + jerrycan, washing
+                         machine and scale floating around it (layers lifted from the RGP PDF, composited once → hero-phone.webp).
+                         It sits on the banner floor and the hand runs off the bottom edge, exactly like the source. */
+                      <div className="hook-card-wrap relative mx-auto -mb-14 w-full max-w-[400px] sm:max-w-[460px] lg:-mb-12 lg:max-w-[520px]">
+                        <img src="/img/hero-phone.webp" alt="Profil WhatsApp Customer Solution Resique di HP, dikelilingi produk laundry" width={1010} height={606} className="hook-float block w-full" loading="eager" decoding="async" data-hero-art />
+                        <Seal pct={maxPct} className="sticker absolute right-0 top-0 z-30 h-[84px] w-[84px] sm:right-2 sm:h-[104px] sm:w-[104px]" />
                       </div>
                     )}
                     {sl.id === 'hadiah' && (
@@ -278,9 +274,7 @@ function HeroSection() {
   const STICK = 'TANPA DIUNDI!'
   const sub = copy.taglineSub.includes(STICK) ? copy.taglineSub.split(STICK) : null
   return (
-    <section id="hero" className="tex tex-grain scroll-mt-20 overflow-hidden bg-white py-14 lg:py-20">
-      <Rings className="right-[-140px] top-[-120px] h-[420px] w-[420px] text-green-200" />
-      <span aria-hidden className="band bg-navy-50" style={{ left: '-14%', bottom: '-30%', width: '40%', height: '60%' }} />
+    <section id="hero" className="scroll-mt-20 bg-white py-14 lg:py-20">
       <div className="container">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="t-h2 text-balance text-ink"><Marked text={copy.tagline} /></h2>
