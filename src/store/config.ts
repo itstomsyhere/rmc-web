@@ -30,7 +30,11 @@ function mergeConfig(stored: Partial<Config> | undefined): Config {
     benefitTitle: ['Yang didapat member RMC'],
     benefitSub: ['Poin dari setiap belanja, diskon tier sampai 5%, dan hadiah yang bisa ditukar.', 'Diskon belanja, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.', 'Diskon hingga 5%, gratis ongkir, konsultasi bisnis, tukar poin, dan event tahunan eksklusif Resique.'],
     tierTitle: ['Diskon tier 0% sampai 5%', 'Diskon tier hingga 5%'],
+    ctaPoints: ['Cek poin-mu!'],
+    ctaPointsSub: ['Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.'],
   }
+  // R.027: a stored seed benefit (same title + desc) follows the seed icon (icons moved closer to the mock)
+  out.benefits = out.benefits.map(b => { const seed = DEFAULT_CONFIG.benefits.find(d => d.id === b.id); return seed && seed.title === b.title && seed.desc === b.desc ? { ...b, icon: seed.icon } : b })
   // R.026: the five-privilege seed (R.013–R.025) gives way to the four PDF benefits when the stored set is still a seed
   const SEED_TITLES_OLD = ['Diskon belanja', 'Gratis ongkir', 'Gratis konsultasi bisnis', 'Redeem poin', 'Event tahunan eksklusif Resique']
   if (out.benefits.length && out.benefits.every(b => SEED_TITLES_OLD.includes(b.title))) out.benefits = DEFAULT_CONFIG.benefits

@@ -16,10 +16,10 @@ export const SEED_TIERS: Tier[] = [
 
 export const SEED_BENEFITS: Benefit[] = [
   /* R.026 (11 Sep): the four benefits of the RGP UI mock, wording verbatim (the stakeholder keeps the PDF as the landing page). */
-  { id: 'b-diskon',     icon: 'Percent',        title: 'Diskon Belanja',            desc: 'Langsung dipotong saat transaksi' },
+  { id: 'b-diskon',     icon: 'BadgePercent',   title: 'Diskon Belanja',            desc: 'Langsung dipotong saat transaksi' },
   { id: 'b-ongkir',     icon: 'Truck',          title: 'Gratis Ongkir',             desc: 'Sesuai minimum pembelian' },
-  { id: 'b-poin',       icon: 'Coins',          title: 'Reward Point',              desc: 'Setiap transaksi menghasilkan poin untuk ditukarkan voucher belanja.' },
-  { id: 'b-konsultasi', icon: 'MessagesSquare', title: 'Konsultasi Bisnis Laundry', desc: 'Bersama trainer Apique Academy untuk level Winner ke atas' },
+  { id: 'b-poin',       icon: 'Star',           title: 'Reward Point',              desc: 'Setiap transaksi menghasilkan poin untuk ditukarkan voucher belanja.' },
+  { id: 'b-konsultasi', icon: 'Headset',        title: 'Konsultasi Bisnis Laundry', desc: 'Bersama trainer Apique Academy untuk level Winner ke atas' },
 ]
 
 export const SEED_HERO: HeroPrize[] = [
@@ -53,8 +53,8 @@ export const DEFAULT_CONFIG: Config = {
     benefitSub: 'Memberikan berbagai keuntungan eksklusif untuk setiap pembelian kebutuhan laundry Anda semakin menguntungkan.',
     tierTitle: 'Terus naik tingkat & nikmati keuntungan yang lebih besar lagi!',
     tierSub: 'Tier dihitung dari total belanja 6 bulan (Jan–Jun / Jul–Des).',
-    ctaPoints: 'Cek poin-mu!',
-    ctaPointsSub: 'Masuk pakai nomor HP yang terdaftar di Resique. Lihat poin, tier, dan diskon aktif.',
+    ctaPoints: 'Daftar RMC Sekarang!',
+    ctaPointsSub: 'Mulai nikmati seluruh keuntungan Member Resique mulai dari transaksi pertama',
     saleTitle: 'Golden Sale',
     saleSub: 'Harga promo selama periode Golden Privilege, selama stok ada.',
     klasemenTitle: 'Klasemen Golden Privilege',

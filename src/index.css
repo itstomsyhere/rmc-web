@@ -72,9 +72,10 @@ body {
 
 /* Component-layer classes so page-level utilities (e.g. pt-36 on the hook section) still win. */
 @layer components {
-  .t-code { @apply font-code font-semibold tabular-nums; }
+  /* Numerals (Lurd, 11 Sep, third time): NO tabular figures anywhere — monospaced digits read as a mono font. Proportional PJS. */
+  .t-code { @apply font-code font-semibold; }
   /* Display figures (tier %, poin, prices ≥ 20px): the brand face, extra-bold, tabular + lining, tight. Satoshi dropped 8 Sep. */
-  .t-fig { font-family: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.03em; }
+  .t-fig { font-family: "Plus Jakarta Sans", "Helvetica Neue", Helvetica, sans-serif; font-weight: 800; font-variant-numeric: lining-nums proportional-nums; letter-spacing: -0.02em; }
   .t-fig-black { font-weight: 800; }
   .t-fig-sans { font-weight: 800; }
   /* Typography helpers — one hero per view, typography carries hierarchy.
@@ -84,7 +85,7 @@ body {
   .t-h1 { @apply font-extrabold tracking-[-0.02em] leading-[1.1]; font-size: clamp(26px, 4vw, 40px); }
   .t-h2 { @apply font-extrabold tracking-[-0.02em] leading-tight; font-size: clamp(24px, 3vw, 32px); }
   /* numbers inside prose keep the body face, tabular so columns line up */
-  .t-num { font-variant-numeric: tabular-nums; }
+  .t-num { font-variant-numeric: lining-nums proportional-nums; }
 
   /* Sections: full-viewport storytelling on desktop (pitch-deck mode), natural flow on mobile. */
   /* scroll-margin keeps anchor jumps (nav links, #hash) clear of the floating nav pill */
@@ -226,6 +227,25 @@ body {
   @media (hover: hover) { .lift-lg:hover .ticket-mark { transform: rotate(0deg) scale(1.08); } }
 
   .tier-head .badge { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1); }
+
+  /* Four-step strip: the active step swells with a green ring, the arrow after it nudges (the flow reads left → right). */
+  .step-circle { transition: transform 360ms cubic-bezier(.34, 1.56, .64, 1), box-shadow 360ms var(--ease-out); }
+  @keyframes step-ring { 0% { box-shadow: 0 0 0 0 rgba(113, 189, 65, .55); } 100% { box-shadow: 0 0 0 18px rgba(113, 189, 65, 0); } }
+  [data-active="true"] .step-circle { transform: scale(1.08) rotate(-4deg); animation: step-ring 1.2s ease-out 1; }
+  @media (hover: hover) { .step:hover .step-circle { transform: scale(1.08) rotate(-4deg); } }
+  .step-arrow { transition: transform 320ms var(--ease-out), color 320ms var(--ease-out); }
+  .step-arrow[data-on="true"] { transform: translateX(6px); color: var(--green-700); }
+  /* benefit chips: a soft ring breathes out of the icon disc, staggered per row */
+  .pulse-ring { position: relative; }
+  .pulse-ring::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; box-shadow: 0 0 0 0 rgba(113, 189, 65, .5); animation: step-ring 2.8s ease-out infinite; animation-delay: var(--pd, 0s); }
+  /* prize cards rest with an alternating tilt and straighten on hover (the .lift hover transform replaces the rotate) */
+  .prize-a { transform: rotate(-1.5deg); }
+  .prize-b { transform: rotate(1.5deg); }
+  @keyframes sticker-in { 0% { opacity: 0; transform: rotate(-40deg) scale(.5); } 100% { opacity: 1; transform: rotate(-12deg) scale(1); } }
+  @keyframes seal-spin { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(-6deg); } }
+  .sticker { transform: rotate(-12deg); animation: sticker-in 600ms cubic-bezier(.34, 1.56, .64, 1) 700ms both, seal-spin 6s ease-in-out 1.4s infinite; }
+  @keyframes wire-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .wire { animation: wire-spin 48s linear infinite; }
 
   /* Hero prize deck: 4 photo cards fanned. The slot floats (translateY only), the card holds the pose + hover, so
      the idle animation never fights the pose transform. Cards deal in from a stack once the deck is in view. */
