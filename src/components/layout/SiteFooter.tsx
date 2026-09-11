@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useCart } from '@/store/cart'
 import { Clock, ExternalLink, Facebook, Instagram, Mail, MessageCircle, Store, Youtube } from 'lucide-react'
 import { useConfig } from '@/store/config'
 import { srcSet2x } from '@/lib/logo'
@@ -14,6 +15,9 @@ const SOCIAL_ICON = { instagram: Instagram, youtube: Youtube, facebook: Facebook
    Golden Privilege links. Single scroll-in reveal for the block, per-link underline + press. */
 export function SiteFooter() {
   const cfg = useConfig(s => s.config)
+  // on the landing page with items in the cart, the fixed basket bar covers the footer's last line → clearance below it
+  const hasCart = useCart(s => Object.keys(s.qty).length > 0)
+  const onLanding = useLocation().pathname === '/'
   const link = 'u-slide inline-flex min-h-[32px] items-center gap-2 text-[14px] text-white/85 transition-colors duration-base hover:text-white [--u-bottom:2px]'
   const contact = [
     { icon: MessageCircle, label: `WhatsApp ${CONTACTS.waDisplay}`, href: CONTACTS.wa, ext: true },
@@ -30,7 +34,7 @@ export function SiteFooter() {
   ]
   const jump = (to: string) => (e: React.MouseEvent) => { if (to.startsWith('/#') && location.hash.replace(/\?.*$/, '') === '#/') { e.preventDefault(); document.getElementById(to.slice(2))?.scrollIntoView({ behavior: 'smooth' }) } }
   return (
-    <footer className="tex tex-grain relative isolate mt-auto overflow-hidden bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]">
+    <footer className={cn("tex tex-grain relative isolate mt-auto overflow-hidden bg-navy-900 text-white [&.tex-grain::before]:opacity-[.06]", hasCart && onLanding && "pb-24")}>
       <Doodle variant="footer" />
       <Reveal className="container relative z-10 grid grid-cols-1 gap-10 pb-12 pt-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-14 lg:pb-16 lg:pt-12">
         <div>

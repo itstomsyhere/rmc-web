@@ -31,9 +31,9 @@ import type { Config, GoldenSaleItem, Tier } from '@/model/types'
    slider autoplay, floating phone / cards, scroll-in pop on card lists, hover + press on every control. */
 
 export function LandingPage() {
-  const hasCart = useCart(s => Object.keys(s.qty).length > 0)
+  // the basket bar's clearance lives under the footer (SiteFooter), not between klasemen and the footer (Lurd, 11 Sep)
   return (
-    <div className={cn(hasCart && 'pb-24')}>
+    <div>
       <HookSection />
       <HeroSection />
       <BenefitSection />
