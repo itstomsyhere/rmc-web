@@ -206,9 +206,8 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="scroll-mt-20 bg-navy-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
-      {/* a quiet shade under the banner card, nothing else: the card carries all the depth (Lurd, 11 Sep: the field was
-          distracting from the banner) */}
+    <section id="hook" className="scroll-mt-20 bg-white pb-10 pt-5 lg:pb-14 lg:pt-8">
+      {/* plain white like the prize section under it; the card carries all the depth (Lurd, 11 Sep) */}
       <div className="container relative">
         <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
           <BannerGround />
