@@ -194,6 +194,13 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   const gs2 = await p.evaluate(() => (document.querySelector('#golden-sale [data-cd="Detik"]') || {}).textContent)
   ok(gs1.boxes === 4 && gs1.sec !== gs2 && gs1.ribbon >= 6 && gs1.flash && gs1.gold === 'rgb(212, 160, 78)' && gs1.red === 'rgb(155, 44, 44)' && gs1.hemat, `Golden Sale: countdown ticks (${gs1.sec}→${gs2}), ribbon marquee, FLASH SALE chip, gold SALE!!, red -N% badges, Hemat chips (${JSON.stringify(gs1).slice(0, 120)})`)
   ok(/Harga spesial khusus Member Resique, diskon hingga \d+% untuk semua produk/.test(await text(p, '#golden-sale')) && (await p.locator('#klasemen .sale-watermark').count()) === 1 && (await p.locator('#klasemen svg circle').count()) >= 4, 'sale sub from the Figma with the live cut; klasemen ground carries watermark + rings')
+  // R.031 — hook ground ≠ prize ground, 720° swirl, steps banner, Mitra note in the Futura stack, klasemen arena
+  const r31 = await p.evaluate(() => { const css = [...document.styleSheets].flatMap(sh => { try { return [...sh.cssRules] } catch { return [] } }); const kf = css.find(r => r.name === 'card-swirl'); const last = kf ? [...kf.cssRules].pop().style.transform : ''; const note = document.querySelector('#tier [data-mitra-note] p'); return { hook: getComputedStyle(document.getElementById('hook')).backgroundColor, hero: getComputedStyle(document.getElementById('hero')).backgroundColor, swirl: last, banner: !!document.querySelector('#benefit [data-steps] .rounded-xl.bg-white'), kicker: /Cara kerjanya/.test(document.querySelector('#benefit [data-steps]').innerText), noteFam: note ? getComputedStyle(note).fontFamily : '', kl: getComputedStyle(document.getElementById('klasemen')).backgroundColor, klSpark: document.querySelectorAll('#klasemen svg.lucide-sparkles').length, jost: [...document.fonts].some(f => /Jost/.test(f.family) && f.status === 'loaded') } })
+  ok(r31.hook !== r31.hero && r31.hook === 'rgb(241, 249, 234)' && r31.hero === 'rgb(255, 255, 255)', `banner section ground (${r31.hook}) differs from the prize section (${r31.hero})`)
+  ok(/rotateY\(720deg\)/.test(r31.swirl) && /scale\(1\.12\)/.test(r31.swirl), `member card: 720° swirl then zoom (${r31.swirl})`)
+  ok(r31.banner && r31.kicker, 'steps sit in a highlight banner with the kicker')
+  ok(/Futura|Jost/.test(r31.noteFam) && r31.jost, `Mitra note in the Futura stack, Jost loaded (${r31.noteFam.slice(0, 30)})`)
+  ok(r31.kl === 'rgb(251, 245, 232)' && r31.klSpark >= 1, `klasemen arena: gold ground + sparkles (${r31.kl}, ${r31.klSpark})`)
   ok(errs.length === 0, `no page errors (${errs.length})`)
   await finish(b, errs, 'landing-verify')
 })()

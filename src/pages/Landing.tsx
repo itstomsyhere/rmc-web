@@ -190,11 +190,11 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-bg pb-8 pt-5 lg:pb-12 lg:pt-8">
+    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-green-50 pb-10 pt-5 lg:pb-14 lg:pt-8">
       {/* the paper behind the banner card is worked: a green band, rings, a dot field, so the card floats on something */}
-      <span aria-hidden className="band bg-green-50" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
-      <span aria-hidden className="band bg-navy-50" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
-      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-green-200" />
+      <span aria-hidden className="band bg-green-100" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
+      <span aria-hidden className="band bg-white/70" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
+      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-green" />
       <span aria-hidden className="tex-dots-field pointer-events-none absolute inset-y-0 left-0 w-1/2" />
       <div className="container relative">
         <div ref={banner} className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => { setPaused(false); onLeave() }} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerMove={onMove}>
@@ -350,8 +350,18 @@ function BenefitSection() {
           </div>
         </div>
       </div>
-      <div className="bg-navy-50 py-10 lg:py-12" data-steps>
-        <ol ref={stepsRef} className="container flex flex-wrap items-start justify-center gap-y-6" aria-label="Cara kerja Resique Member Card">
+      <div className="bg-navy-50 py-10 lg:py-14" data-steps>
+        <div className="container">
+          <div className="relative overflow-hidden rounded-xl bg-white shadow-3 ring-1 ring-line">
+            {/* banner head: green bar + kicker, the strip reads as one highlighted object */}
+            <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-green" />
+            <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border-[14px] border-green-50" />
+            <span aria-hidden className="pointer-events-none absolute -left-12 -bottom-16 h-40 w-40 rounded-full bg-green-50" />
+            <div className="relative flex flex-col items-center gap-1 px-5 pb-2 pt-7 text-center">
+              <p className="inline-flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.06em] text-green-700"><Sparkles className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />Cara kerjanya</p>
+              <h3 className="text-[20px] font-extrabold text-balance text-navy-700 sm:text-[24px]">4 langkah, langsung untung</h3>
+            </div>
+        <ol ref={stepsRef} className="relative flex flex-wrap items-start justify-center gap-y-6 px-4 pb-8 pt-4" aria-label="Cara kerja Resique Member Card">
           {STEPS.map((st, i) => (
             <li key={st.n} className="step flex items-start" data-active={step === i ? 'true' : 'false'}>
               <Reveal delay={i * 110} className="reveal-pop flex w-[150px] flex-col items-center text-center sm:w-[170px]">
@@ -365,6 +375,8 @@ function BenefitSection() {
             </li>
           ))}
         </ol>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -456,9 +468,9 @@ function TierSection() {
             <button key={t.key} type="button" role="tab" aria-selected={i === active} aria-label={t.name} onClick={() => goTo(i)} className={cn('tier-dot h-2 rounded-full', i === active ? 'w-6' : 'w-2 bg-line')} style={i === active ? { background: t.sw } : undefined} />
           ))}
         </div>
-        <Reveal delay={120} className="mx-auto mt-6 flex max-w-3xl items-start gap-3 rounded-lg border border-gold-200 bg-gold-50 px-4 py-3 text-[14px] leading-relaxed text-ink-2 shadow-1" data-mitra-note>
+        <Reveal delay={120} className="mx-auto mt-6 flex max-w-3xl items-start gap-3 rounded-lg border border-gold-200 bg-gold-50 px-4 py-3 shadow-1" data-mitra-note>
           <span className="t-fig mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md bg-gold text-[15px] text-gold-ink" aria-hidden>*</span>
-          <p>*Mitra Apique Management memiliki diskon minimal <strong className="text-ink">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Jika diskon tier lebih besar, itu yang dipakai.</p>
+          <p className="font-display text-[15px] font-medium leading-relaxed tracking-[0.005em] text-gold-ink">*Mitra Apique Management memiliki diskon minimal <strong className="font-bold">{cfg.mitraFloorDiscount}%</strong> sejak Starter. Jika diskon tier lebih besar, itu yang dipakai.</p>
         </Reveal>
       </div>
     </section>
@@ -820,15 +832,20 @@ function KlasemenSection() {
   const grand = cfg.assets.heroPrizes[0]
   const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
   return (
-    <section id="klasemen" className="tex tex-plus scroll-mt-20 overflow-hidden bg-bg py-14 lg:py-24">
-      {/* the leaderboard ground: gold + navy bands, rings, a faint outlined KLASEMEN watermark, confetti (the stage the podium stands on) */}
-      <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '44%', height: '64%' }} />
-      <span aria-hidden className="band bg-navy-50" style={{ right: '-12%', top: '-8%', width: '38%', height: '48%' }} />
-      <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold-200" />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap [--wm:rgba(33,26,90,.08)] lg:top-4">KLASEMEN</span>
-      <span aria-hidden className="float-6 pointer-events-none absolute left-[6%] top-[120px] hidden h-3 w-3 rounded-full bg-gold md:block" />
-      <span aria-hidden className="float-6 pointer-events-none absolute right-[10%] top-[220px] hidden h-2 w-2 rounded-full bg-green md:block [animation-delay:1.5s]" />
-      <span aria-hidden className="float-6 pointer-events-none absolute left-[40%] bottom-[80px] hidden h-2.5 w-2.5 rounded-full bg-navy-700/60 lg:block [animation-delay:3s]" />
+    <section id="klasemen" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 py-14 lg:py-24">
+      {/* the arena: gold ground, a navy stage floor under the podium, two spotlight beams, a gold banner behind the title,
+          outlined KLASEMEN watermark, rings, confetti + sparkles drifting */}
+      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[30%] lg:h-[620px] lg:w-[110%]" />
+      <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/40 lg:block" />
+      <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/40 lg:block" />
+      <span aria-hidden className="band bg-gold-100" style={{ left: '-8%', top: '-6%', width: '46%', height: '30%' }} />
+      <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold" />
+      <Rings className="left-[-160px] top-[-140px] h-[360px] w-[360px] text-navy-200" />
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap [--wm:rgba(176,136,0,.22)] lg:top-4">KLASEMEN</span>
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        {['left-[6%] top-[120px] h-3 w-3 bg-gold', 'right-[10%] top-[220px] h-2 w-2 bg-green', 'left-[40%] bottom-[80px] h-2.5 w-2.5 bg-navy-700/60', 'left-[22%] top-[60px] h-2 w-2 bg-navy-700/50 hidden md:block', 'right-[28%] top-[90px] h-3 w-3 bg-green hidden md:block', 'left-[60%] bottom-[140px] h-2 w-2 bg-gold hidden lg:block', 'right-[6%] bottom-[240px] h-2.5 w-2.5 bg-gold hidden lg:block'].map((d, i) => <span key={i} className={cn('float-6 absolute rounded-full', d)} style={{ animationDelay: `${(i * 0.8) % 5}s` }} />)}
+        {['left-[12%] top-[200px]', 'right-[14%] top-[60px] hidden md:block', 'left-[48%] top-[40px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
+      </div>
       <div className="container">
         <SectionTitle title={cfg.copy.klasemenTitle} sub={cfg.copy.klasemenSub} />
         {top.length === 0 ? <EmptyState className="mt-8" title="Belum ada pesanan Lunas" desc="Pesanan yang sudah Lunas akan tampil di sini." /> : (
