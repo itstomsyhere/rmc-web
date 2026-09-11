@@ -65,18 +65,6 @@ function Rings({ className }: { className?: string }) {
   )
 }
 
-/* Gold scalloped seal for the biggest cut ("HEMAT 16%"): 24-point starburst, navy text, drop shadow. */
-function Seal({ pct, className }: { pct: number; className?: string }) {
-  const pts = Array.from({ length: 48 }, (_, i) => { const r = i % 2 ? 46 : 50; const a = (i / 48) * Math.PI * 2; return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}` }).join(' ')
-  return (
-    <svg aria-hidden viewBox="0 0 100 100" className={cn('drop-shadow-[0_8px_16px_rgba(33,26,90,.22)]', className)}>
-      <polygon points={pts} fill="#D4A04E" />
-      <circle cx="50" cy="50" r="40" fill="none" stroke="#211A5A" strokeOpacity=".35" strokeWidth="1.2" strokeDasharray="2 2.5" />
-      <text x="50" y="41" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="11" letterSpacing="1.5" fill="#211A5A">HEMAT</text>
-      <text x="50" y="68" textAnchor="middle" fontFamily="'Plus Jakarta Sans', Helvetica, sans-serif" fontWeight="800" fontSize="28" letterSpacing="-1" fill="#211A5A">{pct}%</text>
-    </svg>
-  )
-}
 /* Wire-frame cube, the floating decoration of the banner (after the summit page's 3D wire shapes). */
 function Wire({ className }: { className?: string }) {
   return (
@@ -221,9 +209,8 @@ function HookSection() {
                       /* the mock's own hero picture: phone-in-hand with the Resique WhatsApp profile, Rinso pouch + jerrycan, washing
                          machine and scale floating around it (layers lifted from the RGP PDF, composited once → hero-phone.webp).
                          It sits on the banner floor and the hand runs off the bottom edge, exactly like the source. */
-                      <div className="hook-card-wrap relative mx-auto -mb-14 w-full max-w-[400px] sm:max-w-[460px] lg:-mb-12 lg:max-w-[520px]">
+                      <div className="hook-card-wrap relative -mx-6 -mb-14 w-[calc(100%+48px)] sm:mx-auto sm:w-full sm:max-w-[560px] lg:-mr-14 lg:ml-auto lg:-mb-12 lg:w-[520px] lg:max-w-none">
                         <img src="/img/hero-phone.webp" alt="Profil WhatsApp Customer Solution Resique di HP, dikelilingi produk laundry" width={1010} height={606} className="hook-float block w-full" loading="eager" decoding="async" data-hero-art />
-                        <Seal pct={maxPct} className="sticker absolute right-0 top-0 z-30 h-[84px] w-[84px] sm:right-2 sm:h-[104px] sm:w-[104px]" />
                       </div>
                     )}
                     {sl.id === 'hadiah' && (
