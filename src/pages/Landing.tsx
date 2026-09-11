@@ -144,13 +144,13 @@ function HookSection() {
     { id: 'hadiah', kicker: 'Resique Member Card', title: copy.tagline, sub: copy.taglineSub, h1: false },
     { id: 'sale', kicker: 'Golden Sale', title: 'Golden Sale!!', sub: `Harga turun paling besar sampai -${maxPct}%`, h1: false },
   ]
-  const tile = (j: number) => cn('hook-float absolute w-[58%] overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-6 z-20 rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 left-[24%] rotate-[3deg] [animation-delay:3s]')
+  const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
     <section id="hook" className="scroll-mt-20 bg-bg pb-6 pt-5 lg:pb-10 lg:pt-8">
       <div className="container">
         <div className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-            <Doodle variant="footer" />
+            <Doodle variant="hero" />
             <Wire className="left-[-60px] top-[30px] hidden h-44 w-44 text-green/50 lg:block" />
             <Wire className="right-[-50px] top-[-30px] hidden h-36 w-36 text-white/25 lg:block [animation-direction:reverse]" />
             <Wire className="bottom-[20px] left-[42%] hidden h-20 w-20 text-green/35 lg:block" />
@@ -262,7 +262,7 @@ function PrizeCard({ prize, idx }: { prize: Prize; idx: number }) {
   return (
     <Reveal as="li" delay={idx * 80} className="reveal-pop">
       <Link to="/login" data-prize-card className={cn('lift card-fx sweep group relative flex h-full flex-col rounded-lg border border-line bg-white p-3 sm:p-4', idx % 2 ? 'prize-b' : 'prize-a')} data-no-press style={{ '--tint': '#F1F9EA' } as React.CSSProperties}>
-        {idx === 0 && <span className="absolute -left-2 -top-3 z-10 rotate-[-8deg] rounded-md bg-navy-700 px-2 py-1 text-[11px] font-extrabold text-white shadow-2">Hadiah utama</span>}
+        {idx === 0 && <span className="absolute left-4 top-4 z-10 rotate-[-6deg] rounded-md bg-navy-700 px-2 py-1 text-[11px] font-extrabold text-white shadow-2 sm:left-5 sm:top-5">Hadiah utama</span>}
         <span className="block overflow-hidden rounded-md bg-surface-2"><img src={prize.image} alt={prize.name} width={800} height={600} className="zoom-img aspect-[4/3] w-full object-cover" loading="lazy" decoding="async" /></span>
         <span className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-bold leading-snug text-ink sm:text-[14px]">{prize.name}</span>
         <span ref={ref} className="chip mt-2 inline-flex w-fit items-center gap-1.5 rounded-md bg-gold-100 px-2 py-1 text-[12px] font-extrabold text-gold-ink transition-transform duration-base group-hover:-rotate-3 group-hover:scale-105"><Coins className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /><span className="t-fig text-[13px]">{poin(pts)}</span> Pt</span>

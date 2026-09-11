@@ -35,7 +35,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(300)
   ok(/Tingkatkan Transaksi dan Dapatkan Hadiahnya!/.test(t) && /Belanja di Resique untuk dapatkan Hadiahnya, TANPA DIUNDI!/.test(t), 'prize section: mock title + sub verbatim')
   ok(/Cek poin-mu/.test(t) && /Daftar RMC Sekarang!/.test(t) && /Mulai nikmati seluruh keuntungan Member Resique mulai dari transaksi pertama/.test(t) && (await p.locator('#cek-poin [data-cta-benefits] li').count()) === 4, 'CTA band: mock title + sub + four benefit highlights; "Cek poin-mu!" link kept in the banner')
-  ok((await p.locator('#hero [data-prize-card]').count()) === 4 && (await p.locator('#hero [data-prize-card] img').count()) === 4 && /\d[\d.]* Pt/.test(await text(p, '#hero')), 'prize grid: 4 prize cards with photo + point cost')
+  ok((await p.locator('#hero [data-prize-card]').count()) === 4 && (await p.locator('#hero [data-prize-card] img').count()) === 4 && (await p.locator('#hero [data-prize-card] .t-fig').count()) === 4 && /Pt/.test(await text(p, '#hero')), 'prize grid: 4 prize cards with photo + point cost')
   ok((await p.locator('#tier h3:visible').count()) === 6, '6 tier cards visible (mobile ladder / desktop cards)')
   ok(/\*Mitra Apique Management memiliki diskon minimal 3% sejak Starter\. Jika diskon tier lebih besar, itu yang dipakai\./.test(t), 'Mitra floor note verbatim from the mock')
   // RSQ-RMC-001 v2.0 §3: ongkir ≥ Rp500 rb (Starter–Intermediate) / ≥ Rp350 rb (Winner+); konsultasi 1/1/2 sesi per bulan; no "tanpa minimum"
@@ -98,7 +98,7 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   ok(!/\u2014/.test(await p.evaluate(() => document.body.innerText)), 'no visible em-dash (U+2014)')
   // R.017 — brand palette, real logo, two-tier navbar, prize deck, doodle, tier motion, Satoshi figures, real contacts
   const heroBg = await p.evaluate(() => getComputedStyle(document.getElementById('hero')).backgroundColor)
-  ok(heroBg === 'rgb(255, 255, 255)' && (await p.evaluate(() => getComputedStyle(document.querySelector('#hook [data-banner]')).backgroundColor)) === 'rgb(33, 26, 90)' && (await p.evaluate(() => getComputedStyle(document.querySelector('#benefit > div')).backgroundColor)) === 'rgb(33, 26, 90)', `mock rhythm: white prize section, navy banner card, navy benefit band (${heroBg})`)
+  ok(heroBg === 'rgb(255, 255, 255)' && (await p.evaluate(() => getComputedStyle(document.querySelector('#hook [data-banner]')).backgroundColor)) === 'rgb(13, 10, 41)' && (await p.evaluate(() => getComputedStyle(document.querySelector('#benefit > div')).backgroundColor)) === 'rgb(33, 26, 90)', `mock rhythm: white prize section, navy banner card, navy benefit band (${heroBg})`)
   const logos = await p.evaluate(() => [...document.querySelectorAll('img[src*="resique-logo"]')].map(i => ({ where: i.closest('header') ? 'header' : i.closest('footer') ? 'footer' : 'other', w: i.naturalWidth, src: i.getAttribute('src') })))
   ok(logos.some(l => l.where === 'header' && l.w > 0 && /resique-logo\.png$/.test(l.src)) && logos.some(l => l.where === 'footer' && l.w > 0 && /resique-logo-white\.png$/.test(l.src)), `real Resique lockup in header (colour) + footer (white) → ${JSON.stringify(logos)}`)
   ok((await p.locator('header [data-utility] a[href^="tel:+6287815338811"]').count()) === 1 && (await p.locator('header [data-utility] a[href^="tel:"]').isVisible()), 'utility row: Customer Services tel link visible at 1440')
