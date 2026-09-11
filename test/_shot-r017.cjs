@@ -33,8 +33,8 @@ const section = async (p, id, name, w) => {
     if (w === 1440) {
       await p.locator('#tier ol > li').last().hover(); await p.waitForTimeout(500)
       await section(p, 'tier', 'tier-hover', w)
-      await p.locator('#hero .deck').hover(); await p.waitForTimeout(700)
-      await section(p, 'hero', 'hero-hover', w)
+      await p.locator('#hook [data-banner]').hover(); await p.waitForTimeout(700)
+      await section(p, 'hook', 'hook-hover', w)
     }
     await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); await p.waitForTimeout(1000)
     const fb = await p.evaluate(() => { const r = document.querySelector('footer').getBoundingClientRect(); return { x: 0, y: r.top + window.scrollY, width: r.width, height: r.height } })

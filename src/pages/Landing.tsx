@@ -124,7 +124,7 @@ function HookSection() {
   return (
     <section id="hook" className="scroll-mt-20 bg-bg pb-6 pt-5 lg:pb-10 lg:pt-8">
       <div className="container">
-        <div className="relative isolate overflow-hidden rounded-xl bg-navy-700 text-white shadow-3" data-banner onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+        <div className="relative isolate overflow-hidden rounded-xl bg-navy-700 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <Doodle variant="hero" />
             <span className="band bg-navy-800" style={{ right: '-10%', bottom: '-40%', width: '55%', height: '90%' }} />
