@@ -602,10 +602,10 @@ function RmcCardPreview({ rules }: { rules: Config['rules'] }) {
    fewer on phones). The tags read the real biggest cut so the decoration never lies. */
 function SaleConfetti({ pct }: { pct: number }) {
   const tags = [
-    { cls: 'left-[6%] top-[120px] rotate-[-12deg] [animation-delay:0s]', t: `-${pct}%` },
-    { cls: 'right-[10%] top-[210px] rotate-[10deg] [animation-delay:1.4s] hidden md:block', t: 'Promo' },
-    { cls: 'left-[28%] bottom-[120px] rotate-[6deg] [animation-delay:2.6s] hidden lg:block', t: `-${Math.max(5, pct - 5)}%` },
-    { cls: 'right-[26%] bottom-[60px] rotate-[-8deg] [animation-delay:3.8s]', t: 'Stok terbatas' },
+    { cls: 'right-[8%] top-[110px] rotate-[-12deg] [animation-delay:0s] hidden md:block', t: `-${pct}%` },
+    { cls: 'left-[50%] top-[36px] rotate-[10deg] [animation-delay:1.4s] hidden lg:block', t: 'Promo' },
+    { cls: 'left-[26%] bottom-[120px] rotate-[6deg] [animation-delay:2.6s] hidden lg:block', t: `-${Math.max(5, pct - 5)}%` },
+    { cls: 'right-[10%] bottom-[60px] rotate-[-8deg] [animation-delay:3.8s]', t: 'Stok terbatas' },
   ]
   const dots = ['left-[14%] top-[60px] h-3 w-3 bg-green', 'left-[52%] top-[40px] h-2 w-2 bg-navy-700', 'right-[18%] top-[90px] h-4 w-4 bg-gold', 'left-[8%] bottom-[200px] h-2 w-2 bg-navy-700 hidden md:block', 'right-[8%] bottom-[140px] h-3 w-3 bg-green hidden md:block', 'left-[40%] bottom-[30px] h-2 w-2 bg-gold', 'right-[40%] top-[140px] h-2 w-2 bg-green hidden lg:block']
   return (
