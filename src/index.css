@@ -198,7 +198,7 @@ body {
   @media (hover: hover) { .hook-card-wrap:hover .hook-float { animation-play-state: paused; } .hook-card-wrap:hover .hook-card { transform: rotate(0deg) translateY(-6px); } }
   .hook-card-wrap:active .hook-card { transform: rotate(0deg) scale(.99); }
   /* giant uppercase banner headline: 5rem ceiling inside the card, tight but never touching */
-  .t-mega { font-weight: 800; letter-spacing: -0.03em; line-height: .98; font-size: clamp(36px, 6.4vw, 80px); }
+  .t-mega { font-weight: 800; letter-spacing: -0.03em; line-height: .98; font-size: clamp(36px, 6.4vw, 68px); }
   /* banner slider: native scroll-snap, one slide per viewport of the track */
   .banner-track { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
   .banner-track > * { scroll-snap-stop: always; }

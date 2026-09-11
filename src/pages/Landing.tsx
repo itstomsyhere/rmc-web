@@ -190,7 +190,7 @@ function HookSection() {
             {slides.map((sl, i) => {
               const Title = sl.h1 ? 'h1' : 'h2'
               return (
-                <div key={sl.id} data-slide={sl.id} className={cn('grid w-full shrink-0 snap-start grid-cols-1 items-center gap-8 px-6 pb-14 pt-8 sm:px-10 lg:min-h-[460px] lg:grid-cols-12 lg:gap-6 lg:px-14 lg:py-12', sl.id === 'harga' && '[grid-template-rows:1fr_auto] lg:[grid-template-rows:none]')} aria-roledescription="slide" aria-label={`${i + 1} dari ${count}`}>
+                <div key={sl.id} data-slide={sl.id} className={cn('relative grid w-full shrink-0 snap-start grid-cols-1 items-center gap-8 px-6 pb-14 pt-8 sm:px-10 lg:min-h-[460px] lg:grid-cols-12 lg:gap-6 lg:px-14 lg:py-12', sl.id === 'harga' && '[grid-template-rows:1fr_auto] lg:[grid-template-rows:none]')} aria-roledescription="slide" aria-label={`${i + 1} dari ${count}`}>
                   <div className="min-w-0 lg:col-span-7">
                     <p className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.04em] text-green-200 sm:text-[13px]"><Sparkles className="h-4 w-4 text-green" strokeWidth={2} aria-hidden />{sl.kicker}</p>
                     <Title className={cn('t-mega mt-4 max-w-3xl text-balance uppercase text-white', !sl.h1 && 'text-[clamp(30px,5vw,60px)]')}>{sl.h1 ? <StaggerWords text={sl.title} neon /> : <Marked text={sl.title} className="mark-neon text-green" />}</Title>
@@ -209,7 +209,7 @@ function HookSection() {
                       /* the mock's own hero picture: phone-in-hand with the Resique WhatsApp profile, Rinso pouch + jerrycan, washing
                          machine and scale floating around it (layers lifted from the RGP PDF, composited once → hero-phone.webp).
                          It sits on the banner floor and the hand runs off the bottom edge, exactly like the source. */
-                      <div className="hook-card-wrap relative -mx-6 -mb-14 w-[calc(100%+48px)] sm:mx-auto sm:w-full sm:max-w-[560px] lg:-mb-12 lg:-ml-10 lg:-mr-14 lg:w-[calc(100%+96px)] lg:max-w-none">
+                      <div className="hook-card-wrap relative -mx-6 -mb-14 w-[calc(100%+48px)] sm:mx-auto sm:w-full sm:max-w-[560px] lg:absolute lg:bottom-0 lg:right-0 lg:m-0 lg:w-[640px] lg:max-w-none">
                         <img src="/img/hero-phone.webp" alt="Profil WhatsApp Customer Solution Resique di HP, dikelilingi produk laundry" width={1010} height={606} className="hook-float block w-full" loading="eager" decoding="async" data-hero-art />
                       </div>
                     )}
