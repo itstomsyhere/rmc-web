@@ -699,7 +699,7 @@ function GoldenSaleSection() {
   return (
     <section id="golden-sale" className="relative isolate scroll-mt-20 overflow-hidden bg-navy-900 pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
       <SaleConfetti />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 top-24 select-none whitespace-nowrap text-white lg:top-28">GOLDEN SALE!!</span>
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 bottom-10 select-none whitespace-nowrap [--wm:rgba(255,255,255,.08)] lg:bottom-6">GOLDEN SALE!!</span>
       {/* angled gold ribbon marquee across the top edge */}
       <div aria-hidden className="ribbon pointer-events-none absolute inset-x-[-6%] top-3 overflow-hidden bg-gold py-2 text-gold-ink shadow-2 lg:top-4">
         <ul className="marquee-track gap-0" style={{ animationDuration: '28s' }}>
@@ -825,7 +825,7 @@ function KlasemenSection() {
       <span aria-hidden className="band bg-gold-50" style={{ left: '-10%', bottom: '-30%', width: '44%', height: '64%' }} />
       <span aria-hidden className="band bg-navy-50" style={{ right: '-12%', top: '-8%', width: '38%', height: '48%' }} />
       <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold-200" />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap text-navy-700 [--wm:rgba(33,26,90,.10)] lg:top-4">KLASEMEN</span>
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap [--wm:rgba(33,26,90,.08)] lg:top-4">KLASEMEN</span>
       <span aria-hidden className="float-6 pointer-events-none absolute left-[6%] top-[120px] hidden h-3 w-3 rounded-full bg-gold md:block" />
       <span aria-hidden className="float-6 pointer-events-none absolute right-[10%] top-[220px] hidden h-2 w-2 rounded-full bg-green md:block [animation-delay:1.5s]" />
       <span aria-hidden className="float-6 pointer-events-none absolute left-[40%] bottom-[80px] hidden h-2.5 w-2.5 rounded-full bg-navy-700/60 lg:block [animation-delay:3s]" />
