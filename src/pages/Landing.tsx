@@ -209,7 +209,7 @@ function HookSection() {
                       /* the mock's own hero picture: phone-in-hand with the Resique WhatsApp profile, Rinso pouch + jerrycan, washing
                          machine and scale floating around it (layers lifted from the RGP PDF, composited once → hero-phone.webp).
                          It sits on the banner floor and the hand runs off the bottom edge, exactly like the source. */
-                      <div className="hook-card-wrap relative -mx-6 -mb-14 w-[calc(100%+48px)] sm:mx-auto sm:w-full sm:max-w-[560px] lg:absolute lg:bottom-0 lg:right-0 lg:m-0 lg:w-[640px] lg:max-w-none">
+                      <div className="hook-card-wrap relative -mx-6 -mb-14 w-[calc(100%+48px)] sm:mx-auto sm:w-full sm:max-w-[560px] lg:absolute lg:bottom-0 lg:right-0 lg:m-0 lg:w-[680px] lg:max-w-none">
                         <img src="/img/hero-phone.webp" alt="Profil WhatsApp Customer Solution Resique di HP, dikelilingi produk laundry" width={1010} height={606} className="hook-float block w-full" loading="eager" decoding="async" data-hero-art />
                       </div>
                     )}
@@ -814,16 +814,14 @@ function KlasemenSection() {
   return (
     <section id="klasemen" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 pb-10 pt-14 lg:pb-14 lg:pt-24">
       {/* the arena: gold ground, a navy stage floor under the podium, two spotlight beams, a gold banner behind the title,
-          outlined KLASEMEN watermark, rings, confetti + sparkles drifting */}
+          rings, sparkles drifting (watermark + confetti dots removed 11 Sep) */}
       <span aria-hidden className="pointer-events-none absolute left-1/2 top-[38%] h-[520px] w-[140%] -translate-x-1/2 rounded-[50%] bg-navy-100/70 lg:top-[30%] lg:h-[620px] lg:w-[110%]" />
       <span aria-hidden className="pointer-events-none absolute left-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[18deg] bg-white/40 lg:block" />
       <span aria-hidden className="pointer-events-none absolute right-[18%] top-[-10%] h-[70%] w-[22%] origin-top skew-x-[-18deg] bg-white/40 lg:block" />
       <span aria-hidden className="band bg-gold-100" style={{ left: '-8%', top: '-6%', width: '46%', height: '30%' }} />
       <Rings className="right-[-120px] bottom-[-100px] h-[380px] w-[380px] text-gold" />
       <Rings className="left-[-160px] top-[-140px] h-[360px] w-[360px] text-navy-200" />
-      <span aria-hidden className="sale-watermark pointer-events-none absolute -right-4 top-6 select-none whitespace-nowrap [--wm:rgba(176,136,0,.22)] lg:top-4">KLASEMEN</span>
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        {['left-[6%] top-[120px] h-3 w-3 bg-gold', 'right-[10%] top-[220px] h-2 w-2 bg-green', 'left-[40%] bottom-[80px] h-2.5 w-2.5 bg-navy-700/60', 'left-[22%] top-[60px] h-2 w-2 bg-navy-700/50 hidden md:block', 'right-[28%] top-[90px] h-3 w-3 bg-green hidden md:block', 'left-[60%] bottom-[140px] h-2 w-2 bg-gold hidden lg:block', 'right-[6%] bottom-[240px] h-2.5 w-2.5 bg-gold hidden lg:block'].map((d, i) => <span key={i} className={cn('float-6 absolute rounded-full', d)} style={{ animationDelay: `${(i * 0.8) % 5}s` }} />)}
         {['left-[12%] top-[200px]', 'right-[14%] top-[60px] hidden md:block', 'left-[48%] top-[40px] hidden lg:block'].map((st, i) => <Sparkles key={st} className={cn('float-6 absolute h-6 w-6 text-gold', st)} strokeWidth={1.6} style={{ animationDelay: `${1 + i}s` }} />)}
       </div>
       <div className="container">

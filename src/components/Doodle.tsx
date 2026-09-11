@@ -10,20 +10,16 @@ export function Doodle({ variant }: { variant: 'hero' | 'cta' | 'footer' }) {
     <svg aria-hidden data-doodle={variant} className={cn(cls, variant === 'hero' ? 'opacity-[0.18] lg:opacity-[0.22]' : variant === 'footer' ? 'opacity-[0.12] lg:opacity-[0.14]' : 'opacity-[0.14] lg:opacity-[0.16]')} viewBox="0 0 1440 560" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" preserveAspectRatio="xMidYMid slice" style={{ maskImage: mask, WebkitMaskImage: mask }}>
       {variant !== 'cta' ? (
         <>
-          {/* shirt on a hanger, top-left, ×1.3 */}
-          <g transform="translate(60 40) scale(1.3)"><path d="M60 56l24-22 20 8 20-8 24 22-14 14-10-6v70h-40v-70l-10 6z" /><path d="M104 22v-14a8 8 0 0 1 8-8h4M48 60l-24 10M168 60l24 10" /></g>
-          {/* bubbles, left */}
-          <g transform="translate(0 20) scale(1.3)"><circle cx="70" cy="300" r="22" /><circle cx="118" cy="342" r="12" /><circle cx="40" cy="360" r="7" /><circle cx="150" cy="300" r="5" /><path d="M58 290a14 14 0 0 1 10-10" /></g>
-          {/* washing-machine drum, bottom-left */}
-          <g transform="translate(220 380) scale(1.3)"><circle cx="60" cy="60" r="52" /><circle cx="60" cy="60" r="36" /><path d="M34 34a36 36 0 0 0-8 22M82 86a36 36 0 0 0 10-22" /></g>
-          {/* clothes line + pegs, top centre */}
-          <path d="M420 60q180 50 360 0" /><path d="M520 78v44h34v-44M640 76v40h28v-40M740 64v34h22v-34" />
-          {/* laundry basket, centre */}
-          <g transform="translate(560 300) scale(1.2)"><path d="M0 0h150l-16 96H16z" /><path d="M16 28h118M12 56h126M8 84h134M25 0v96M75 0v96M125 0v96" /></g>
-          {/* sparkles */}
-          <path d="M360 200v40M340 220h40M900 90v26M887 103h26M1000 480v30M985 495h30M190 300v20M180 310h20" />
-          {/* soft wave, bottom */}
-          <path d="M0 530c120-30 240-30 360 0s240 30 360 0 240-30 360 0 240 30 360 0" />
+          {/* every motif is one closed, rounded outline: shirt, bubbles, drum, folded towels, basket, four-point stars, floor blob */}
+          <g transform="translate(60 40) scale(1.3)"><path d="M60 56l24-22 20 8 20-8 24 22-14 14-10-6v70h-40v-70l-10 6z" /></g>
+          <g transform="translate(0 20) scale(1.3)"><circle cx="70" cy="300" r="22" /><circle cx="118" cy="342" r="12" /><circle cx="40" cy="360" r="7" /><circle cx="150" cy="300" r="5" /></g>
+          <g transform="translate(220 380) scale(1.3)"><circle cx="60" cy="60" r="52" /><circle cx="60" cy="60" r="34" /><circle cx="60" cy="60" r="10" /></g>
+          <g transform="translate(500 60)"><rect x="0" y="0" width="140" height="64" rx="16" /><rect x="22" y="-26" width="140" height="64" rx="16" /></g>
+          <g transform="translate(560 300) scale(1.2)"><path d="M0 0h150l-16 96H16z" /><ellipse cx="75" cy="0" rx="75" ry="12" /></g>
+          <g transform="translate(360 220)"><path d="M0-20c2 11 9 18 20 20-11 2-18 9-20 20-2-11-9-18-20-20 11-2 18-9 20-20z" /></g>
+          <g transform="translate(900 103)"><path d="M0-14c1.4 8 6 12.6 14 14-8 1.4-12.6 6-14 14-1.4-8-6-12.6-14-14 8-1.4 12.6-6 14-14z" /></g>
+          <g transform="translate(190 310)"><path d="M0-10c1 5.5 4.5 9 10 10-5.5 1-9 4.5-10 10-1-5.5-4.5-9-10-10 5.5-1 9-4.5 10-10z" /></g>
+          <ellipse cx="720" cy="560" rx="560" ry="46" />
         </>
       ) : (
         <>
