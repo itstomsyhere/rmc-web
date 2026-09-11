@@ -146,8 +146,13 @@ function HookSection() {
   ]
   const tile = (j: number) => cn('hook-float absolute overflow-hidden rounded-xl bg-white shadow-3', j === 0 && 'left-0 top-8 z-20 w-[54%] rotate-[-5deg]', j === 1 && 'right-0 top-0 z-10 w-[48%] rotate-[6deg] [animation-delay:1.5s]', j === 2 && 'bottom-0 right-[4%] w-[48%] rotate-[-3deg] [animation-delay:3s]')
   return (
-    <section id="hook" className="scroll-mt-20 bg-bg pb-6 pt-5 lg:pb-10 lg:pt-8">
-      <div className="container">
+    <section id="hook" className="tex tex-grain scroll-mt-20 overflow-hidden bg-bg pb-8 pt-5 lg:pb-12 lg:pt-8">
+      {/* the paper behind the banner card is worked: a green band, rings, a dot field, so the card floats on something */}
+      <span aria-hidden className="band bg-green-50" style={{ top: '-20%', left: '-10%', width: '46%', height: '120%' }} />
+      <span aria-hidden className="band bg-navy-50" style={{ bottom: '-40%', right: '-8%', width: '38%', height: '90%' }} />
+      <Rings className="right-[-100px] top-[-120px] h-[360px] w-[360px] text-green-200" />
+      <span aria-hidden className="tex-dots-field pointer-events-none absolute inset-y-0 left-0 w-1/2" />
+      <div className="container relative">
         <div className="relative isolate overflow-hidden rounded-xl bg-navy-900 text-white shadow-3" data-banner data-reveal="in" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <Doodle variant="hero" />
@@ -494,11 +499,11 @@ function CtaSection() {
             <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-pretty text-white/85 sm:text-[17px]">{copy.ctaPointsSub}</p>
           </Reveal>
           <Reveal delay={60}>
-            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Keuntungan member" data-cta-benefits>
+            <ul className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4" aria-label="Keuntungan member" data-cta-benefits>
               {benefits.map((b, i) => { const Icon = BENEFIT_ICONS[b.icon] || Sparkles; return (
-                <li key={b.id} className="lift inline-flex min-h-[40px] items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[13px] font-bold text-white ring-1 ring-white/15 sm:text-[14px]">
-                  <span className="chip pulse-ring grid h-7 w-7 shrink-0 place-items-center rounded-full bg-green text-navy-900" style={{ '--pd': `${i * 0.6}s` } as React.CSSProperties} aria-hidden><Icon className="h-4 w-4" strokeWidth={2} /></span>
-                  {b.title}
+                <li key={b.id} className="lift-lg card-fx flex min-w-0 flex-col items-center gap-3 rounded-xl bg-white/10 px-3 py-4 text-center ring-1 ring-white/15 sm:py-5" style={{ '--tint': 'rgba(255,255,255,.08)' } as React.CSSProperties}>
+                  <span className="chip pulse-ring grid h-14 w-14 shrink-0 place-items-center rounded-full bg-green text-navy-900 shadow-2 sm:h-16 sm:w-16" style={{ '--pd': `${i * 0.6}s` } as React.CSSProperties} aria-hidden><Icon className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={1.9} /></span>
+                  <span className="text-[13px] font-extrabold leading-tight text-white sm:text-[14px]">{b.title}</span>
                 </li>
               ) })}
             </ul>
@@ -535,6 +540,15 @@ function CtaSection() {
         </div>
         <Reveal delay={120} className="min-w-0 lg:col-span-5">
           <RmcCardPreview rules={rules} />
+          {/* QR to this web (Lurd, 11 Sep): scan from a flyer / the outlet screen → the site; on phones it doubles as a share card */}
+          <div className="mx-auto mt-8 flex max-w-[400px] items-center gap-4 rounded-xl bg-white p-4 text-ink shadow-3 lg:ml-auto lg:mr-0" data-site-qr>
+            <img src="/img/qr-site.svg" alt="QR kode ke rmc-web-beta.vercel.app" width={112} height={112} className="h-24 w-24 shrink-0 rounded-md sm:h-28 sm:w-28" loading="lazy" decoding="async" />
+            <div className="min-w-0">
+              <p className="text-[15px] font-extrabold leading-tight text-navy-700">Scan untuk buka web Golden Privilege</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-ink-2">Arahkan kamera HP ke QR ini, atau bagikan ke teman laundry-mu.</p>
+              <p className="t-code mt-2 truncate text-[12px] font-bold text-green-700">rmc-web-beta.vercel.app</p>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -584,6 +598,24 @@ function RmcCardPreview({ rules }: { rules: Config['rules'] }) {
   )
 }
 
+/* Floating -N% tags + confetti dots behind the Golden Sale grid (decorative, drift on the deck-float keyframes;
+   fewer on phones). The tags read the real biggest cut so the decoration never lies. */
+function SaleConfetti({ pct }: { pct: number }) {
+  const tags = [
+    { cls: 'left-[6%] top-[120px] rotate-[-12deg] [animation-delay:0s]', t: `-${pct}%` },
+    { cls: 'right-[10%] top-[210px] rotate-[10deg] [animation-delay:1.4s] hidden md:block', t: 'Promo' },
+    { cls: 'left-[28%] bottom-[120px] rotate-[6deg] [animation-delay:2.6s] hidden lg:block', t: `-${Math.max(5, pct - 5)}%` },
+    { cls: 'right-[26%] bottom-[60px] rotate-[-8deg] [animation-delay:3.8s]', t: 'Stok terbatas' },
+  ]
+  const dots = ['left-[14%] top-[60px] h-3 w-3 bg-green', 'left-[52%] top-[40px] h-2 w-2 bg-navy-700', 'right-[18%] top-[90px] h-4 w-4 bg-gold', 'left-[8%] bottom-[200px] h-2 w-2 bg-navy-700 hidden md:block', 'right-[8%] bottom-[140px] h-3 w-3 bg-green hidden md:block', 'left-[40%] bottom-[30px] h-2 w-2 bg-gold', 'right-[40%] top-[140px] h-2 w-2 bg-green hidden lg:block']
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {tags.map((tg, i) => <span key={i} className={cn('hook-float absolute rounded-md bg-navy-700 px-2.5 py-1 text-[12px] font-extrabold text-white shadow-2 sm:text-[13px]', tg.cls)}>{tg.t}</span>)}
+      {dots.map((d, i) => <span key={i} className={cn('float-6 absolute rounded-full opacity-80', d)} style={{ animationDelay: `${(i * 0.9) % 5}s` }} />)}
+    </div>
+  )
+}
+
 /* 6, Golden Sale */
 function GoldenSaleSection() {
   const cfg = useConfig(s => s.config)
@@ -593,11 +625,14 @@ function GoldenSaleSection() {
   const dec = useCart(s => s.dec)
   const items = cfg.items.filter(i => i.active)
   return (
-    <section id="golden-sale" className="tex tex-grain scroll-mt-20 overflow-hidden py-14 lg:py-24">
-      <span aria-hidden className="band bg-gold-50" style={{ top: '-6%', right: '-14%', width: '44%', height: '48%' }} />
-      <span aria-hidden className="band bg-green-50" style={{ left: '-12%', bottom: '-20%', width: '36%', height: '50%' }} />
-      <Rings className="right-[6%] top-[40px] h-[260px] w-[260px] text-gold-200" />
-      <div className="container">
+    <section id="golden-sale" className="tex tex-grain scroll-mt-20 overflow-hidden bg-gold-50 py-14 lg:py-24">
+      {/* the mock's yellow GOLDEN SALE!! band, made playful: giant outline watermark, floating -N% tags, confetti dots, rings */}
+      <span aria-hidden className="band bg-gold-100" style={{ top: '-10%', right: '-14%', width: '48%', height: '60%' }} />
+      <span aria-hidden className="band bg-green-50" style={{ left: '-12%', bottom: '-20%', width: '40%', height: '50%' }} />
+      <Rings className="right-[4%] top-[20px] h-[300px] w-[300px] text-gold-200" />
+      <span aria-hidden className="sale-watermark pointer-events-none absolute -left-4 top-6 select-none whitespace-nowrap lg:top-4">GOLDEN SALE!!</span>
+      <SaleConfetti pct={Math.max(...items.map(i => i.realPrice > i.promoPrice ? Math.round((1 - i.promoPrice / i.realPrice) * 100) : 0), 0)} />
+      <div className="container relative">
         <SectionTitle title={cfg.copy.saleTitle} sub={cfg.copy.saleSub} />
         <p className="t-num mt-3 text-[15px] text-ink-2">{items.length} produk · sampai {fmtDate(cfg.campaign.end)} · selama stok ada</p>
         {items.length === 0 ? (

@@ -167,6 +167,10 @@ const { ok, launch, go, resetStores, text, minTapHeight, finish } = require('./_
   await p.locator('#benefit [data-steps]').scrollIntoViewIfNeeded(); await p.waitForTimeout(2000)
   ok((await p.locator('#benefit [data-steps] li[data-active="true"]').count()) === 1 && (await p.locator('#benefit ul > li svg.lucide-badge-percent, #benefit ul > li svg.lucide-truck, #benefit ul > li svg.lucide-star, #benefit ul > li svg.lucide-headset').count()) === 4, 'steps cycle one active step; benefit icons = badge-percent / truck / star / headset')
   ok(await p.evaluate(() => [...document.querySelectorAll('#hero [data-prize-card] .t-fig')].length === 4), 'prize chips carry the counted point figure')
+  // R.028 — QR to the web, bigger benefit highlights, worked banner ground, playful Golden Sale ground
+  const r28 = await p.evaluate(() => { const qr = document.querySelector('#cek-poin [data-site-qr] img'); const chip = document.querySelector('#cek-poin [data-cta-benefits] .chip'); return { qr: qr ? qr.naturalWidth : 0, qrSrc: qr ? qr.getAttribute('src') : '', chipH: chip ? chip.getBoundingClientRect().height : 0, hookBands: document.querySelectorAll('#hook > .band').length, saleBg: getComputedStyle(document.getElementById('golden-sale')).backgroundColor, wm: !!document.querySelector('#golden-sale .sale-watermark'), tags: document.querySelectorAll('#golden-sale .hook-float').length } })
+  ok(r28.qr > 0 && /qr-site\.svg$/.test(r28.qrSrc) && /rmc-web-beta\.vercel\.app/.test(await text(p, '#cek-poin [data-site-qr]')), `Daftar RMC band: QR to the web renders (${r28.qrSrc}, ${r28.qr}px)`)
+  ok(r28.chipH >= 56 && r28.hookBands === 2 && r28.saleBg === 'rgb(251, 245, 232)' && r28.wm && r28.tags >= 2, `benefit discs ≥ 56px, banner ground worked, Golden Sale on gold ground with watermark + floating tags (${JSON.stringify(r28)})`)
   ok(errs.length === 0, `no page errors (${errs.length})`)
   await finish(b, errs, 'landing-verify')
 })()
